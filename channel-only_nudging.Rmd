@@ -1,7 +1,156 @@
+```
+# Channel-Only & Nudging Data Assimilation
+
+## NWM Nudging 
+NWM nudging.
+
+## Channel-only
+Currently the channel-model of the NWM is 1-way coupled to the upstream model components, it only recieves inflow. Therefore the channel can be run in a stand-alone mode. This is what we call "channel-only". The channel-only mode has 2 options: 
+
+  * Channel (including nudging) + lakes
+  * Channel + lakes + ground water buckets
+
+NWM v1.2 operational `channel_rt` output contains the forcing fields for running the NWM in channel-only mode. We have not really run this in small basins to date and are still refining the NWM subset scripts necessary to do this. Restart files are also necessary.
+
+
+#Experimental Design
+
+Domain
+Map figures
+
+Nested gages.
+Overview of top-level dir.
+
+Observations
+```
+library(rwrfhydro)
+library(dataRetrieval)
+library(ggplot2)
+library(data.table)
+#outPath <- "/glade/p/nwc/arezoo/training_alabama/timeSlices"
+# get the instantaeous data from NWIS
+siteNumber <- c("04233300", "04233286")
+parameterCd <- "00060"  # Discharge
+startDate <- "2013-06-01"
+endDate <- "2013-10-01"
+obsDischarge <- readNWISuv(siteNumber, parameterCd, startDate, endDate)
+obsDischarge <- as.data.table(obsDischarge)
+cfsToCms <- 1/35.31466621266132
+obsDischarge[, `:=`(discharge.cms=X_00060_00000*cfsToCms)]
+
+ggplot(obsDischarge, aes(dateTime, discharge.cms)) +
+  geom_point(aes(color = site_no), alpha=.5, size=.7) +
+  theme_bw(base_size=16) +
+  scale_y_continuous(name='Discharge (cms)') + #, trans='log') +
+  scale_x_datetime(name='2013')
+
+```
+
+# Binary with nudging
+## compile options RNLS
+
+# Full Model Run
+## Setup 
+Forcing data for this run is in `FORCING/`, as specified by
+```
+jamesmcc@yslogin6[1870]:/glade/scratch/jamesmcc/04233300> grep INDIR namelist.hrldas.201306-201309
+INDIR = "./FORCING"
+```
+These forcing files are the standard `LDASIN` files in hour format. For example,
+
+```
+amesmcc@yslogin6[1871]:/glade/scratch/jamesmcc/04233300> ls FORCING/ | head
+2013053000.LDASIN_DOMAIN1
+2013053001.LDASIN_DOMAIN1
+2013053002.LDASIN_DOMAIN1
+2013053003.LDASIN_DOMAIN1
+2013053004.LDASIN_DOMAIN1
+2013053005.LDASIN_DOMAIN1
+2013053006.LDASIN_DOMAIN1
+2013053007.LDASIN_DOMAIN1
+2013053008.LDASIN_DOMAIN1
+2013053009.LDASIN_DOMAIN1
+```
+
+And this forcing format is specfied by the `namelist.hrldas` option `FORC_TYP=1`. In our experiments we will be using two different forcing types as revealed by a quick `grep`:
+
+```
+jamesmcc@yslogin6[1788]:/glade/scratch/jamesmcc/04233300> grep FORC_TYP namelist.hrldas.201306-201309* 
+namelist.hrldas.201306-201309:FORC_TYP = 1
+namelist.hrldas.201306-201309.channelOnly:FORC_TYP = 9
+```
+
+In the the channel-only runs have `FORC_TYP=9` where the `CHRTOUT` files are used to drive the channel-only model run. To do this we need to output the channel-only forcing variables. For `FORC_TYP=9` we need the following in the hydro.namelist:
+
+```
+! Options to output channel & bucket influxes to drive FORCE_TYPE 9.
+! Nonzero choice requires that out_dt above matches NOAH_TIMESTEP in namelist.hrldas.
+! 0=None (default), 1=channel influxes (qSfcLatRunoff, qBucket)
+! 2=channel+bucket fluxes    (qSfcLatRunoff, qBucket, qBtmVertRunoff_toBucket)
+! 3=channel accumulations    (accSfcLatRunoff, accBucket) *** NOT TESTED ***
+output_channelBucket_influx = 1
+```
+Here we are not running the bucket model. If we also wanted to run the bucket model as part of the channel-only run then we would need `output_channelBucket_influx = 1` in this full-model run and `FORC_TYP=10` in the channel-only run in the next section.
+
+## Caveates of outputting channel-fluxes... 
+
+## Run
+
+```
+jamesmcc@yslogin6[1872]:/glade/scratch/jamesmcc/04233300> cd run.201306-201309.fullModel/
+jamesmcc@yslogin6[1873]:/glade/scratch/jamesmcc/04233300/run.201306-201309.fullModel> mpiexec -n 1 ./wrf_hydro.nudging.exe
+```
+
+## Analysis
+
+```
+library(rwrfhydro)
+library(plyr)
+library(data.table)
+library(ggplot2)
+
+## Set the path
+wrfHydroTestCaseDir <- '/glade/scratch/jamesmcc/04233300/'
+setwd(paste0(wrfHydroTestCaseDir,"/run.201306-201309.fullModel"))
+
+## Identify the links with gages.
+##which points have gages?
+rl <- GetNcdfFile('DOMAIN/RouteLink.nc', q=TRUE,
+                  var='time', exclude=TRUE)
+theLinks <- rl$link[which(trimws(rl$gages) != '')]
+theGages <- rl$gages[which(trimws(rl$gages) != '')]
+link2gage <- theGages
+names(link2gage) <- theLinks
+
+
+fullModelChrtoutFiles <- list.files('.','CHRTOUT', full=TRUE)
+fullModelData <-  ldply(NamedList(fullModelChrtoutFiles),
+                        GetNcdfFile, variables=c('time'), exclude=TRUE, quiet=TRUE)
+fullModelData <- as.data.table(fullModelData)
+fullModelData[, `:=`(POSIXct=as.POSIXct(basename(.id), format='%Y%m%d%H', tz='UTC'))]
+
+fullModelData.gages <- fullModelData[ station_id %in% theLinks, ]
+## scatter plot off gages?
+options(warn=1)
+
+ggplot() +
+  geom_point(data=fullModelData.gages, aes(x=POSIXct, y=streamflow,
+               color=paste0(trimws(link2gage[as.character(station_id)]),'.modeled'))) +
+  geom_point(data=obsDischarge,
+             aes(x=dateTime, y=discharge.cms, color= site_no)) + 
+  theme_bw(base_size=16) +
+  scale_y_continuous(name='Discharge (cms)') , trans='log') +
+  scale_x_datetime(name='2013')
+
+
+```
+
+# Channel-Only Run
 
 
 
-Edit the Routelink file to only assimilate the upstream gage.
+# Channel-Only Run with Nudging Data Assimilation
+Edit the Routelink file to only assimilate the upstream gage. Set the `gages` variable to `''` for the down stream gage.
 
 ```
 library(rwrfhydro)
@@ -10,9 +159,21 @@ library(data.table)
 domDir <- '/glade/scratch/jamesmcc/04233300/DOMAIN'
 setwd(domDir)
 
-rlOrig <- as.data.table(GetNcdfFile('RouteLink.nc', q=TRUE))
+rlFileIn <- 'RouteLink.nc'
+rl <- as.data.table(GetNcdfFile(rlFileIn, q=TRUE))
+rl[ trimws(gages) != '', ]
+# Censor the downstream gage
+whDownstream <- which(trimws(rl$gages)=='04233300')
+rl$gages[whDownstream] <- formatC('', width=15)
+rl[ whDownstream, ]
 
-rlOrig[ trimws(gages) != '', ]
+rlFileOut <- AddRouteLinkGage(rlFileIn, rl$gages, rl$link, 'assimUpstreamOnly')
 
-
+# Check.
+rl2 <- as.data.table(GetNcdfFile(rlFileOut, q=TRUE))
+identical(rl2, rl) ## should be true.
 ```
+
+Edit the hydro.namelist to use the new `Routelink.assimUpstreamOnly.nc` file.
+
+
