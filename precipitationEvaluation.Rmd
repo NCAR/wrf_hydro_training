@@ -86,13 +86,13 @@ One way to pull data from the netcdf files is to have the indices of the gage lo
 
 ```{r message=FALSE, warning=FALSE}
 geoFile <- paste0(fcPath,'/DOMAIN/geo_em.nc')
-rainGgaugeInds <- GetGeogridIndex(xy = data.frame(lon=sg$longitude, lat=sg$latitude),
+rainGaugeInds <- GetGeogridIndex(xy = data.frame(lon=sg$longitude, lat=sg$latitude),
                                   ncfile = geoFile)
-sg <- cbind(sg,rainGgaugeInds)
+sg <- cbind(sg,rainGaugeInds)
 head(sg)
 ```
 
-Notice the `sn` and `we` values for the Bear Lake are `NA`, since it is falling outside the domain. Time to pull data from the files. One way if to use the `GetMultiNcdf` function in rwrfhydro. You need to prepare the file, var, and ind variables for `GetMultiNcdf` function (refer to Collect Output Data: GetMultiNcdf vignette). You can leave the stat as mean; since you are pulling data for a single pixel.
+Notice the `sn` and `we` values for the Bear Lake are `NA`, since it is falling outside the domain. Time to pull data from the files. One way is to use the `GetMultiNcdf` function in rwrfhydro. You need to prepare the file, var, and ind variables for `GetMultiNcdf` function (refer to Collect Output Data: GetMultiNcdf vignette). You can leave the stat as mean; since you are pulling data for a single pixel.
 
 ```{r message=FALSE, warning=FALSE}
 flList <- list(forcing = files)
@@ -179,7 +179,7 @@ stat <- CalcStatCont(DT = common, obsCol = "dailyGhcn", modCol = "dailyPrcp" , o
 You can also calculate conditional statistics by defining the boundaries you are interested in. For example, here we calculate the statistics conditioned on the observation to be greater than 1 mm. 
 
 ```{r plot4, fig.width = 8, fig.height = 8, out.width='600', out.height='600'}
-stat <- CalcStatCont(DT = common2, obsCol = "dailyGhcn", modCol = "dailyPrcp" , 
+stat <- CalcStatCont(DT = common, obsCol = "dailyGhcn", modCol = "dailyPrcp" , 
                      obsCondRange = c(1, Inf), plot.list = "scatterPlot")
 stat$stat
 ```
@@ -228,8 +228,8 @@ sg <- GetPoly (sg,  polygonAddress = polygonAddress,
 # check what is been added
 head(sg)
 
-# merge the common data.table with the sg data.frame
-common <- data.table:::merge.data.table(common,data.table::as.data.table(sg[, c("siteIds","HUC12")]),
+# merge the common data.frame with the sg data.frame
+common <- merge(common,sg[, c("siteIds","HUC12")],
                                         by.x=c("statArg"),
                                         by.y=c("siteIds"))
 
