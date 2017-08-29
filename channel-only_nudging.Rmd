@@ -1,8 +1,32 @@
-```
-# Channel-Only & Nudging Data Assimilation
+---
+title: "Channel-Only & Nudging Data Assimilation"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: readable
+#    highlight: default  ##fail
+    highlight: tango  ##probably the best, random promtp emphasis is not obvious
+#    highlight: pygments  ## random prompt emphasis
+#    highlight: kate  ## random prompt emphasis
+#    highlight: monochrome #blah
+#    highlight: espresso ## too much contrast, random emphasis
+#    highlight: zenburn ## not obvious random emphasis
+#    highlight: textmate  ##fail
+#    highlight: haddock ## wierd highlighting
+---
+
+# Purpose of this vignette
+
+# Background
 
 ## NWM Nudging 
 NWM nudging.
+Why Nudging?
+Nudging equation. 
+Issues with nudging?
+
 
 ## Channel-only
 Currently the channel-model of the NWM is 1-way coupled to the upstream model components, it only recieves inflow. Therefore the channel can be run in a stand-alone mode. This is what we call "channel-only". The channel-only mode has 2 options: 
@@ -12,6 +36,44 @@ Currently the channel-model of the NWM is 1-way coupled to the upstream model co
 
 NWM v1.2 operational `channel_rt` output contains the forcing fields for running the NWM in channel-only mode. We have not really run this in small basins to date and are still refining the NWM subset scripts necessary to do this. Restart files are also necessary.
 
+# Setup and Conventions
+R Setup
+
+```{r, include=FALSE}
+options(warn=1)
+library(knitr)
+opts_chunk$set(prompt=TRUE)
+#https://stackoverflow.com/questions/39023509/changing-the-prompt-in-a-multilanguage-knitr-rmarkdown-document
+knit_hooks$set(
+  prompt = function(before, options, envir) {
+    options(prompt = if (options$engine %in% c('sh','bash')) '$ ' else '> ')
+})
+
+```
+
+```{r, eval = TRUE, results='hide'}
+# All the packages which will be used below
+library(rwrfhydro)
+library(dataRetrieval)
+library(ggplot2)
+library(data.table)
+library(plyr)
+library(data.table)
+
+topDir <- '~/wrfHydroTestCases/04233300/'
+setwd(topDir)
+```
+
+```{r, include=FALSE}
+opts_knit$set(root.dir = topDir)
+```
+
+Shell setup. We'll assume you are using `bash`.
+```{r, engine='bash', eval = TRUE}
+topDir=~/wrfHydroTestCases/04233300
+cd $topDir
+```
+`>` is the R prompt and `$` is the bash prompt. 
 
 #Experimental Design
 
@@ -21,29 +83,39 @@ Map figures
 Nested gages.
 Overview of top-level dir.
 
-Observations
-```
-library(rwrfhydro)
-library(dataRetrieval)
-library(ggplot2)
-library(data.table)
-#outPath <- "/glade/p/nwc/arezoo/training_alabama/timeSlices"
-# get the instantaeous data from NWIS
+Get the instantaeous observations from NWIS using the `dataRetrieval` package.
+```{r, eval = FALSE}
 siteNumber <- c("04233300", "04233286")
 parameterCd <- "00060"  # Discharge
 startDate <- "2013-06-01"
 endDate <- "2013-10-01"
-obsDischarge <- readNWISuv(siteNumber, parameterCd, startDate, endDate)
+obsDischarge <- dataRetrieval::readNWISuv(siteNumber, parameterCd, startDate, endDate)
 obsDischarge <- as.data.table(obsDischarge)
 cfsToCms <- 1/35.31466621266132
 obsDischarge[, `:=`(discharge.cms=X_00060_00000*cfsToCms)]
+```
 
-ggplot(obsDischarge, aes(dateTime, discharge.cms)) +
-  geom_point(aes(color = site_no), alpha=.5, size=.7) +
+```{r, include=FALSE}
+#save(obsDischarge, file='~/WRF_Hydro/NWC_training/channel-only_nudging.obs.Rdata')
+load('~/WRF_Hydro/NWC_training/channel-only_nudging.obs.Rdata')
+```
+
+Plot the instantaneous observed data (using ggplot2 package).
+
+```{r, eval = TRUE}
+SiteLabeller <- function(site) {
+  labels <- paste0(attributes(obsDischarge)$siteInfo$station_nm, 
+                  ' (',attributes(obsDischarge)$siteInfo$site_no,')')
+  names(labels) <- attributes(obsDischarge)$siteInfo$site_no
+  labels[site]
+}
+ggplot(obsDischarge) +
+  geom_point(aes(dateTime, discharge.cms), size=.7) +
   theme_bw(base_size=16) +
+  facet_wrap(~site_no, ncol=1, 
+             labeller=labeller(site_no=SiteLabeller)) +
   scale_y_continuous(name='Discharge (cms)') + #, trans='log') +
   scale_x_datetime(name='2013')
-
 ```
 
 # Binary with nudging
@@ -52,114 +124,218 @@ ggplot(obsDischarge, aes(dateTime, discharge.cms)) +
 # Full Model Run
 ## Setup 
 Forcing data for this run is in `FORCING/`, as specified by
+```{r, engine = 'bash', eval = TRUE}
+grep INDIR namelist.hrldas.201306-201309
 ```
-jamesmcc@yslogin6[1870]:/glade/scratch/jamesmcc/04233300> grep INDIR namelist.hrldas.201306-201309
-INDIR = "./FORCING"
-```
+
 These forcing files are the standard `LDASIN` files in hour format. For example,
 
-```
-amesmcc@yslogin6[1871]:/glade/scratch/jamesmcc/04233300> ls FORCING/ | head
-2013053000.LDASIN_DOMAIN1
-2013053001.LDASIN_DOMAIN1
-2013053002.LDASIN_DOMAIN1
-2013053003.LDASIN_DOMAIN1
-2013053004.LDASIN_DOMAIN1
-2013053005.LDASIN_DOMAIN1
-2013053006.LDASIN_DOMAIN1
-2013053007.LDASIN_DOMAIN1
-2013053008.LDASIN_DOMAIN1
-2013053009.LDASIN_DOMAIN1
+```{r, engine = 'bash', eval = TRUE}
+ls FORCING/ | head
 ```
 
 And this forcing format is specfied by the `namelist.hrldas` option `FORC_TYP=1`. In our experiments we will be using two different forcing types as revealed by a quick `grep`:
 
-```
-jamesmcc@yslogin6[1788]:/glade/scratch/jamesmcc/04233300> grep FORC_TYP namelist.hrldas.201306-201309* 
-namelist.hrldas.201306-201309:FORC_TYP = 1
-namelist.hrldas.201306-201309.channelOnly:FORC_TYP = 9
+```{r, engine = 'bash', eval = TRUE}
+grep FORC_TYP namelist.hrldas.201306-201309* 
 ```
 
 In the the channel-only runs have `FORC_TYP=9` where the `CHRTOUT` files are used to drive the channel-only model run. To do this we need to output the channel-only forcing variables. For `FORC_TYP=9` we need the following in the hydro.namelist:
 
+```{r, engine = 'bash'}
+grep -A5 '! Options to output channel' hydro.namelist.201306-201309
 ```
-! Options to output channel & bucket influxes to drive FORCE_TYPE 9.
-! Nonzero choice requires that out_dt above matches NOAH_TIMESTEP in namelist.hrldas.
-! 0=None (default), 1=channel influxes (qSfcLatRunoff, qBucket)
-! 2=channel+bucket fluxes    (qSfcLatRunoff, qBucket, qBtmVertRunoff_toBucket)
-! 3=channel accumulations    (accSfcLatRunoff, accBucket) *** NOT TESTED ***
-output_channelBucket_influx = 1
-```
+
 Here we are not running the bucket model. If we also wanted to run the bucket model as part of the channel-only run then we would need `output_channelBucket_influx = 1` in this full-model run and `FORC_TYP=10` in the channel-only run in the next section.
 
 ## Caveates of outputting channel-fluxes... 
 
 ## Run
 
+```{r, engine = 'bash', eval = FALSE}
+cd run.201306-201309.fullModel/
 ```
-jamesmcc@yslogin6[1872]:/glade/scratch/jamesmcc/04233300> cd run.201306-201309.fullModel/
-jamesmcc@yslogin6[1873]:/glade/scratch/jamesmcc/04233300/run.201306-201309.fullModel> mpiexec -n 1 ./wrf_hydro.nudging.exe
+
+```{r, engine = 'bash', eval = FALSE}
+mpiexec -n 1 ./wrf_hydro.nudging.exe
 ```
 
 ## Analysis
 
+```{r, eval=TRUE}
+## Set the path to the current run.
+fullModelDir <- paste0(topDir,"/run.201306-201309.fullModel")
+setwd(fullModelDir)
 ```
-library(rwrfhydro)
-library(plyr)
-library(data.table)
-library(ggplot2)
 
-## Set the path
-wrfHydroTestCaseDir <- '/glade/scratch/jamesmcc/04233300/'
-setwd(paste0(wrfHydroTestCaseDir,"/run.201306-201309.fullModel"))
+```{r, include=FALSE}
+opts_knit$set(root.dir = fullModelDir)
+```
 
-## Identify the links with gages.
-##which points have gages?
+```{r, eval=TRUE}
+# Identify the links with gages and a mapping between them using a named vector.
+# Which points have gages?
 rl <- GetNcdfFile('DOMAIN/RouteLink.nc', q=TRUE,
                   var='time', exclude=TRUE)
 theLinks <- rl$link[which(trimws(rl$gages) != '')]
 theGages <- rl$gages[which(trimws(rl$gages) != '')]
 link2gage <- theGages
 names(link2gage) <- theLinks
+```
 
-
-fullModelChrtoutFiles <- list.files('.','CHRTOUT', full=TRUE)
+```{r, eval=FALSE}
+fullModelChrtoutFiles <- list.files(path='.', pattern='CHRTOUT', full.names=TRUE)
 fullModelData <-  ldply(NamedList(fullModelChrtoutFiles),
                         GetNcdfFile, variables=c('time'), exclude=TRUE, quiet=TRUE)
 fullModelData <- as.data.table(fullModelData)
 fullModelData[, `:=`(POSIXct=as.POSIXct(basename(.id), format='%Y%m%d%H', tz='UTC'))]
+```
 
+```{r, include=FALSE}
+#save(fullModelData, file='~/WRF_Hydro/NWC_training/channel-only_nudging.fullModel.Rdata')
+load('~/WRF_Hydro/NWC_training/channel-only_nudging.fullModel.Rdata')
+```
+
+Subset the full streamflow to just the gages. We didnt do this when we read it in so that we could compare the full streamflow against the channel-only run later.
+
+```{r, eval=TRUE}
 fullModelData.gages <- fullModelData[ station_id %in% theLinks, ]
-## scatter plot off gages?
-options(warn=1)
+fullModelData.gages$site_no <-
+  trimws(link2gage[as.character(fullModelData.gages$station_id)])
+setnames(fullModelData.gages, 'streamflow', 'modeled')
+setnames(obsDischarge, 'discharge.cms', 'observed')
 
-ggplot() +
-  geom_point(data=fullModelData.gages, aes(x=POSIXct, y=streamflow,
-               color=paste0(trimws(link2gage[as.character(station_id)]),'.modeled'))) +
-  geom_point(data=obsDischarge,
-             aes(x=dateTime, y=discharge.cms, color= site_no)) + 
-  theme_bw(base_size=16) +
-  scale_y_continuous(name='Discharge (cms)') , trans='log') +
-  scale_x_datetime(name='2013')
+obsModPlot <- merge(fullModelData.gages, obsDischarge, 
+                    by.x=c("site_no", "POSIXct"), 
+                    by.y=c("site_no", "dateTime") )
+obsModPlot.m <- melt(obsModPlot, id.vars = c("site_no", "POSIXct"), 
+                     measure.vars = c('observed','modeled'), 
+                     variable.name = 'obsMod', 
+                     value.name = 'Discharge (cms)')
 
+ggplot(obsModPlot.m) +
+  geom_point(aes(x=POSIXct, y=`Discharge (cms)`, color=obsMod), size=.5) + 
+  facet_wrap(~site_no, ncol=1, 
+             labeller=labeller(site_no=SiteLabeller)) +
+  scale_y_continuous(trans='log') +
+  scale_x_datetime(name='2013') + 
+  scale_color_discrete(name='') +
+  theme_bw(base_size=13)
 
 ```
 
 # Channel-Only Run
 
+## Setup 
+We'll now move back to the top-level directory. To examine the setup for the channel-only run.
+```{r, eval=TRUE}
+## Set the path to the current run.
+setwd(topDir)
+```
 
+```{r, include=FALSE}
+opts_knit$set(root.dir = topDir)
+```
+
+For the channel-only run, The "`CHRTOUT`" files from the full model run above become the forcing files.
+
+```{r, engine = 'bash', eval = TRUE}
+grep INDIR namelist.hrldas.201306-201309.channelOnly
+```
+
+Note that I've symlinked the full-model run directory into the channel-only run directory.
+```{r, engine = 'bash', eval = TRUE}
+ls -l run.201306-201309.channelOnly/run.201306-201309.fullModel
+```
+
+```{r, engine = 'bash', eval = TRUE}
+ls -l run.201306-201309.channelOnly/run.201306-201309.fullModel/20130601*CHRTOUT* | head
+```
+
+Let's take a look at the contents of the files. Since some (windows) systems may not have the command line `ncdump` utility, we'll take a look using `rwrfhydro::ncdump`.
+
+```{r, eval = TRUE}
+ncdump('run.201306-201309.channelOnly/run.201306-201309.fullModel/201306010100.CHRTOUT_DOMAIN1')
+```
+
+The last two variables in the file, `qSfcLatRunoff` and `qBucket`, are the forcing fluxes for the channel-only run. The flux from the overland run off and subsurface exfiltration are collected in `qSfcLatRunoff`. The discharge from the bucket to the channel is in `qBucket`. The options also exists to get the fluxe to the bucket and run the bucket model with the channel, but we'll not look at that in detail here.
+
+As we previewed previously, channel-only runs change the `FORC_TYPE` in the `namelist.hrldas` to 9 (10 would include the bucket with the model).
+
+```{r, engine = 'bash', eval = TRUE}
+grep FORC_TYP namelist.hrldas.201306-201309* 
+```
+
+In configuring the namelist, we can set `output_channelBucket_influx = 1`, though these outputs will be redundant with the fields in the files used to force the model.
+
+## Run
+
+```{r, engine = 'bash', eval = FALSE}
+cd run.201306-201309.fullModel/
+```
+
+```{r, engine = 'bash', eval = FALSE}
+mpiexec -n 1 ./wrf_hydro.nudging.exe
+```
+
+## Analysis
+
+```{r, eval=TRUE}
+## Set the path to the current run.
+chanOnlyDir <- paste0(topDir,"/run.201306-201309.channelOnly")
+setwd(chanOnlyDir)
+```
+
+```{r, include=FALSE}
+opts_knit$set(root.dir = chanOnlyDir)
+```
+
+```{r, eval=FALSE}
+chanOnlyChrtoutFiles <- list.files(path='.', pattern='CHRTOUT', full.names=TRUE)
+chanOnlyData <-  ldply(NamedList(chanOnlyChrtoutFiles),
+                        GetNcdfFile, variables=c('time'), exclude=TRUE, quiet=TRUE)
+chanOnlyData <- as.data.table(chanOnlyData)
+chanOnlyData[, `:=`(POSIXct=as.POSIXct(basename(.id), format='%Y%m%d%H', tz='UTC'))]
+```
+
+```{r, include=FALSE}
+#save(chanOnlyData, file='~/WRF_Hydro/NWC_training/channel-only_nudging.chanOnly.Rdata')
+load('~/WRF_Hydro/NWC_training/channel-only_nudging.chanOnly.Rdata')
+```
+
+```{r, eval=TRUE}
+knitr::knit_exit('ta da') ## does this work?
+```
+
+
+The channel-only simulation matches exactly over all streamflow reaches and all times except that the forcing field `qSfcLatRunoff` is not exactly replicated in the output file. 
+
+```{r, eval=TRUE}
+for(vv in names(chanOnlyData)) print(paste(vv,':',identical(fullModelData[[vv]], chanOnlyData[[vv]])))
+vv='qSfcLatRunoff'
+print(vv)
+print(summary(fullModelData[[vv]]-chanOnlyData[[vv]]))
+```
+
+There really is not point in plotting the flows from this run as they are identical to the flows plotted for the full-model run. This section was intended to show how to setup a channel run from a full-model run and demonstrate that the two are identical for channel-states. 
 
 # Channel-Only Run with Nudging Data Assimilation
 Edit the Routelink file to only assimilate the upstream gage. Set the `gages` variable to `''` for the down stream gage.
 
+
+```{r, eval=TRUE}
+## Set the path to the current run.
+chanOnlyDir <- paste0(topDir,"/run.201306-201309.channelOnly")
+setwd(chanOnlyDir)
 ```
-library(rwrfhydro)
-library(data.table)
 
-domDir <- '/glade/scratch/jamesmcc/04233300/DOMAIN'
-setwd(domDir)
+```{r, include=FALSE}
+opts_knit$set(root.dir = chanOnlyDir)
+```
 
-rlFileIn <- 'RouteLink.nc'
+
+```{r, eval=FALSE}
+rlFileIn <- 'DOMAIN/RouteLink.nc'
 rl <- as.data.table(GetNcdfFile(rlFileIn, q=TRUE))
 rl[ trimws(gages) != '', ]
 # Censor the downstream gage
