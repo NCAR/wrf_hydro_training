@@ -112,14 +112,4 @@ g2 <- ggplot(merged, aes(date,streamflow))+geom_line() + ylab("Streamflow (CMS)"
 rwrfhydro::multiplot(g1,g2)
 ```
 
-Often times we use hourly [StageIV](http://www.emc.ncep.noaa.gov/mmb/ylin/pcpanl/stage4/) for the verification of the precipitation product in NWM. However, hourly StageIV is poor in the western part of US, for that reason we use a blend of Stage IV and Stage II. The 6 hourly Stage IV (which has west RFC inputs) are disaggregated to hourly using the Stage II data as the weight. 
- 
-The Stage IV and Stage II data for the last two weeks are kept [online here](http://nomads.ncep.noaa.gov/pub/data/nccf/com/pcpanl/prod/). Also, daily tar files are for the last few months are available [online here](http://ftp.emc.ncep.noaa.gov/mmb/precip/st2n4.arch/). And if a longer data record is required, the complete record is available on HPSS. 
-* Stage II: /FS/DSS/DS507.5/ST2_4km; files named ST2_4km.YYYYMM.tar, January 2002 to October 2016.
-* Stage IV: /FS/DSS/DS507.5/stage4; file named stage4.YYYYMM.tar, January 2002 to October 2016.
-
-As explained above, due to the poor coverage of radar in the western part of US, the hourly Stage IV data are not high quality. However, the 6-hourly Stage IV data in the western side of US, are the RFC precipitation products based on the moutain mapper algorithm. The Stage II/IV job is run at 33min past the top of each hour. Hourly Stage IV is re-made hourly (if there is new input) for the first 23 hours after valid time, then again at 1/3/5/7 days after valid time. The 6-hourly Stage IV is re-made hourly (if there is new 6h input) for 42 hours after valid time; the four 6-hourlies covering a 12Z-12Z 24h period are also re-made on a fixed schedule, regardless of input, at 1/3/5/7 days after the ending 12Z (i.e. at the 12:33Z run); at which time the corresponding 24h totals are also re-made. Therefore, for blending, we go back in time and start blending files from 9 days ago to make sure we incorporate the latest changes in the files. 
- 
-We have provided the blended and regridded StaheIV/II data for the Sixmile Creek case study which can be used for verification. ....
-
 
