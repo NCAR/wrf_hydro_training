@@ -102,7 +102,7 @@ load('~/WRF_Hydro/NWC_training/channel-only_nudging.obs.Rdata')
 
 Plot the instantaneous observed data (using ggplot2 package).
 
-```{r, eval = TRUE}
+```{r, eval = TRUE, out.width='100%'}
 SiteLabeller <- function(site) {
   labels <- paste0(attributes(obsDischarge)$siteInfo$station_nm, 
                   ' (',attributes(obsDischarge)$siteInfo$site_no,')')
@@ -198,7 +198,7 @@ load('~/WRF_Hydro/NWC_training/channel-only_nudging.fullModel.Rdata')
 
 Subset the full streamflow to just the gages. We didnt do this when we read it in so that we could compare the full streamflow against the channel-only run later.
 
-```{r, eval=TRUE}
+```{r, eval=TRUE, out.width='100%'}
 fullModelData.gages <- fullModelData[ station_id %in% theLinks, ]
 fullModelData.gages$site_no <-
   trimws(link2gage[as.character(fullModelData.gages$station_id)])
@@ -303,11 +303,6 @@ chanOnlyData[, `:=`(POSIXct=as.POSIXct(basename(.id), format='%Y%m%d%H', tz='UTC
 load('~/WRF_Hydro/NWC_training/channel-only_nudging.chanOnly.Rdata')
 ```
 
-```{r, eval=TRUE}
-knitr::knit_exit('ta da') ## does this work?
-```
-
-
 The channel-only simulation matches exactly over all streamflow reaches and all times except that the forcing field `qSfcLatRunoff` is not exactly replicated in the output file. 
 
 ```{r, eval=TRUE}
@@ -325,31 +320,81 @@ Edit the Routelink file to only assimilate the upstream gage. Set the `gages` va
 
 ```{r, eval=TRUE}
 ## Set the path to the current run.
-chanOnlyDir <- paste0(topDir,"/run.201306-201309.channelOnly")
-setwd(chanOnlyDir)
+chanOnlyAssimDir <- paste0(topDir,"/run.201306-201309.channelOnly.assimUpstream")
+setwd(chanOnlyAssimDir)
 ```
 
 ```{r, include=FALSE}
-opts_knit$set(root.dir = chanOnlyDir)
+opts_knit$set(root.dir = chanOnlyAssimDir)
 ```
 
-
-```{r, eval=FALSE}
-rlFileIn <- 'DOMAIN/RouteLink.nc'
+```{r, eval=TRUE}
+rlFileIn <- '../DOMAIN/RouteLink.nc'
 rl <- as.data.table(GetNcdfFile(rlFileIn, q=TRUE))
-rl[ trimws(gages) != '', ]
 # Censor the downstream gage
 whDownstream <- which(trimws(rl$gages)=='04233300')
 rl$gages[whDownstream] <- formatC('', width=15)
-rl[ whDownstream, ]
+```
 
+```{r, eval=FALSE}
 rlFileOut <- AddRouteLinkGage(rlFileIn, rl$gages, rl$link, 'assimUpstreamOnly')
+```
 
-# Check.
+```{r, include=FALSE}
+rlFileOut <- 'DOMAIN/RouteLink.assimUpstreamOnly.nc'
+```
+
+Check. 
+```{r}
 rl2 <- as.data.table(GetNcdfFile(rlFileOut, q=TRUE))
-identical(rl2, rl) ## should be true.
+identical(rl, rl2)
 ```
 
 Edit the hydro.namelist to use the new `Routelink.assimUpstreamOnly.nc` file.
+```{r, engine='bash', eval=TRUE}
+grep -i route_link_f hydro.namelist
+```
 
+```{r, eval=FALSE}
+chanOnlyAssimChrtoutFiles <- list.files(path='.', pattern='CHRTOUT', full.names=TRUE)
+chanOnlyAssimData <-  ldply(NamedList(chanOnlyAssimChrtoutFiles),
+                        GetNcdfFile, variables=c('time'), exclude=TRUE, quiet=TRUE)
+chanOnlyAssimData <- as.data.table(chanOnlyAssimData)
+chanOnlyAssimData[, `:=`(POSIXct=as.POSIXct(basename(.id), format='%Y%m%d%H', tz='UTC'))]
+```
+
+```{r, include=FALSE}
+#save(chanOnlyAssimData, file='~/WRF_Hydro/NWC_training/channel-only_nudging.chanOnlyAssim.Rdata')
+load('~/WRF_Hydro/NWC_training/channel-only_nudging.chanOnlyAssim.Rdata')
+```
+
+```{r}
+chanOnlyAssimData.gages <- chanOnlyAssimData[ station_id %in% theLinks, ]
+chanOnlyAssimData.gages$site_no <-
+  trimws(link2gage[as.character(chanOnlyAssimData.gages$station_id)])
+setnames(chanOnlyAssimData.gages, 'streamflow', 'assim')
+
+obsModPlot <- merge(obsModPlot, chanOnlyAssimData.gages, 
+                    by.x=c("site_no", "POSIXct"), 
+                    by.y=c("site_no", "POSIXct") )
+obsModPlot.m <- melt(obsModPlot, 
+                     id.vars = c("site_no", "POSIXct"), 
+                     measure.vars = c('observed','modeled','assim'), 
+                     variable.name = 'obsMod', 
+                     value.name = 'Discharge (cms)')
+
+ggplot(obsModPlot.m) +
+  geom_point(aes(x=POSIXct, y=`Discharge (cms)`, color=obsMod), size=.5) + 
+  facet_wrap(~site_no, ncol=1, 
+             labeller=labeller(site_no=SiteLabeller)) +
+  scale_y_continuous(trans='log') +
+  scale_x_datetime(name='2013') + 
+  scale_color_discrete(name='') +
+  theme_bw(base_size=13)
+```
+
+
+```{r, eval=TRUE}
+knitr::knit_exit('ta da') ## does this work?
+```
 
