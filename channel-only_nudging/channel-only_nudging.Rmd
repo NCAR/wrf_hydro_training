@@ -25,7 +25,7 @@ output:
 #    highlight: textmate  ##fail
 #    highlight: haddock ## wierd highlighting
 ---
-<style>
+<style type="text/css">
 p.caption {
   font-size: 0.8em;
   color: Grey; 
@@ -35,6 +35,16 @@ p.caption {
   padding: 20px
 }
 
+h1.title {
+  text-align: center;
+}
+h4.author { /* Header 4 - and the author and data headers use this too  */
+  /* font-size: 18px; */
+  text-align: center;
+}
+h4.date { /* Header 4 - and the author and data headers use this too  */
+   text-align: center;
+}
 </style>
 ```{r setup, include=FALSE}
 library(knitr)
@@ -247,8 +257,8 @@ obsDischarge[, `:=`(discharge.cms=X_00060_00000*cfsToCms)]
 ```
 
 ```{r, include=FALSE}
-#save(obsDischarge, file='~/WRF_Hydro/NWC_training/channel-only_nudging.obs.Rdata')
-load('~/WRF_Hydro/NWC_training/channel-only_nudging.obs.Rdata')
+#save(obsDischarge, file='~/WRF_Hydro/NWC_training/channel-only_nudging/channel-only_nudging.obs.Rdata')
+load('~/WRF_Hydro/NWC_training/channel-only_nudging/channel-only_nudging.obs.Rdata')
 ```
 
 Plot the instantaneous observed data.
@@ -261,7 +271,8 @@ SiteLabeller <- function(site) {
   labels[site]
 }
 
-ggplot(obsDischarge) +
+#ggplotly(
+  ggplot(obsDischarge) +
   geom_point(aes(dateTime, discharge.cms, color='observed'), size=.7) +
   theme_bw(base_size=16) +
   facet_wrap(~site_no, ncol=1, 
@@ -269,6 +280,7 @@ ggplot(obsDischarge) +
   scale_y_continuous(name='Discharge (cms)') +
   scale_x_datetime(name='2013') + 
   scale_color_manual(name='', values=obsModAssimColors) 
+#)
 ```
 
 
@@ -436,8 +448,8 @@ fullModelData <- GetAllChrtout(path='.', runId='modeled')
 ```
 
 ```{r, include=FALSE}
-#save(fullModelData, file='~/WRF_Hydro/NWC_training/channel-only_nudging.fullModel.Rdata')
-load('~/WRF_Hydro/NWC_training/channel-only_nudging.fullModel.Rdata')
+#save(fullModelData, file='~/WRF_Hydro/NWC_training/channel-only_nudging/channel-only_nudging.fullModel.Rdata')
+load('~/WRF_Hydro/NWC_training/channel-only_nudging/channel-only_nudging.fullModel.Rdata')
 ```
 
 Subset the full streamflow to just the gages. We didnt do this when we read it in so that we could compare the full streamflow against the channel-only run later.
@@ -457,7 +469,8 @@ obsModPlot.m <- melt(obsModPlot, id.vars = c("site_no", "POSIXct"),
                      variable.name = 'obsMod', 
                      value.name = 'Discharge (cms)')
 
-ggplot(obsModPlot.m) +
+#ggplotly(
+  ggplot(obsModPlot.m) +
   geom_point(aes(x=POSIXct, y=`Discharge (cms)`, color=obsMod), size=.5) + 
   facet_wrap(~site_no, ncol=1, 
              labeller=labeller(site_no=SiteLabeller)) +
@@ -465,6 +478,7 @@ ggplot(obsModPlot.m) +
   scale_x_datetime(name='2013') + 
   scale_color_manual(name='', values=obsModAssimColors) +
   theme_bw(base_size=13)
+#)
 ```
 
 # Channel-Only Run
@@ -551,8 +565,8 @@ chanOnlyData <- GetAllChrtout(path='.', runId='channelOnly')
 ```
 
 ```{r, include=FALSE}
-#save(chanOnlyData, file='~/WRF_Hydro/NWC_training/channel-only_nudging.chanOnly.Rdata')
-load('~/WRF_Hydro/NWC_training/channel-only_nudging.chanOnly.Rdata')
+#save(chanOnlyData, file='~/WRF_Hydro/NWC_training/channel-only_nudging/channel-only_nudging.chanOnly.Rdata')
+load('~/WRF_Hydro/NWC_training/channel-only_nudging/channel-only_nudging.chanOnly.Rdata')
 ```
 
 The channel-only simulation matches exactly over all streamflow reaches and all times except that the forcing field `qSfcLatRunoff` is not exactly replicated in the output file. 
@@ -570,7 +584,6 @@ There really is not point in plotting the flows from this run as they are identi
 # Channel-Only Run with Nudging Data Assimilation
 Edit the Routelink file to only assimilate the upstream gage. Set the `gages` variable to `''` for the down stream gage.
 
-
 ```{r, eval=TRUE}
 ## Set the path to the current run.
 chanOnlyAssimDir <- paste0(topDir,"/run.201306-201309.channelOnly.assimUpstream")
@@ -581,7 +594,7 @@ setwd(chanOnlyAssimDir)
 opts_knit$set(root.dir = chanOnlyAssimDir)
 ```
 
-```{r, eval=TRUE}
+```{r, eval=TRUE, echo=TRUE}
 rlFileIn <- '../DOMAIN/RouteLink.nc'
 rl <- as.data.table(GetNcdfFile(rlFileIn, q=TRUE))
 # Censor the downstream gage
@@ -613,8 +626,8 @@ chanOnlyAssimData <- GetAllChrtout(path='.', runId='assim')
 ```
 
 ```{r, include=FALSE}
-#save(chanOnlyAssimData, file='~/WRF_Hydro/NWC_training/channel-only_nudging.chanOnlyAssim.Rdata')
-load('~/WRF_Hydro/NWC_training/channel-only_nudging.chanOnlyAssim.Rdata')
+#save(chanOnlyAssimData, file='~/WRF_Hydro/NWC_training/channel-only_nudging/channel-only_nudging.chanOnlyAssim.Rdata')
+load('~/WRF_Hydro/NWC_training/channel-only_nudging/channel-only_nudging.chanOnlyAssim.Rdata')
 ```
 
 
@@ -632,7 +645,7 @@ obsModPlot.m <- melt(obsModPlot,
                      variable.name = 'obsMod', 
                      value.name = 'Discharge (cms)')
 
-ggplotly(
+#ggplotly(
   ggplot(obsModPlot.m) +
   geom_point(aes(x=POSIXct, y=`Discharge (cms)`, color=obsMod), size=.5) + 
   facet_wrap(~site_no, ncol=1, 
@@ -641,7 +654,7 @@ ggplotly(
   scale_x_datetime(name='2013') + 
   scale_color_manual(name='', values=obsModAssimColors) +
   theme_bw(base_size=13)
-)
+#)
 ```
 
 
