@@ -3,12 +3,13 @@ title: "Introduction to R"
 author: "Joe Mills"
 date: "8/24/2017"
 output: 
+  #html_document
   revealjs::revealjs_presentation:
     theme: serif
     highlight: tango
     center: false
     transition: slide
-    incremental: true
+    #incremental: true
 ---
 
 ```{r setup, include=FALSE}
@@ -45,10 +46,10 @@ integer, numeric, character, logical, Date, POSIXct, ...
 
 Standard operators: 
 ```{r eval=FALSE, echo=TRUE} 
-+,*,>,<,==,!=, as.character('etc')
++,*,>,<,==,!=, ...
 ```
 
-Non-standard operator: The assignment operator '<-'
+Non-standard operator: The assignment operator ```<-```
 ```{r eval=TRUE, echo=TRUE}
 x <- 1
 y = 1
@@ -152,3 +153,9 @@ kable(packageTable)
 * Let R do the sophisticated statistics, visualizations, and reporting 
 * Use another language if need be to do the production cleaning, aggregating, and storage tasks
 
+# Additional resources
+
+* [Coursera - R programming online course](https://www.coursera.org/learn/r-programming)
+* [USGS R-package development course](https://owi.usgs.gov/R/training-curriculum/r-package-dev/)
+* [Advanced R by Hadley Wickham](http://adv-r.had.co.nz/)
+* And of course [Stackoverflow](https://stackoverflow.com/)
