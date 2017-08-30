@@ -1,11 +1,12 @@
 ---
-title: "Channel-Only & Nudging Data Assimilation"
+title: National Water Model v1.2 Channel-Only & Nudging Data Assimilation
 author: 
 - James McCreight
+- jamesmcc@ucar.edu
 - Arezoo RafieeiNasab
 - Logan Karsten
 - Joe Mills
-- '\* The Team \*'
+- '\* The Whole Team \*'
 
 date: "8/31/2017"
 output:
@@ -15,16 +16,9 @@ output:
     number_sections: true
     fig_caption: true
     theme: readable
-#    highlight: default  ##fail
     highlight: tango  ##probably the best, random promtp emphasis is not obvious
-#    highlight: pygments  ## random prompt emphasis
-#    highlight: kate  ## random prompt emphasis
-#    highlight: monochrome #blah
-#    highlight: espresso ## too much contrast, random emphasis
-#    highlight: zenburn ## not obvious random emphasis
-#    highlight: textmate  ##fail
-#    highlight: haddock ## wierd highlighting
 ---
+
 <style type="text/css">
 p.caption {
   font-size: 0.8em;
@@ -46,6 +40,7 @@ h4.date { /* Header 4 - and the author and data headers use this too  */
    text-align: center;
 }
 </style>
+
 ```{r setup, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, comment=NA)
@@ -62,19 +57,26 @@ CapFig = function(x){
 }
 ```
 
-# Purpose of this vignette
 
+# Purpose of this document
+This document introduces users of the National Water Model v1.2 to the channel-only and nudging data assimilation features. While nudging data assimilation has been available since NWM v1.0, the channel-only mode is only available with v1.2 so we focus on this version of the code. 
 
+The primary intent here is to show users how to configure and run the model using both channel-only and nudging data assimilation. The source of this document includes all code required to both run the model *and* do the complete analysis (in R) which includes generating all the figures except one. You should receive both versionsPlease contact me (jamesmcc@ucar.edu) if you would  
 
 # Background
+```{r, eval=TRUE}
+knitr::knit_exit('') ## does this work?
+```
 
 ## NWM Nudging 
-NWM nudging.
-Why Nudging?
+Data assimilation (DA) is the process of correcting or improving model (prognostic) states using observations. There are various approaches to data assimilation. Modern methods of data assimilation are typically computer intensive (ensemble-based assimilation) or human intensive (4DVar). Modern methods also have a fundamental assumption that model errors are zero-mean (and Gaussian distributed). Faced with high cost and uncertain succes of modern methods with an uncalibrated model, nudging data assimilation was picked for the NWM Initial Operating Capability. Nudging is a simple and computationally cheap method of data assimilation where an observed state is inserted into the model with some uncertainty. When the observed value is inserted into the model without uncertainty, the method is refered to as "direct insertion". Nudging works well locally to observations, both in space and time. 
+
+Away from observations, in space and time, the method has limited success. On one hand, our application applies nudging data assimilation on a network with the advantage that the corrections are propigated with the network flow. On the other hand, if no spatial or temporal smoothing of the correction is included with the nudging method, upstream errors immediately propigate past observed point with the initialization of each forecast. Various assumptions can be made to smooth the nudge (or correction) in space and/or time but these are highly parameterized and require tuning. In the NWM we have avoided the spatial smoothing and have opted to pursue some temporal-interpolation approaches. 
+
 Nudging equation. 
 Issues with nudging?
 
-
+$$e_j = \frac{\sum\limits^{N_j}_{n=1}q_n*w^2_n(j,t)*(Q_n-\hat{Q}_n)}{\sum\limits^{N_j}_{n=1}w^2_n(j,t)}$$
 
 ## Channel-only
 Currently the channel-model of the NWM is 1-way coupled to the upstream model components, it only recieves inflow. Therefore the channel can be run in a stand-alone mode. This is what we call "channel-only". The channel-only mode has 2 options: 
@@ -659,6 +661,6 @@ obsModPlot.m <- melt(obsModPlot,
 
 
 ```{r, eval=TRUE}
-#knitr::knit_exit('ta da') ## does this work?
+#knitr::knit_exit('') ## does this work?
 ```
 

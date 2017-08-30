@@ -2,12 +2,17 @@
 title: "Download and process MODIS LAI images"
 author: "Aubrey Dugger"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{MODIS Processing}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    highlight: tango  ##probably the best, random promtp emphasis is
 ---
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(comment=NA)
+```
 
 # Background
 We are using WRF-Hydro to predict streamflow for the Big Thompson USGS gage for the 2013 snowmelt period. We want to obtain MODIS LAI images for our region of interest and insert the processed images into our forcing time series so we can use dynamic LAI in future WRF-Hydro model runs.
@@ -27,8 +32,11 @@ dataPath <- '~/wrfHydroTestCases/BigThompson/'
 NOTE: These tools rely heavily on the R-Forge <a href="https://r-forge.r-project.org/projects/modis/">MODIS-R</a> package, so please see their development page and R help pages for more on the package tools and options. Currently, we are making some edits to the MODIS tool to add some capacity specific to WRF-Hydro applications. So please install the rwrfhydro version of MODIS from github (`devtools::install_github("aubreyd/modis4rwrfhydro")`). A local system <a href="http://www.gdal.org/">GDAL</a> install is also required.
 
 To start, we need to load a few libraries and then tell MODIS-R where our working directories are. If this is the first time using MODIS-R, we will also need to tell it where the local GDAL libraries live. Your GDAL pathname may vary; type "which gdalinfo" in a terminal window to find the appropriate path for your system. If gdalinfo is not found, make sure you have GDAL installed on your local system. 
-```{r}
+```{r,eval=FALSE}
 devtools::install_github("aubreyd/modis4rwrfhydro")
+```
+
+```{r}
 library(rgeos)
 library(rgdal)
 library(raster)
@@ -38,9 +46,11 @@ library(ncdf4)
 ## if gdalPath returns 1=error, then try these two lines, substiting your shell profile script as appropriate.
 # bashPath <- system('. ~/.bash_profile; echo $PATH', intern = TRUE)
 # Sys.setenv(PATH=bashPath)
-gdalPath <- sub("gdalinfo", replacement="", system("which gdalinfo", intern=TRUE))
+gdalPath <- sub("gdalinfo", replacement="", 
+                system("which gdalinfo", intern=TRUE))
 MODISoptions(localArcPath="~/wrfHydroTestCases/MODIS_ARC", 
-             outDirPath="~/wrfHydroTestCases/MODIS_ARC/PROCESSED", gdalPath=gdalPath,
+             outDirPath="~/wrfHydroTestCases/MODIS_ARC/PROCESSED",
+             gdalPath=gdalPath,
              stubbornness="low")
 ```
 

@@ -4,10 +4,17 @@ author: "Arezoo Rafieeinasab"
 date: "8/30/2017"
 output:
   html_document:
-#    theme: readable
     highlight: tango  ##probably the best, random promtp emphasis is not obvious
 ---
-
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(comment=NA)
+opts_chunk$set(prompt=TRUE)
+knit_hooks$set(
+  prompt = function(before, options, envir) {
+    options(prompt = if (options$engine %in% c('sh','bash')) '$ ' else '> ')
+})
+```
 # Mean Areal Precipitation Calculation
 
 Often times, the mean areal precipitation is desired to be compared with the flooding events at the same time. Here we have compiled a set of functions and scripts which help you to calculate the Mean Areal from any gridded data (focus here is precipitation, but could be also used for snow or other components of the model). We explain the steps of calculating the Mean Areal Precipitation for the NWM forcing data as well as Stage IV data that is used for verification purposes.
