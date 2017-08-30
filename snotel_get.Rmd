@@ -2,12 +2,22 @@
 title: "Collect SNOTEL SWE from Willow Park and compare directly to model output"
 author: "Logan Karsten"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Collect SNOTEL SWE for Willow Park and compare directly to model output}
-  %\\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    highlight: tango  ##probably the best
 ---
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(comment=NA)
+opts_chunk$set(prompt=TRUE)
+knit_hooks$set(
+  prompt = function(before, options, envir) {
+    options(prompt = if (options$engine %in% c('sh','bash')) '$ ' else '> ')
+})
+```
 
 # Background
 Pull SNOTEL SWE at Willow Park, which is located inside the Big Thompson test domain. 
@@ -16,7 +26,7 @@ SNOTEL metadata. Plots comparing the data are generated for the user.
 
 # Setup 
 Load the rwrfhydro package.
-```{r, results='hide'}
+```{r, results='hide', message=FALSE, warning=FALSE}
 library("rwrfhydro")
 ```
 
@@ -86,6 +96,9 @@ plotTitle <- paste0('Big Thompson Modeled SWE Against Observations for: ',statio
 ggplot(fileData,aes(x=POSIXct,y=value,color='Simulated')) + geom_line() + 
   geom_line(data=fileData, aes(x=POSIXct,y=obsSWE,color='Observed'),size=1.2,linetype='dashed') +
   scale_color_manual(name='Legend',values=c('black','red')) + 
-  ggtitle(plotTitle) + xlab('Date') + ylab('SWE (mm)')
+  ggtitle(plotTitle) + 
+  xlab('Date') + 
+  ylab('SWE (mm)') + 
+  theme_bw(base_size=14)
 ```
 

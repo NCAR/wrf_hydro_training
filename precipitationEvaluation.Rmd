@@ -1,19 +1,29 @@
 ---
 title: "Precipitation Evaluation"
 author: "Arezoo Rafieeinasab"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
-  ---
-  # Background
+date: "8/30/2017"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    highlight: tango  ##probably the best, random promtp emphasis is not obvious
+---
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(comment=NA)
+opts_chunk$set(prompt=TRUE)
+knit_hooks$set(
+  prompt = function(before, options, envir) {
+    options(prompt = if (options$engine %in% c('sh','bash')) '$ ' else '> ')
+})
+```
+# Background
   
   Forcing could be stored in multiple files, either in input forcing files (such as *LDASIN* or *PRECIP_FORCING* files) or in the output files (*LDASOUT*). *LDASOUT* files may contain a variable called *ACCPRCP* storing the accumulated precipitation, and the rainfall depth can be obtained by subtracting two consecutive time steps. *LDASIN* and *PRECIP_FORCING* files store rain rate in *RAINRATE* and *precip_rate* variables, respectively. This vignette serves as a short explanation on how to retrieve data and perform some basic comparisons between two sets of data.
   
   Load rwrfhydro package. 
-  ```{r  results='hide', message=FALSE, warning=FALSE}
+```{r,  results='hide', message=FALSE, warning=FALSE}
 library(rwrfhydro)
 ```
 
@@ -32,7 +42,7 @@ Global Historical Climatology Network-Daily (GHCN-D) dataset contains daily data
 ## Gauge selection
 First step is to select the gauges you want to use for verification based on some criteria. GHCN-daily contains precipitation data from different sources such as COOP or CoCoRaHS. The selection criteria can be country code, states if country is US, type of rain gauge network (for example CoCoRaHS), or a rectangle domain. 
 
-```{r eval = FALSE}
+```{r eval = TRUE}
 #setInternet2(use=FALSE) # If using windows, you may need this.
 
 # Return all the gauges within US from observation network of COOP (C) and CoCoRaHS (1)
@@ -115,7 +125,7 @@ head(prcpData)
 prcpData$value <- prcpData$value*3600
 ```
 
-### Aggregating hourly data into daily.
+## Aggregating hourly data into daily.
 
 Each GHCN gauge has a unique reporting time which the daily data is been calculated based on that. The reporting time is archived in the csv files and is retrieved when calling `GetGhcn2` function (you will not get the reporting time using `GetGhcn`). We need to add the reporting time for each point which would be the base for daily aggregation. If there will not be any `reportTime` in `sg` columns, then it uses the default which is 0700 AM. 
 
@@ -140,7 +150,7 @@ dailyData <- CalcDailyGhcn(sg = sg,prcp = prcpData)
 head(dailyData)
 ```
 
-### Comparing daily QPE/QPF versus GHCN-D
+## Comparing daily QPE/QPF versus GHCN-D
 
 Final step if to find the common data between the two dataset (precipitation time series (`dailyData`) and the observed GHCN-D (`obsPrcp`)). If you have a big dataset, it is recommended to use data.table instead of data.frame which is incredibly faster.     
 
@@ -184,7 +194,7 @@ stat <- CalcStatCont(DT = common, obsCol = "dailyGhcn", modCol = "dailyPrcp" ,
 stat$stat
 ```
 
-### Calculate statistics over RFCs
+## Calculate statistics over RFCs
 
 Sometime the verification result at the gauge location is not desired and we want to find the performance of a model over a domain or polygon. If you want to calculate statistics over RFC's, then use `GetRfc` function. One can find out a gauge (point) falls in which RFC using `GetRfc`. You simply feed a dataframe having at least two columns of `latitude` and `longitude` and this functions adds a column to a dataframe with RFC name.
 
@@ -213,12 +223,12 @@ stat$stat
 
 Here, we had only one gage falling in the "MBRFC" so the stats would be the same. But if you have more than one gage, it will group all the pairs within one rfc and return the statistics for that rfc.
 
-### Calculate statistics over polygons
+## Calculate statistics over polygons
 
 One can also calculate the statistics over any desired polygon shapefile. First, you need to use `GetPoly` function to find each point falls into which polygon. `GetPoly` takes a dataframe containing at least two fields of `latitude` and `longitude`, overlays the points using the `SpatialPolygonDataFrame` function and return the requested attributes from the polygon. You can use the available `SpatialPolygon*` loaded into memory or provide the address to the location of a polygon shapefile and the name of the shapefile. 
 The `clipped_HUC12` shapefile is provided with the test case. The polygon extend is more than the Big Thompson case study. 
 
-```{r results="hide", message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # add HUC12 ids
 polygonAddress <- paste0(path.expand(fcPath), "/polygons")
 sg <- GetPoly (sg,  polygonAddress = polygonAddress,
@@ -236,12 +246,12 @@ common <- merge(common,sg[, c("siteIds","HUC12")],
 # calculate statistics using grouping by HUC12
 stat <- CalcStatCont(DT = common, obsCol = "dailyGhcn", modCol = "dailyPrcp", 
                      obsMissing = -999.9, groupBy = "HUC12", plot.it = FALSE)
-stat$stat
+print(stat$stat)
 ```
 
 Since there is only oen gage, the there will be only one HUC12 category here.
 
-### Calculate categorical statistics
+## Calculate categorical statistics
 
 You can also calculate some of the categorical statistics using `CalcStatCategorical` function. It accepts both categorical variable and continuous ones.
 If the data is actually categorical, variable `category` should be defined. The elements in `category` will be used as `YES` and `NO` in contingency table. If the data is numeric, then a set of thresholds should be defined. Values exceeding the threshold would be flagged as `YES` and the values below the threshold are considered `NO`. 
@@ -252,6 +262,6 @@ The grouping option is similar to `CalcStatCont`.
 # calculate categorical statistics
 stat <- CalcStatCategorical(DT = common, obsCol = "dailyGhcn", modCol = "dailyPrcp", 
                             obsMissing = -999.9, groupBy = "statArg", threshold = c(1,5))
-stat
+print(stat)
 ```
 
