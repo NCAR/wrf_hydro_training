@@ -6,9 +6,11 @@ author:
 - Arezoo RafieeiNasab
 - Logan Karsten
 - Joe Mills
-- '\* The Whole Team \*'
+- '\* The NCAR Team \*'
 
 date: "8/31/2017"
+header-includes:
+   - \usepackage{asmmath}
 output:
   html_document:
     toc: true
@@ -43,7 +45,7 @@ h4.date { /* Header 4 - and the author and data headers use this too  */
 
 ```{r setup, include=FALSE}
 library(knitr)
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, comment=NA)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment=NA)
 #Determine the output format of the document
 outputFormat   = opts_knit$get("rmarkdown.pandoc.to")
 #Figure and Table Caption Numbering, for HTML do it manually
@@ -59,33 +61,78 @@ CapFig = function(x){
 
 
 # Purpose of this document
-This document introduces users of the National Water Model v1.2 to the channel-only and nudging data assimilation features. While nudging data assimilation has been available since NWM v1.0, the channel-only mode is only available with v1.2 so we focus on this version of the code. 
+This document introduces users of the National Water Model v1.2 to the channel-only and nudging data assimilation features. While nudging data assimilation has been available since NWM v1.0, the channel-only mode is only available with v1.2. We focus on using this version of the code. 
 
-The primary intent here is to show users how to configure and run the model using both channel-only and nudging data assimilation. The source of this document includes all code required to both run the model *and* do the complete analysis (in R) which includes generating all the figures except one. You should receive both versionsPlease contact me (jamesmcc@ucar.edu) if you would  
+The primary intent here is to show users how to configure and run the model using both channel-only and nudging data assimilation. The source of this document includes all code required to both run the model *and* do the complete analysis (in R) which includes generating all the figures except one. From the source I create two versions of the document: 
+
+1. Redacted R codes: for emphasis on running the model. You may notice reference to missing R code chunks.
+2. Full R codes: includes complete R analysis which generated this document.
+
+You should receive both versions of the document. Please contact me (jamesmcc@ucar.edu) if you need a version you dont have.
 
 # Background
-```{r, eval=TRUE}
-knitr::knit_exit('') ## does this work?
-```
 
 ## NWM Nudging 
-Data assimilation (DA) is the process of correcting or improving model (prognostic) states using observations. There are various approaches to data assimilation. Modern methods of data assimilation are typically computer intensive (ensemble-based assimilation) or human intensive (4DVar). Modern methods also have a fundamental assumption that model errors are zero-mean (and Gaussian distributed). Faced with high cost and uncertain succes of modern methods with an uncalibrated model, nudging data assimilation was picked for the NWM Initial Operating Capability. Nudging is a simple and computationally cheap method of data assimilation where an observed state is inserted into the model with some uncertainty. When the observed value is inserted into the model without uncertainty, the method is refered to as "direct insertion". Nudging works well locally to observations, both in space and time. 
+Data assimilation (DA) is the process of correcting or improving model (prognostic) states using observations. There are several motivations for performing DA. The most common, as done within the NWM analysis and assimilation cycle, is improving model simulation and forecast initital conditions. 
 
-Away from observations, in space and time, the method has limited success. On one hand, our application applies nudging data assimilation on a network with the advantage that the corrections are propigated with the network flow. On the other hand, if no spatial or temporal smoothing of the correction is included with the nudging method, upstream errors immediately propigate past observed point with the initialization of each forecast. Various assumptions can be made to smooth the nudge (or correction) in space and/or time but these are highly parameterized and require tuning. In the NWM we have avoided the spatial smoothing and have opted to pursue some temporal-interpolation approaches. 
+There are various approaches to data assimilation. Modern methods of data assimilation are typically computer intensive (ensemble-based assimilation) and/or human intensive (4DVar). Modern methods also have a fundamental assumption that model errors are zero-mean (and Gaussian distributed). Faced with high cost and uncertain succes of modern methods with an uncalibrated model as of V1.0, nudging data assimilation was picked for the NWM Initial Operating Capability. Nudging is a simple and computationally cheap method of data assimilation where an observed state is inserted into the model with some uncertainty. When the observed value is inserted into the model without uncertainty, the method is refered to as "direct insertion". Nudging works well locally to observations, both in space and time. 
 
-Nudging equation. 
-Issues with nudging?
+Away from observations, in space and time, the method has limited success. On one hand, our application applies nudging data assimilation on a network with the advantage that the corrections are propigated with the network flow. On the other hand, if little spatial or temporal smoothing of the correction is included with the nudging method, upstream errors immediately propigate past observed point with the initialization of each forecast. Various assumptions can be made to smooth the nudge (or correction) in space and/or time but these are highly parameterized and require tuning. In the NWM we have avoided spatial smoothing and have opted to pursue some temporal-interpolation approaches. 
+
+The basic nudging equation solves $e_j$, the nudge on a spatial element $j$. 
+<!-- jlm-comment: My AMS 2016 talk: https://drive.google.com/drive/u/0/folders/0B27jTgncDiX1OE9VWGdXRGZaWFU) -->
 
 $$e_j = \frac{\sum\limits^{N_j}_{n=1}q_n*w^2_n(j,t)*(Q_n-\hat{Q}_n)}{\sum\limits^{N_j}_{n=1}w^2_n(j,t)}$$
 
+The numerator is the sum, over the $N$ observations affecting element $j$, of the product of each observations' quality coefficient, $q_n$, the model error, $Q_n - \hat(Q_n)$, and the squared weights. The squared weights is where all the action happens. The weights determine how the nudge is interpolated in both space and time. The weights term $w_n(j,t)$ in the above equation is the weights solved for observation $n$ as a function of both space, $j$, and time, $t$. It is expressed as the product of separate spatial and temporal weight terms: 
+
+$$
+w_n(j,t) = w_{n_s}(j,t) * w_{n_t}(j,t)
+$$
+
+The temporal weight term takes the following specific piecewise function in the NWM. 
+$$
+w_{n_t}(j,t) =
+\left\{
+\begin{array}{ll}
+      10^{10} * (1/10)^\frac{\mid t - \hat{t} \mid }{tau_j/10} & \text{if } \mid t-\hat{t} \mid \le tau_j \\
+      e^{-(t - \hat{t})/a } & \text{if } t-\hat{t} > tau_j \\
+      0 & \text{otherwise} \\
+\end{array} 
+\right.
+$$
+
+
+$$
+w_{n_s}(j) =
+\left\{
+\begin{array}{ll}
+      \frac{R_n^2-d_{jn}^2}{R_n^2+d_{jn}^2} & \text{if } R^2 > d_{jn}^2 \\
+      0 & \text{otherwise} \\
+\end{array} 
+\right.
+$$
+
+```{r, eval=TRUE, echo=FALSE}
+#paramTable <- data.frame(
+#kable(
+```
+
+The parameters specified in v1.2 of the model are `tau=15` minutes, `a=120` minutes, and `R=.25` meters for all gages in CONUS. The very short `R` means that nudging is applied locally to the reach where the observation is associated. The `tau=15` means that within 15 minutes of an observation we are heavily weightin the observation and `a=120` means that nudging to the observation relaxes with e-folding time of two hours moving away from the observation.
+
+There are some extra details of nudging which were implemented for v1.2, but these are not described here in any details. We will see some of these options when we look at the nudging namelist below but they will not be details. Please contact me for information and discussion. 
+
 ## Channel-only
-Currently the channel-model of the NWM is 1-way coupled to the upstream model components, it only recieves inflow. Therefore the channel can be run in a stand-alone mode. This is what we call "channel-only". The channel-only mode has 2 options: 
+Currently the NWM channel-model is 1-way coupled to the upstream model components, it only recieves inflow. Therefore the channel can be run in a stand-alone mode. This is what we call "channel-only". The channel-only mode has 2 options: 
 
   * Channel (including nudging) + lakes
-  * Channel + lakes + ground water buckets
+  * Channel (including nudging) + lakes + ground water buckets
 
-NWM v1.2 operational `channel_rt` output contains the forcing fields for running the NWM in channel-only mode. We have not really run this in small basins to date and are still refining the NWM subset scripts necessary to do this. Restart files are also necessary.
+NWM v1.2 operational `channel_rt` output contains the forcing fields for running the NWM in channel-only mode. For this training it would have been desirable to demonstrate running the full NWM or a "cut-out" domain with the operational v1.2 "channel_rt" files. Where the full CONUS model is typically run with ~800 cores, the CONUS channel-only model can run with about 80 cores. Use of more than a single core was precluded by the hardware-software available in the class. To date, we have also only run channel-only on a few small basins and we are still refining the NWM subset scripts necessary to setup channel-only runs on v1.2 cut-out domains. This should be ready shortly, so please be in contact if you would like to use this capability. One issue with doing these runs is getting the operational Hydro restart (HYDRO_RST) files, but this hurdle should be surmountable.
 
+```{r, eval=TRUE}
+#knitr::knit_exit('') ## does this work?
+```
 
 
 # Setup and Conventions
@@ -135,9 +182,10 @@ topDir=~/wrfHydroTestCases/04233300
 cd $topDir
 ```
 
-
+*Note that all runs, forcings, observations, parameters, and everything else you need are already included with the runs on the VM. All runs are in their completed state so that analysis cna be performed on the runs without needing to run them.*
 
 #Experimental Design
+
 
 To demonstrate the channel-only mode of the NWM and the streamflow nudging capabilites, we'll run three experiments:
 
@@ -273,7 +321,7 @@ SiteLabeller <- function(site) {
   labels[site]
 }
 
-#ggplotly(
+ggplotly(
   ggplot(obsDischarge) +
   geom_point(aes(dateTime, discharge.cms, color='observed'), size=.7) +
   theme_bw(base_size=16) +
@@ -282,9 +330,18 @@ SiteLabeller <- function(site) {
   scale_y_continuous(name='Discharge (cms)') +
   scale_x_datetime(name='2013') + 
   scale_color_manual(name='', values=obsModAssimColors) 
-#)
+)
 ```
 
+## Forcing data and spinup
+The atmospheric forcing data use in these experiments is from NLDAS2. We will examine this briefly in the first experiment (the only one to use NLDAS for a run).
+
+To obtain a reasonable initial state, the model was spun up on this domain using NLDAS2 forcing data from 2007-09-01 to 2013-06-01. The final state of the spinup model was stored in the 2 restart files: 
+```{r, engine='bash', eval=TRUE, echo=TRUE}
+ls -s restart/
+```
+
+The spinup run was not run with nudging DA, so no nudging restart file is used or needed to restart the nudging run in the 3rd experiment.
 
 # Compile NWM (with nudging)
 Change directories (cd) to the model code directory. 
@@ -324,7 +381,7 @@ export WRFIO_NCD_LARGE_FILE_SUPPORT=1
 export HYDRO_REALTIME=1
 
 ### turn on wcoss flag 
-export NCEP_WCOSS=1
+export NCEP_WCOSS=0
 
 ### turn nudging off
 export WRF_HYDRO_NUDGING=1
@@ -333,7 +390,7 @@ export WRF_HYDRO_NUDGING=1
 Then run the configure script 
 
 ```{r, engine='bash', eval=FALSE, echo=TRUE}
-./configure 6
+./configure 6 ## 6 is GNU with mpi
 ```
 
 and compile the model with NoahMP
@@ -373,9 +430,75 @@ In the channel-only runs we have `FORC_TYP=9` and this means that fluxes contain
 grep -A5 '! Options to output channel' hydro.namelist.201306-201309
 ```
 
-Here we are not running the bucket model. If we also wanted to run the bucket model as part of the channel-only run then we would need `output_channelBucket_influx = 1` in this full-model run and `FORC_TYP=10` in the channel-only run in the next section.
+Here we are not running the bucket model. If we also wanted to run the bucket model as part of the channel-only run then we would need `output_channelBucket_influx = 2` in this full-model run and `FORC_TYP=10` in the channel-only run in the next section.
 
-## Caveates of outputting channel-fluxes... 
+## Caveates of outputting channel-fluxes 
+Note above that when selecting a non-zero `output_channelBucket_influx` from the `hydro.namelist` you should read the supplied advice
+
+```
+! Nonzero choice requires that out_dt above matches NOAH_TIMESTEP in namelist.hrldas.
+```
+
+Curently the model is configured to output the desired fluxes for channel-only forcing at the frequency of the output, which is specified by the `out_dt` option in `hydro.namelist`. Because these have to force the channel model at the frequency at which the LSM forced the hydro model, the `out_dt` must match `NOAH_TIMESTEP` which is specified in `namelist.hrldas`. If this is not true, the model will fail with a error that these two settings are in conflict when `output_channelBucket_influx` is non-zero. There exists the ability to relax this requirement, but this is the current state of the model. Note that for example, the medium-range NWM forecast cannot supply channel_rt files with channel-only forcing because `out_dt` (3hr) is less frequent than the `NOAH_TIMESTEP` (1hr).
+
+## Nudging namelist
+In the hydro.namelist file, there is a separate namelist which sets all the run-time options for nudging. 
+```
+&NUDGING_nlist
+
+! Path to the "timeslice" observation files.
+timeSlicePath = "./nudgingTimeSliceObs/"
+
+nudgingParamFile = "DOMAIN/nudgingParams.nc"
+
+!netwkReExFile = "DOMAIN/netwkReExFile.nc"
+
+! Nudging restart flie = "nudgingLastObsFile"
+! nudgingLastObsFile defaults to '', which will look for nudgingLastObs.YYYY-mm-dd_HH:MM:SS.nc
+!   **AT THE INITALIZATION TIME OF THE RUN**. Set to a missing file to use no restart.
+!nudgingLastObsFile = '/a/nonexistent/file/gives/nudging/cold/start'
+
+!! Parallel input of nudging timeslice observation files?
+readTimesliceParallel = .TRUE.
+
+! temporalPersistence defaults to true, only runs if necessary params present.
+temporalPersistence = .FALSE.
+
+! The total number of last (obs, modeled) pairs to save in nudgingLastObs for 
+! removal of bias. This is the maximum array length. (This option is active when persistBias=FALSE)
+! (Default=960=10days @15min obs resolution, if all the obs are present and longer if not.)
+nLastObs = 960
+
+! If using temporalPersistence the last observation persists by default. 
+! This option instead persists the bias in some period before the last observation. 
+persistBias = .FALSE.
+
+! ** AnA (FALSE)  vs Forecast (TRUE) bias persistence. **
+! If persistBias: Does the window for calculating the bias end at model init time (=t0)?
+! FALSE = window ends at model time (moving), TRUE = window ends at init=t0(fcst) time. 
+! (If commented out, Default=FALSE)
+biasWindowBeforeT0 = .FALSE.
+
+! If persistBias: Only use this many last (obs, modeled) pairs. (If Commented out, Default=-1*nLastObs)
+! > 0: apply an age-based filter, units=hours.
+! = 0: apply no additional filter, use all available/usable obs.
+! < 0: apply an count-based filter, units=count
+maxAgePairsBiasPersist = -960
+
+! If persistBias: The minimum number of last (obs, modeled) pairs, with age less than
+! maxAgePairsBiasPersist, required to apply a bias correction. (default=8)
+minNumPairsBiasPersist = 8
+
+! If persistBias: give more weight to observations closer in time? (default=FALSE)
+invDistTimeWeightBias = .TRUE.
+
+! If persistBias: "No constructive interference in bias correction?", Reduce the bias adjustment
+! when the model and the bias adjustment have the same sign relative to the modeled flow at t0?
+! (default=FALSE)
+noConstInterfBias = .FALSE.
+
+/
+```
 
 
 ## Run
@@ -395,12 +518,12 @@ ls -ld namelist.hrldas hydro.namelist FORCING
 
 Bring over the model binary.
 ```{r, engine='bash', eval=FALSE, echo=TRUE}
-ln -sf ~/wrf_hydro_nwm/trunk/NDHMS/Run/wrf_hydro.exe .
+ln -sf ~/wrf_hydro_nwm/trunk/NDHMS/Run/wrf_hydro.nudging.exe .
 ```
 
 Launch the run.
 ```{r, engine = 'bash', eval = FALSE, echo=TRUE}
-mpiexec -n 1 ./wrf_hydro.nudging.exe
+mpiexec -n 1 ./wrf_hydro.nudging.exe > full_model.stdeo 2>&1
 ```
 
 ## Analysis
@@ -471,16 +594,20 @@ obsModPlot.m <- melt(obsModPlot, id.vars = c("site_no", "POSIXct"),
                      variable.name = 'obsMod', 
                      value.name = 'Discharge (cms)')
 
-#ggplotly(
+# Simple way to format the y-axis labels
+num2Decimals <- function(x, nPlaces=2) round(x*10^nPlaces)/(10^nPlaces)
+
+ggplotly(
   ggplot(obsModPlot.m) +
   geom_point(aes(x=POSIXct, y=`Discharge (cms)`, color=obsMod), size=.5) + 
   facet_wrap(~site_no, ncol=1, 
              labeller=labeller(site_no=SiteLabeller)) +
-  scale_y_continuous(trans='log') +
+  scale_y_continuous(trans='log', labels=num2Decimals, name='Discharge (cms)') +
   scale_x_datetime(name='2013') + 
   scale_color_manual(name='', values=obsModAssimColors) +
-  theme_bw(base_size=13)
-#)
+  theme_bw(base_size=13) +
+  theme(axis.text.y = element_text(angle = 30, size = 10)) 
+)
 ```
 
 # Channel-Only Run
@@ -505,14 +632,16 @@ grep INDIR namelist.hrldas.201306-201309.channelOnly
 
 Note that I've symlinked the full-model run directory into the channel-only run directory.
 ```{r, engine = 'bash', eval = TRUE, echo=TRUE}
-ls -l run.201306-201309.channelOnly/run.201306-201309.fullModel
+ls -ld run.201306-201309.channelOnly/run.201306-201309.fullModel
 ```
 
+Let's take a look at the `CHRTOUT` files which will force the model:
 ```{r, engine = 'bash', eval = TRUE, echo=TRUE}
 ls -l run.201306-201309.channelOnly/run.201306-201309.fullModel/20130601*CHRTOUT* | head
 ```
+Note that if you are using NWM output, you must transform the NWM `channel_rt` file names to match the above `CHRTOUT` file name format. This is typically done via symlinks, though it requires scripting a bit of annoying math. 
 
-Let's take a look at the contents of the files. Since some (windows) systems may not have the command line `ncdump` utility, we'll take a look using `rwrfhydro::ncdump`.
+Let's take a quick look at the contents of a `CHRTOUT` files. Since some (windows) systems may not have the command line `ncdump` utility, we'll take a look using `rwrfhydro::ncdump`.
 
 ```{r, eval = TRUE, echo=TRUE}
 ncdump('run.201306-201309.channelOnly/run.201306-201309.fullModel/201306010100.CHRTOUT_DOMAIN1')
@@ -543,11 +672,11 @@ ls -ld namelist.hrldas hydro.namelist
 
 Bring over the model binary.
 ```{r, engine='bash', eval=FALSE}
-ln -sf ~/wrf_hydro_nwm/trunk/NDHMS/Run/wrf_hydro.exe .
+ln -sf ~/wrf_hydro_nwm/trunk/NDHMS/Run/wrf_hydro.nudging.exe .
 ```
 
 ```{r, engine = 'bash', eval = FALSE, echo=TRUE}
-mpiexec -n 1 ./wrf_hydro.nudging.exe
+mpiexec -n 1 ./wrf_hydro.nudging.exe > channel_only.stedo 2>&1
 ```
 
 ## Analysis
@@ -573,7 +702,10 @@ load('~/WRF_Hydro/NWC_training/channel-only_nudging/channel-only_nudging.chanOnl
 
 The channel-only simulation matches exactly over all streamflow reaches and all times except that the forcing field `qSfcLatRunoff` is not exactly replicated in the output file. 
 
-```{r, eval=TRUE}
+```{r, eval=TRUE, echo=TRUE}
+# Since we named streamflow to 'channelOnly', change it to 'modeled' 
+# to match the name in the fullModelData data.frame.
+setnames(chanOnlyData, 'channelOnly', 'modeled')
 for(vv in names(chanOnlyData)) print(paste(vv,':',identical(fullModelData[[vv]], chanOnlyData[[vv]])))
 vv='qSfcLatRunoff'
 print(vv)
@@ -583,9 +715,10 @@ print(summary(fullModelData[[vv]]-chanOnlyData[[vv]]))
 
 There really is not point in plotting the flows from this run as they are identical to the flows plotted for the full-model run. This section was intended to show how to setup a channel run from a full-model run and demonstrate that the two are identical for channel-states. 
 
-# Channel-Only Run with Nudging Data Assimilation
-Edit the Routelink file to only assimilate the upstream gage. Set the `gages` variable to `''` for the down stream gage.
+# Channel-Only with DA Run
+## Setup
 
+We will change working directory to this new run directory
 ```{r, eval=TRUE}
 ## Set the path to the current run.
 chanOnlyAssimDir <- paste0(topDir,"/run.201306-201309.channelOnly.assimUpstream")
@@ -596,15 +729,25 @@ setwd(chanOnlyAssimDir)
 opts_knit$set(root.dir = chanOnlyAssimDir)
 ```
 
+This is the channel-only run with data assimilation. Nearly all the setup should be identical to the channel-only run without assimilation, but with a few differences for the DA. 
+
+### Routelink edits
+The experimental setup is to assimilate observations at the upstream gage in the domain but not at the downstream gage. We will need to edit the Routelink file to make this happen. Let's look at the Routelink file to see what gages are currently available for assimilation within the domain. 
 ```{r, eval=TRUE, echo=TRUE}
 rlFileIn <- '../DOMAIN/RouteLink.nc'
 rl <- as.data.table(GetNcdfFile(rlFileIn, q=TRUE))
+table(rl$gages)
+```
+
+The above shows that there are 3 gages on this domain and the remaining 154 reaches have no gage association. (Note that the strings are 15-characters wide and often the R `trimws()` is useful to work with them.) One of these gages, 04234000, is not above the basin outlet gage 04233300 so we dont really need to worry about it. However we do not want to assimilate at 04233300 itself so that we can evaluate the impact the value of the upstream assimilation at that point. This means we need to set the `gages` variable to `''` for the down stream gage.
+
+```{r, eval=TRUE, echo=TRUE}
 # Censor the downstream gage
 whDownstream <- which(trimws(rl$gages)=='04233300')
 rl$gages[whDownstream] <- formatC('', width=15)
 ```
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo=TRUE}
 rlFileOut <- AddRouteLinkGage(rlFileIn, rl$gages, rl$link, 'assimUpstreamOnly')
 ```
 
@@ -618,11 +761,125 @@ rl2 <- as.data.table(GetNcdfFile(rlFileOut, q=TRUE))
 identical(rl, rl2)
 ```
 
-Edit the hydro.namelist to use the new `Routelink.assimUpstreamOnly.nc` file.
+Now make sure to edit the hydro.namelist to use the new `Routelink.assimUpstreamOnly.nc` file.
 ```{r, engine='bash', eval=TRUE, echo=TRUE}
 grep -i route_link_f hydro.namelist
 ```
 
+### Time slice file generation
+Of course, if we want to assimilate observations, we need to make the observations available to the model. All these observations are provided for you here, but in case you need to make your own, the code is included here. The NWM has its own python-based workflow for pull all available observations from NWIS and creating timeslice files. These timeslices can be use other runs, including small domains. For research runs where older data you may needed, you may need to construct your own time slice files. The following code shows how to get streamflow observations from USGS NWIS and how to write them to the "time slice" format used by the model. The files are netcdf with certain assumptions. 
+
+```{r, eval=FALSE}
+## This code is repeated from above, where we pulled in the observations.
+siteNumber <- c("04233300", "04233286")
+parameterCd <- "00060"  # Discharge
+startDate <- "2013-06-01"
+endDate <- "2013-10-01"
+obsDischarge <- dataRetrieval::readNWISuv(siteNumber, parameterCd, startDate, endDate)
+obsDischarge <- as.data.table(obsDischarge)
+cfsToCms <- 1/35.31466621266132
+obsDischarge[, `:=`(discharge.cms=X_00060_00000*cfsToCms)]
+```
+
+As mentioned, the Fortran code requires the gage identifiers to be 15-character wide string variables. This is how to convert trimmed strings to be 15-characters wide with leading blanks
+```{r, eval=FALSE}
+# reformat the name of th gauge to 15 character
+discharge$site_no <- formatC(discharge$site_no, width=15)
+```
+
+The observations require an associated quality level which is a value in `[0,1]` with 0 indicating "completely uncertain" and 1 indicating "completely certain" (see $q_n$ in the nudging equation above). Here is the crude quality assignment we will use. 
+```{r, eval=FALSE}
+# add the quality 
+Qc <- function(dataDf) {
+  ## assume the worst and then recover what fits out mental model of this chaos.
+  dataDf$quality <- dataDf$discharge.cms * 0
+  ## why would any streams with no flow be gaged?? Then again, drought. IT's a really dicey value,
+  ## JLM also limit maximum flows to approx twice what I believe is the largest gaged flow
+  ## on MS river *2
+  ## http://nwis.waterdata.usgs.gov/nwis/peak?site_no=07374000&agency_cd=USGS&format=html
+  ## baton rouge 1945: 1,473,000cfs=41,711cms
+  ## multiply it roughly by 2
+  
+  isValidFlow <- dataDf$discharge.cms > 0 & dataDf$discharge.cms < 90000
+  wh100 <- which(isValidFlow)
+  if(length(wh100)) dataDf$quality[wh100] <- 100
+}
+discharge$quality <- Qc(discharge)
+```
+
+The file also includes a `query_time` variable. This variable indicates when the value was obtained from NWIS. It is not used internally by the model, so it is somewhat optional but can prove helpful when trying to determine updates to time slice files.
+```{r, eval=FALSE}
+# add query time to the data
+queryTime <- Sys.time()
+attr(queryTime, "tzone") <- "UTC"
+discharge$queryTime <- queryTime   # add the query time
+```
+
+The terminology "time slice" comes from the fact that we need to discretize time into "slices". The model is designed to let this vary (though the option is not exposed, it is currently hard coded). Because the vast majority of gages reporting to NWIS have 15 minute frequency, this was the natural choice for the time slice resolution for the NWM. (Flows also rarely vary at shorter timescales). By selecting this resolution, no more than one observation can be use during any 15 minute period. However it's actual reporting time is used during the nudging. For 15 minute resolution, the files are stampped "00", "15", "30", and "45". The data in the files are in ±7.5 minute windows centered on these time stamps. To assign our raw data to a unique timeslice file, we need to calculate which slice it belongs to.
+
+```{r, eval=FALSE}
+# This function is slightly different than the one currently available in rwrfhydro 
+RoundMinutes <- function (POSIXct, nearest = 5) {
+  if ((60%%nearest) != 0)
+    warning(paste0("The nearest argument (passed: ", nearestMin,
+                   ") is mean to divide 60 with no remainder."), immediate. = TRUE)
+  nearestInv <- 1./nearest
+  theMin <- as.numeric(format(POSIXct, "%M")) + as.numeric(format(POSIXct, "%S"))/60
+  floorDiff <- (theMin - nearest * (floor(theMin/nearest))) / nearest # added by Arezoo
+  whFloor <- which(floorDiff < 0.5)
+  roundMin <- (ceiling(theMin * nearestInv)/nearestInv)
+  roundMin[whFloor] <- (floor(theMin * nearestInv)/nearestInv)[whFloor]
+  diffMin <- roundMin - theMin
+  lubridate::floor_date(POSIXct, "hour") + lubridate::minutes(floor(roundMin))
+}
+discharge$dateTimeRound <- format(RoundMinutes(discharge$dateTime,nearest=15), '%Y-%m-%d_%H:%M:%S')
+```
+
+Finally, loop through the times and and write the data into time slice files.
+```{r, eval=FALSE}
+outPath <- "nudgingTimeSliceObs/"
+for (i in sort(unique(discharge$dateTimeRound))) {
+  print(i)
+  WriteNcTimeSlice(subset(discharge,dateTimeRound == i),
+                   outPath=outPath,
+                   sliceResolution = 15)
+}
+```
+
+## Run
+Here all the setup from `$topDir` are linked, just check the namelists are what we are expecting.
+```{r, engine='bash', eval=TRUE, echo=TRUE}
+ls -ld namelist.hrldas hydro.namelist
+```
+
+Bring over the model binary.
+```{r, engine='bash', eval=FALSE, echo=TRUE}
+ln -sf ~/wrf_hydro_nwm/trunk/NDHMS/Run/wrf_hydro.nudging.exe .
+```
+
+```{r, engine = 'bash', eval = FALSE, echo=TRUE}
+mpiexec -n 1 ./wrf_hydro.nudging.exe  > channel_only_assim.stdeo 2>&1
+```
+
+Note the nudging restart files which were created by this run. The spinup was not run with nudging, so no nudging restart was used at the beginning of the run. If you need to restart a run that was carried out with nudging, you'll need to include the nudging restart file along with the other model restart files. The nudging restart files output look like this.
+```{r, engine='bash', echo=TRUE, eval=TRUE}
+ls nudgingLastObs.2013-* | tail
+```
+
+These are provided slightly differently than the other model restart files. The advice is given in the nudging namelist part of the `hydro.namelist` file:
+```
+! nudgingLastObsFile defaults to '', which will look for nudgingLastObs.YYYY-mm-dd_HH:MM:SS.nc
+!   **AT THE INITALIZATION TIME OF THE RUN**. Set to a missing file to use no restart.
+!nudgingLastObsFile   = 'notAFile.junk'
+```
+So you have the luxury of 
+
+* Not specifying a file if you want one at restart time
+* Specifying a different arbitrary file as you like.
+
+
+## Analysis
+Bring in the data from the run.
 ```{r, eval=FALSE}
 chanOnlyAssimData <- GetAllChrtout(path='.', runId='assim')
 ```
@@ -647,20 +904,17 @@ obsModPlot.m <- melt(obsModPlot,
                      variable.name = 'obsMod', 
                      value.name = 'Discharge (cms)')
 
-#ggplotly(
+ggplotly(
   ggplot(obsModPlot.m) +
   geom_point(aes(x=POSIXct, y=`Discharge (cms)`, color=obsMod), size=.5) + 
   facet_wrap(~site_no, ncol=1, 
              labeller=labeller(site_no=SiteLabeller)) +
-  scale_y_continuous(trans='log') +
+  scale_y_continuous(trans='log', labels=num2Decimals, name='Discharge (cms)') +
   scale_x_datetime(name='2013') + 
   scale_color_manual(name='', values=obsModAssimColors) +
-  theme_bw(base_size=13)
-#)
+  theme_bw(base_size=13) +
+  theme(axis.text.y = element_text(angle = 30, size = 10))
+)
 ```
 
-
-```{r, eval=TRUE}
-#knitr::knit_exit('') ## does this work?
-```
 
