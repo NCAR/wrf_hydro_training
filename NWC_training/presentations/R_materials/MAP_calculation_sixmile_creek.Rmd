@@ -1,0 +1,137 @@
+---
+title: "MAP Calculation"
+author: "Arezoo Rafieeinasab"
+date: "8/30/2017"
+output:
+  html_document:
+    highlight: tango  ##probably the best, random promtp emphasis is not obvious
+---
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(comment=NA)
+opts_chunk$set(prompt=TRUE)
+knit_hooks$set(
+  prompt = function(before, options, envir) {
+    options(prompt = if (options$engine %in% c('sh','bash')) '$ ' else '> ')
+})
+```
+# Mean Areal Precipitation Calculation
+
+Often times, the mean areal precipitation is desired to be compared with the flooding events at the same time. Here we have compiled a set of functions and scripts which help you to calculate the Mean Areal from any gridded data (focus here is precipitation, but could be also used for snow or other components of the model). We explain the steps of calculating the Mean Areal Precipitation for the NWM forcing data as well as Stage IV data that is used for verification purposes.
+
+Load the rwrfhydro package. 
+```{r, results='hide', message=FALSE, warning=FALSE}
+library(rwrfhydro)
+```
+The MAP calculation functions are written recently and may not be available in the rwrfhydro version you are using. In that case, please source the following file which has the necessary functions to calculate the Mean Areal values.
+
+```{r}
+source("Calc_Mean_Areal.R")
+```
+
+We'll also define the model files we need.
+```{r}
+forcFile = "~/wrfHydroTestCases/04233300/FORCING/2013092121.LDASIN_DOMAIN1"
+routelinkFile <- "~/wrfHydroTestCases/04233300/DOMAIN/RouteLink.nc"
+spatialWeightFile <- "~/wrfHydroTestCases/04233300/DOMAIN/spatialweights.nc"
+```
+
+The following steps are taken when calculating the MAP values. First the mean areal precipitation is calculated over each NHD catchment (there are about 2.7 million of those catchments in US). To do that, you need the sptial weight file. For example, 
+
+```{r eval = TRUE}
+rain <- rwrfhydro::ncdump(forcFile, "RAINRATE", quiet = TRUE)
+meanP <- CalcMeanAreal(spatialWeightFile, rain)
+```
+
+Then we need to aggregate these catchments to the contributing area of a given gage. To be computationally efficient, we first divide the total area to what we call intervening areas. The intervening area for a given gage is all the NHD catchment between the desired gage and the immediate upstream gages. So they are the catchments with reaches draining to the desired gage without passing through any other gage. Then we calculate the mean areal precipitation over the contributing area. To perform this calculation, one need the list of all the upstream gages of a given gage, as well as the list of all the comIds for the intervening areas.
+
+`GetUpStreamGages` return a list of all the existing gages in the Roulink with their upstream gages.
+
+```{r eval = TRUE}
+upStreamGages <- GetUpStreamGages(routelinkFile)
+```
+
+`GetInterveningNHD` return a data.table of data.frame having the information on each gage and its corresponding comIds (within the intervening area of the gage) as well as the area of the catchment (WATCH! this is not actual area, this is number or fraction of pixels within a given NHDPlus catchment, for example for the case of NWM, 16 would be 1 sqkm since the routing grid are 250meter and the spatial weight file used here is for the overland flow routing grid (Fuldom grid))
+
+```{r eval = TRUE}
+interveningNHD <- GetInterveningNHD(routelinkFile, spatialWeightFile)
+```
+
+`CalcMeanArealCont` function takes the `meanP` values above as well as the `upStreamGages` and `interveningNHD` data and return the mean areal precipitation for both the intervening and contributing area.
+
+```{r eval = TRUE}
+contP <- CalcMeanArealCont(meanArealDT = meanP, interveningNHD, upStreamGages)
+```
+
+You can loop over all the forcing files and calculate all the MAP values for the year of 2013. 
+
+```{r eval = TRUE}
+files <- list.files("~/wrfHydroTestCases/04233300/FORCING/", pattern = glob2rx("201308*"), full.names = TRUE)
+library(foreach)
+MAP <- foreach (f = files, .combine = rbind.data.frame) %do% {
+  rain <- rwrfhydro::ncdump(f, "RAINRATE", quiet = TRUE)
+  meanP <- CalcMeanAreal(spatialWeightFile, rain)
+  contP <- CalcMeanArealCont(meanArealDT = meanP, interveningNHD, upStreamGages)
+  contP$date <- as.POSIXct(basename(f), format = "%Y%m%d%H.LDASIN_DOMAIN1", tz = "UTC")
+  return(contP)
+}
+
+library(ggplot2) 
+ggplot(subset(MAP, gage == "04234000"), aes(date, meanContributing*3600)) + 
+  geom_bar(stat = 'identity') + 
+  scale_y_reverse() + 
+  theme_bw()
+
+```
+
+Read in the streamflow simulations and plot them next to each other
+
+```{r, eval=TRUE}
+# list all the CHRTOUT files
+files <- list.files("~/wrfHydroTestCases/04233300/run.201306-201309.fullModel", 
+                    pattern = glob2rx("2013*CHRTOUT_DOMAIN1"), full.names = TRUE)
+
+# read the routelink file and extract the gages and link (comIDs) 
+rtLink <- rwrfhydro::GetNcdfFile(routelinkFile, variables = c("gages", "link"), quiet = TRUE)
+link <- subset(rtLink, trimws(gages) != "")$link
+
+# read streamflow values for the gage locations
+streamflow <- foreach (f = files, .combine = rbind.data.frame) %do% {
+   streamflow <- 
+     rwrfhydro::GetNcdfFile(f, variables = c("station_id", "streamflow"), quiet = TRUE)
+   DF <- data.frame(subset(streamflow, station_id %in% link))
+   DF$date <-  as.POSIXct(basename(f), format = "%Y%m%d%H%M.CHRTOUT_DOMAIN1", tz = "UTC")
+   return(DF)
+}
+
+# Add the gage info
+streamflow <- merge(streamflow, rtLink, by.x = "station_id", by.y = "link")
+```
+
+Plot the MAP and streamflow values in two panels.
+
+```{r}
+streamflow$gages <- trimws(streamflow$gages)
+merged <- subset(merge(streamflow, MAP, by.x = c("gages", "date"), by.y = c("gage", "date")), trimws(gages) == "04233300")
+
+library(ggplot2)
+
+g1 <- 
+  ggplot(merged, aes(date, meanContributing*3600)) + 
+    geom_bar(stat = 'identity') + 
+    theme_bw() + 
+    ylab("MAP (mm)") + 
+    ggtitle(paste0("USGS Station : ",  unique(merged$gage))) + 
+    scale_y_reverse() 
+
+g2 <- 
+  ggplot(merged, aes(date,streamflow))+
+    geom_line() + 
+    ylab("Streamflow (CMS)") + 
+    scale_y_continuous(trans="log10") + 
+    theme_bw() 
+
+rwrfhydro::multiplot(g1,g2)
+```
+
+

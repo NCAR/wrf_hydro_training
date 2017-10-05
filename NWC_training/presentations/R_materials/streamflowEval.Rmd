@@ -1,0 +1,287 @@
+---
+title: "Streamflow evaluation"
+author: "Joe Mills"
+date: "8/30/2017"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    highlight: tango  ##probably the best, random promtp emphasis is not obvious
+---
+\`\`\`{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(comment=NA)
+opts_chunk$set(prompt=TRUE)
+knit_hooks$set(
+  prompt = function(before, options, envir) {
+    options(prompt = if (options$engine %in% c('sh','bash')) '$ ' else '> ')
+})
+\`\`\`
+
+
+# Background
+We are going to use ```R``` and ```rwrfhydro``` to visualize and evaluate streamflow output from our Big Thompson test cases.
+
+Load the rwrfhydro package. 
+```{r}
+library("rwrfhydro")
+```
+
+Set a data path to the Big Thompson test case.
+```{r}
+dataPath <- '~/wrfHydroTestCases/BigThompson'
+```
+
+
+# Import modelled and observed datasets
+
+Model 1: With terrain routing turned on
+
+First we need to get a list of output files
+
+```{r}
+bigT_terrainOnFiles <-  list.files(paste0(dataPath,'/run.TerrainRouting'),
+                                 pattern='CHRTOUT',
+                                 full.names = T)
+head(bigT_terrainOnFiles)
+length(bigT_terrainOnFiles)
+```
+
+Now we need to extract the streamflow data from the netCDF files using a function from the ```rwrfhydro``` package.
+
+```{r}
+bigT_terrainOnDF <- GetNwmChannelOut(files = bigT_terrainOnFiles, 
+                                    variables = c("streamflow"))
+```
+
+Lets go ahead and take a look at the dataframe
+```{r}
+head(bigT_terrainOnDF)
+```
+
+Model 2: Without terrain routing turned on (hourly model run).
+
+First we need to get a list of output files
+
+```{r}
+bigT_terrainOffFiles <-  list.files(paste0(dataPath,'/run.NoTerrainRouting'),
+                                 pattern='CHRTOUT',
+                                 full.names = T)
+head(bigT_terrainOffFiles)
+length(bigT_terrainOffFiles)
+```
+
+Now we need to extract the streamflow data from the netCDF files using a function from the ```rwrfhydro``` package.
+
+```{r}
+bigT_terrainOffDF <- GetNwmChannelOut(files = bigT_terrainOffFiles, 
+                                    variables = c("streamflow"))
+```
+
+Lets go ahead and take a look at the dataframe
+```{r}
+head(bigT_terrainOffDF)
+```
+
+Lets make variables to identify our dataframes and then bind them together
+```{r}
+#Make a id variable
+bigT_terrainOnDF$modelID <- 'terrainOn'
+bigT_terrainOffDF$modelID <- 'terrainOff'
+
+#Bind the dataframes together
+bigTDF <- rbind(bigT_terrainOnDF,bigT_terrainOffDF)
+
+#Lets remove the indivdual DFs to keep our space clean
+rm(bigT_terrainOnDF,
+   bigT_terrainOffDF,
+   bigT_terrainOnFiles,
+   bigT_terrainOffFiles)
+```
+
+
+Now we will plot the hydrograph at a location for each model. First we need to select a stream segment to plot, called a ```feature_id```.
+```{r}
+features <- unique(bigTDF$feature_id)
+```
+
+We now have a vector of feature_ids to select from. Lets select the first one, subset our data and plot it.
+
+```{r}
+library(ggplot2)
+
+#Subset the dataframe to an arbitrary feature_id
+sub_bigTDF <- bigTDF[bigTDF$feature_id == features[200],]
+
+#Check that it subset
+nrow(bigTDF)
+nrow(sub_bigTDF)
+
+#Plot it
+ggplot(data = sub_bigTDF,aes(x=validTime,y=streamflow,color=modelID)) +
+         geom_line() +
+         theme_bw()
+```
+
+Great, we can see how terrain routing has changed the shape of the hydrograph and reduced the flashiness of the diurnal snowmelt pulses. But, how does this look compared to the observations. To do this, we need to find a feature ID that has an associated stream gage for observations.
+
+#Finding observations using the ```RouteLink.nc``` file and USGS NWIS system.
+
+The ```RouteLink.nc``` file contains information about the individual feature_ids, including any associated USGS gages.
+
+First lets bring the ```RouteLink.nc``` into R using a function from ```rwrfhydro```
+
+```{r}
+#The time variable in the routelink file changes the format from a dataframe to a list
+#We need to remove the time variable using the exclude argument
+routeLink <- GetNcdfFile(paste0(dataPath,'/DOMAIN/RouteLink.nc'),
+                         quiet=T, 
+                         var='time', 
+                         exclude = TRUE)
+head(routeLink)
+```
+
+We now have a dataframe of the ```RouteLink.nc``` file and can now find a gage for further analysis. Lets open the routeLink dataframe and find a feature ID with a gage on it. The routelink file does not have a feature ID field, rather it has a ```link``` variable which is the feature_id.
+
+```{r}
+#How many gages? There is only 1
+unique(routeLink$gages)
+
+#Get the gage ID
+gageID <- "402114105350101"
+#Get the feature ID corresponding to that gage
+gageFeatureIndex <- routeLink$link[routeLink$gages == gageID]
+
+#Subset dataframes to only features with the gage.
+gage_bigTDF <- bigTDF[bigTDF$feature_id == gageFeatureIndex,]
+```
+
+Now we need to get some observations to go along with our model data. We will use the USGS R package ```dataRetrieval``` to do this.
+
+```{r}
+library(dataRetrieval)
+
+#Limit our retrieval to the model time domain
+startDate <- min(gage_bigTDF$validTime)
+endDate <- max(gage_bigTDF$validTime)
+
+#Get the instantaneous values from NWIS
+obsDF <- readNWISuv(siteNumbers = gageID,
+                    parameterCd = '00060',
+                    startDate = startDate,
+                    endDate = endDate)
+
+#Rename the columns to more readable names
+obsDF <- renameNWISColumns(obsDF)
+
+#Convert from cfs to cms
+obsDF$Flow_Inst_cms <- obsDF$Flow_Inst*0.0283
+```
+
+Now we have all our model data and our observation data. Lets plot it
+
+#Basic goodness of fit metrics
+```{r}
+#Plot it
+ggplot(data = gage_bigTDF,aes(x=validTime,y=streamflow,color=modelID)) +
+  geom_line() +
+  geom_line(data=obsDF,aes(x=dateTime,y=Flow_Inst_cms,color='Observations')) +
+  scale_color_brewer(palette="Set1") + #Add a different color scale for grins
+  theme_bw()
+```
+
+We can see that the general shape is similar between the observations and the terrainOn models, but the model diurnal variations are larger. Lets compare daily means as well. For this we will introduce another package, ```dplyr```
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+
+#Make a new variable that is the daily date
+gage_bigTDF$Date <- as.Date(gage_bigTDF$validTime)
+
+#Group the datframe by day
+gage_bigTDF_grouped <- group_by(gage_bigTDF,feature_id,modelID,Date)
+
+#Now aggregate it to daily means
+gage_bigTDF_daily <- summarize(gage_bigTDF_grouped,
+                          dailyStreamflow = mean(streamflow))
+
+#Now lets get daily obs
+#Limit our retrieval to the model time domain
+startDate <- min(gage_bigTDF_daily$Date)
+endDate <- max(gage_bigTDF_daily$Date)
+
+obsDF_daily <- readNWISdv(siteNumbers = gageID,
+                    parameterCd = '00060',
+                    startDate = startDate,
+                    endDate = endDate)
+obsDF_daily <- renameNWISColumns(obsDF_daily)
+
+#Convert from cfs to cms
+obsDF_daily$Flow_cms <- obsDF_daily$Flow*0.0283
+
+#Lets plot it
+ggplot(data = gage_bigTDF_daily,aes(x=Date,y=dailyStreamflow,color=modelID)) +
+  geom_line() +
+  geom_line(data=obsDF_daily,aes(x=Date,y=Flow_cms,color='Observations')) +
+  scale_color_brewer(palette="Set1") + #Add a different color scale for grins
+  theme_bw()
+
+```
+
+We still have a high bias in our daily mean model values for both terrain on and terrain off. Let calculate some statistics to quantify this and compare the two models to the observations. For this, we are going to use the ```hydroGOF``` package. A number of statistic functions are also available in ```rwrfhydro```, but many of these will be added as contributions to the general ```hydroGOF```  package.
+
+```{r}
+library(dplyr)
+library(hydroGOF)
+
+#Join the observations to the modeled dataframe
+joinedDF <- left_join(gage_bigTDF_daily,
+                      obsDF_daily[c('Date','Flow_cms')],
+                      by='Date')
+
+#Filter to each model and calculate some stats
+joinedDF_terrainOn <- joinedDF[joinedDF$modelID == 'terrainOn',]
+joinedDF_terrainOff <- joinedDF[joinedDF$modelID == 'terrainOff',]
+
+#Now calculate stats
+terrainOnStats <- gof(joinedDF_terrainOn$dailyStreamflow,
+                      joinedDF_terrainOn$Flow_cms)
+terrainOffStats <- gof(joinedDF_terrainOff$dailyStreamflow,
+                      joinedDF_terrainOff$Flow_cms)
+
+#Print them
+print(terrainOnStats)
+print(terrainOffStats)
+```
+
+We were able to quantify the bias compared to the observations. We can also see an imrpovement in bias and error metrics when using terrain routing.
+
+#Flow duration curves
+
+Here we will look at the modelled and observed streamflow values in a slightly different way using flow duration curves.
+
+First we need to calculate flow exceedence probabilities using a function from ```rwrfhydro```. Note that this type of analysis typically uses much longer periods of record to be meaningfull. This is merely a demonstration
+```{r}
+#We will group our modeled datadrame again to calculate flow duration curves for each model
+#Note the use of piping, a newer convention in R for shorter analysis code
+gage_bigTDF_dailyFDC <- group_by(gage_bigTDF_daily,modelID) %>%
+  CalcFdc(strCol='dailyStreamflow')
+
+obsDF_dailyFDC <- CalcFdc(obsDF_daily,strCol='Flow_cms')
+
+#Now lets plot it
+ggplot(data = gage_bigTDF_dailyFDC,
+       aes(x=dailyStreamflow.fdc,
+           y=dailyStreamflow,
+           color=modelID)) +
+  geom_line() +
+  geom_line(data=obsDF_dailyFDC,
+            aes(x=Flow_cms.fdc,
+                y=Flow_cms,
+                color='Observations')) +
+  ylab('Flow, cms') + xlab('Probability of exceedence') +
+  scale_color_brewer(palette="Set1") + #Add a different color scale for grins
+  theme_bw()
+```
+
