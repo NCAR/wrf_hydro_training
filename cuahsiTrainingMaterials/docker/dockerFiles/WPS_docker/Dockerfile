@@ -1,61 +1,40 @@
-####################
-###Docker file for basic WPS use for WRF-Hydro training
-###Borrows heavily from rdccosmo images
+###################################
+# Author: Joe Mills <jmills@ucar.edu>
+# Date:  9.27.2017
+###################################
+#
+# This Dockerfile compiles WRF and WPS from source using the bare-bones requirements for training purposes.
+# See https://ral.ucar.edu/projects/ncar-docker-wrf for more complete WRF and WPS docker builds with additional functionality
 
-FROM ubuntu:latest
-MAINTAINER Joe Mills <jmills@ucar.edu>
+FROM ubuntu:16.04
 
-RUN apt-get update
-RUN apt-get install -yq --no-install-recommends \
-    wget \
-    bzip2 \
-    ca-certificates \
-    vim \
-    ncview \
-    libhdf5-dev \
-    gfortran \
-    gfortran-5-multilib \
-    build-essential \
-    libcloog-ppl1 \
-    make \
-    m4 \
-    libswitch-perl \
-    ncl-ncarg \
-    ncview \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+MAINTAINER jmills@ucar.edu
+USER root
 
-RUN mkdir /home/cuahsi && \
-    useradd -ms /bin/bash cuahsi && \
-    usermod -aG sudo cuahsi
+#Set WRF and WPS version argument
+ARG WRFWPS_VERSION="3.9"
 
-#USER cuahsi
-ENV HOME /home/cuahsi
+#Install linux dependencies
+RUN apt-get update \
+  && apt-get install -y csh \
+  m4 \
+  wget \
+  gcc \
+  gfortran \
+  make \
+  libhdf5-dev \
+  bzip2 \
+  ncview \
+  vim \
+  libswitch-perl \
+  && apt-get clean
 
-RUN mkdir $HOME/Build_WRF 
-RUN mkdir $HOME/Build_WRF/LIBRARIES
 
-ENV PREFIX $HOME/Build_WRF
-ENV DEBIAN_FRONTEND noninteractive
+WORKDIR /
 
-ENV BUILDDIR $HOME/Build_WRF
-
-ENV DIR $HOME/Build_WRF/LIBRARIES
-WORKDIR $DIR
-
-ENV CC gcc
-
-ENV CXX g++
-
-ENV FC gfortran
-
-ENV FCFLAGS -m64
-
-ENV F77 gfortran
-
-ENV FFLAGS -m64
-
-# install netcdf-C
+#############
+# Build NETCDF libraries
+# Build netcdf-C first, required by netcdf-fortran
 RUN wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-4.4.1.1.tar.gz -P /tmp  
 RUN tar -xf /tmp/netcdf-4.4.1.1.tar.gz -C /tmp
 ENV H5DIR=/usr/lib/x86_64-linux-gnu/hdf5/serial
@@ -64,7 +43,7 @@ RUN cd /tmp/netcdf-4.4.1.1 && CPPFLAGS=-I${H5DIR}/include LDFLAGS=-L${H5DIR}/lib
 RUN cd /tmp/netcdf-4.4.1.1 && make
 RUN cd /tmp/netcdf-4.4.1.1 && make install
 
-# install netcdf-Fortran
+# Build netcdf-Fortran second
 RUN wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-4.4.4.tar.gz
 RUN tar -xf netcdf-fortran-4.4.4.tar.gz -C /tmp
 ENV NFDIR=/usr/local
@@ -73,32 +52,43 @@ RUN cd /tmp/netcdf-fortran-4.4.4/ && CPPFLAGS=-I${NCDIR}/include LDFLAGS=-L${NCD
 RUN cd /tmp/netcdf-fortran-4.4.4 && make
 RUN cd /tmp/netcdf-fortran-4.4.4 && make install
 
+# Set NETCDF environment variable
 ENV NETCDF=/usr/local
 
-#Set more environment variables
-ENV LD_LIBRARY_PATH_WRF $PREFIX/lib/
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH_WRF:$LD_LIBRARY_PATH
-ENV NCARG_ROOT=$PREFIX
-ENV PATH=$NCARG_ROOT/bin:$PATH
-#ENV NETCDF $PREFIX
-RUN ulimit -s unlimited
+#################
+#Install WRF AND WPS
+WORKDIR /home/cuahsi/WRF_WPS
+#
+# Download sources for version specified by WRFWPS_VERSION argument
+#
+RUN wget http://www2.mmm.ucar.edu/wrf/src/WRFV${WRFWPS_VERSION}.TAR.gz \
+	&& \
+	mkdir WRFV${WRFWPS_VERSION} \
+	&& tar -zxf WRFV${WRFWPS_VERSION}.TAR.gz \
+	&& rm WRFV${WRFWPS_VERSION}.TAR.gz
+RUN wget http://www2.mmm.ucar.edu/wrf/src/WPSV${WRFWPS_VERSION}.TAR.gz \
+	&& mkdir WPSV${WRFWPS_VERSION} \
+	&& tar -zxf WPSV${WRFWPS_VERSION}.TAR.gz \
+	&& rm WPSV${WRFWPS_VERSION}.TAR.gz
 
-# 32.  serial
-ENV WRF_CONFIGURE_OPTION 32
-ENV WRF_EM_CORE 1
-ENV WRF_NMM_CORE 0
+# Build WRF first, required for WPS
+WORKDIR /home/cuahsi/WRF_WPS/WRFV3
+RUN printf '32\n0' | ./configure \
+	&& ./compile em_real
 
-#Compile wrf
-ENV WRF_VERSION 3.7.1
-RUN mkdir /tmp/WRF \
-	&& cd /tmp/WRF \
-	&& wget http://www2.mmm.ucar.edu/wrf/src/WRFV$WRF_VERSION.TAR.gz \
-	&& tar -xzf WRFV$WRF_VERSION.TAR.gz \
-	&& cd WRFV3 
-	#\
-	#&& echo $WRF_CONFIGURE_OPTION | ./configure \
-	#&& ./compile 
-#RUN mkdir /tmp/WPS \
-#	&& cd /tmp/WPS \
-#	&& wget http://www2.mmm.ucar.edu/wrf/src/WPSV$WRF_VERSION.TAR.gz \
-#	&& tar -xzf WPSV$WRF_VERSION.TAR.gz
+# Build WPS second after WRF is built
+WORKDIR /home/cuahsi/WRF_WPS/WPS
+RUN printf '1' | ./configure \
+	&& ./compile geogrid
+
+#Add cuahsi user
+RUN useradd -ms /bin/bash cuahsi
+RUN usermod -aG sudo cuahsi
+
+####################################
+########## CUAHSI USER #############
+####################################
+USER cuahsi
+WORKDIR /home/cuahsi
+ENV NETCDF=/usr/local
+

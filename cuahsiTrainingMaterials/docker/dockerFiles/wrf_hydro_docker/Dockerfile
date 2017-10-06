@@ -5,7 +5,6 @@
 ###################################
 
 FROM ubuntu:16.04
-#FROM rocker/geospatial
 
 MAINTAINER jmills@ucar.edu
 USER root
@@ -84,40 +83,6 @@ ENV NETCDF=/usr/local
 #  && mkdir /usr/local/ncl-6.4.0 \
 #  && tar -xzf fileDownload.html?logicalFileId=154af009-fa02-11e6-a976-00c0f03d5b7c -C /usr/local/ncl-6.4.0 \
 #  && rm fileDownload.html?logicalFileId=154af009-fa02-11e6-a976-00c0f03d5b7c
-
-#Install R and packages
-#FROM rocker/r-ver:latest
-
-#Install all dependencies needed by R and assosciated packages
-#RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-#  libxml2-dev \
-#  libcairo2-dev \
-#  libsqlite-dev \
-#  libmariadbd-dev \
-#  libjpeg-dev \
-#  libmariadb-client-lgpl-dev \
-#  libpq-dev \
-#  libssh2-1-dev \
-#  libssl-dev \
-#  libcurl4-openssl-dev \
-#  && R -e "source('https://bioconductor.org/biocLite.R')" \
-#  && install2.r --error \
-#    --deps TRUE \
-#    tidyverse \
-#    dplyr \
-#    ggplot2 \
-#    ncdf4 \
-#    ggmap \
-#    devtools \
-#    formatR \
-#    remotes
-
-# Install rwrfhydro
-#RUN Rscript -e "devtools::install_github('NCAR/rwrfhydro',lib='/usr/local/lib/R/site-library')"
-
-# Install doMC and foreach
-#RUN Rscript -e "install.packages('doMC')"
-#RUN Rscript -e "install.packages('foreach')"
 
 #Get the model code from https://github.com/NCAR/wrf_hydro_nwm/archive/master.zip
 ADD wrf_hydro_source /home/cuahsi/wrf_hydro_source
