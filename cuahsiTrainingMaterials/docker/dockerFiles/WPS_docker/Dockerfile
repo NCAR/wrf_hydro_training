@@ -84,6 +84,7 @@ RUN printf '1' | ./configure \
 #Add cuahsi user
 RUN useradd -ms /bin/bash cuahsi
 RUN usermod -aG sudo cuahsi
+RUN chown -R cuahsi /home/cuahsi
 
 ####################################
 ########## CUAHSI USER #############
