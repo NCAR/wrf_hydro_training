@@ -131,22 +131,6 @@ subroutine output_chrt_NWM(domainId)
       return
    endif
 
-   ! To keep things simple, only allow CHRTOUT_DOMAIN option of 2 since this is NWM output.
-   ! We don't write frxstpts, but that could easily be put in here in the future. 
-   !if(nlst_rt(domainId)%CHRTOUT_DOMAIN .ne. 2) then
-   !   call nwmCheck(diagFlag,1,'ERROR: CHRTOUT_DOMAIN value of 0 or 2 only allowed.')
-   !endif
-
-   ! Also, we are only allowing a split_output_count of 1.
-   !if(nlst_rt(domainId)%split_output_count .ne. 1) then
-   !   call nwmCheck(diagFlag,1,'ERROR: split_output_count of 1 only allowed.')
-   !endif
-
-   ! Since this is NWM output, we are assuming only channel_option 2 is acceptable.
-   !if(nlst_rt(domainId)%channel_option .ne. 2) then
-   !   call nwmCheck(diagFlag,1,'ERROR: Only channel_option of 2 allowed.')
-   !endif
-
    ! If we are running over MPI, determine which processor number we are on.
    ! If not MPI, then default to 0, which is the I/O ID.
    if(mppFlag .eq. 1) then
@@ -165,25 +149,25 @@ subroutine output_chrt_NWM(domainId)
    ! Depending on the NWM forecast config, we will be outputting different
    ! varibles. DO NOT MODIFY THESE ARRAYS WITHOUT CONSULTING NCAR OR
    ! OWP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-   if (nlst_rt(1)%iocFlag .eq. 0) then
+   if (nlst_rt(1)%io_config_outputs .eq. 0) then
       ! All
       fileMeta%outFlag(:) = [1,1,1,1,1,0,0,0,0,0]
-   else if (nlst_rt(1)%iocFlag .eq. 1) then
+   else if (nlst_rt(1)%io_config_outputs .eq. 1) then
       ! Analysis and Assimilation 
       fileMeta%outFlag(:) = [1,0,0,1,0,0,0,0,0,0]
-   else if (nlst_rt(1)%iocFlag .eq. 2) then
+   else if (nlst_rt(1)%io_config_outputs .eq. 2) then
       ! Short Range
       fileMeta%outFlag(:) = [1,0,0,1,0,0,0,0,0,0]
-   else if (nlst_rt(1)%iocFlag .eq. 3) then
+   else if (nlst_rt(1)%io_config_outputs .eq. 3) then
       ! Medium Range
       fileMeta%outFlag(:) = [1,0,0,1,0,0,0,0,0,0]
-   else if (nlst_rt(1)%iocFlag .eq. 4) then
+   else if (nlst_rt(1)%io_config_outputs .eq. 4) then
       ! Long Range
       fileMeta%outFlag(:) = [1,0,0,1,0,0,0,0,0,0]
-   else if (nlst_rt(1)%iocFlag .eq. 5) then
+   else if (nlst_rt(1)%io_config_outputs .eq. 5) then
       ! Retrospective
       fileMeta%outFlag(:) = [1,0,1,1,0,0,0,0,0,0]
-   else if (nlst_rt(1)%iocFlag .eq. 6) then
+   else if (nlst_rt(1)%io_config_outputs .eq. 6) then
       ! Diagnostics
       fileMeta%outFlag(:) = [1,0,1,1,0,0,0,0,0,0]
    else
@@ -199,9 +183,6 @@ subroutine output_chrt_NWM(domainId)
       else
          gsize = rt_domain(domainId)%gnlinks
       endif
-      !if(rt_domain(domainId)%gnlinksl .gt. rt_domain(domainId)%gnlinks) then
-      !   gsize = rt_domain(domainId)%gnlinksl
-      !endif
 
       ! Sync all processes up.
       if(mppFlag .eq. 1) then
@@ -496,8 +477,6 @@ subroutine output_chrt_NWM(domainId)
       endif
       ! Place all output arrays into one real array that will be looped over
       ! during conversion to compressed integer format.
-      !allocate(varOutReal(fileMeta%numVars,gSize))
-      !allocate(varOutInt(gSize))
       if(ascFlag .eq. 1) then
          ! Sort feature_id values by ascending values using the index array
          ! extracted from the RouteLink file. 
@@ -572,17 +551,6 @@ subroutine output_chrt_NWM(domainId)
       varMetaReal(3,:) = PACK(g_zelevOut,g_outInd == 1)
       varMetaInt(1,:) = PACK(g_orderOut,g_outInd == 1)
       varMetaInt(2,:) = PACK(g_linkidOut,g_outInd == 1)
-
-      !varOutReal(1,:) = g_qlinkOut(:,1)
-      !varOutReal(2,:) = g_nudgeOut
-      !varOutReal(3,:) = g_QLateralOut
-      !varOutReal(4,:) = g_velocityOut
-      !varOutReal(5,:) = g_hlinkOut
-      !varOutReal(6,:) = g_qSfcLatRunoffOut
-      !varOutReal(7,:) = g_qBucketOut
-      !varOutReal(8,:) = g_qBtmVertRunoffOut
-      !varOutReal(9,:) = g_accSfcLatRunoffOut
-      !varOutReal(10,:) = g_accBucketOut
 
       ! Mask out missing values
       where ( varOutReal == fileMeta%modelNdv ) varOutReal = -9999.0
@@ -698,8 +666,8 @@ subroutine output_chrt_NWM(domainId)
       call nwmCheck(diagFlag,iret,'ERROR: Unable to place stndard_name attribute into elevation variable')
 
       ! Define deflation levels for these meta-variables. For now, we are going to
-      ! default to a compression level of 2. Only compress if nwmIo is set to 1.
-      if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+      ! default to a compression level of 2. Only compress if io_form_outputs is set to 1.
+      if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
          iret = nf90_def_var_deflate(ftn,timeId,0,1,2)
          call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression level for time.')
          iret = nf90_def_var_deflate(ftn,featureVarId,0,1,2)
@@ -724,7 +692,7 @@ subroutine output_chrt_NWM(domainId)
       do iTmp=1,fileMeta%numVars
          if(fileMeta%outFlag(iTmp) .eq. 1) then
             ! First create variable
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_def_var(ftn,trim(fileMeta%varNames(iTmp)),nf90_int,dimId(1),varId)
             else
                iret = nf90_def_var(ftn,trim(fileMeta%varNames(iTmp)),nf90_float,dimId(1),varId)
@@ -741,8 +709,8 @@ subroutine output_chrt_NWM(domainId)
             ! compression level of 2. In addition, we are choosing to turn the shuffle
             ! filter off for now. Kelley Eicher did some testing with this and
             ! determined that the benefit wasn't worth the extra time spent writing
-            ! output. Only compress if nwmIo is set to 1.
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+            ! output. Only compress if io_form_outputs is set to 1.
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
                iret = nf90_def_var_deflate(ftn,varId,0,1,2)
                call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression for: '//trim(fileMeta%varNames(iTmp)))
             endif
@@ -754,7 +722,7 @@ subroutine output_chrt_NWM(domainId)
             call nwmCheck(diagFlag,iret,'ERROR: Unable to place units attribute into variable '//trim(fileMeta%varNames(iTmp)))
             iret = nf90_put_att(ftn,varId,'coordinates',trim(fileMeta%coordNames(iTmp)))
             call nwmCheck(diagFlag,iret,'ERROR: Unable to place coordinates attribute into variable '//trim(fileMeta%varNames(iTmp)))
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_put_att(ftn,varId,'_FillValue',fileMeta%fillComp(iTmp))
                call nwmCheck(diagFlag,iret,'ERROR: Unable to place Fill value attribute into variable '//trim(fileMeta%varNames(iTmp)))
                iret = nf90_put_att(ftn,varId,'missing_value',fileMeta%missingComp(iTmp))
@@ -798,7 +766,7 @@ subroutine output_chrt_NWM(domainId)
             call nwmCheck(diagFlag,iret,'ERROR: Unable to find variable ID for var: '//trim(fileMeta%varNames(iTmp)))
  
             ! Put data into NetCDF file
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_put_var(ftn,varId,varOutInt)
             else
                iret = nf90_put_var(ftn,varId,varOutReal(iTmp,:))
@@ -1045,49 +1013,49 @@ subroutine output_NoahMP_NWM(outDir,iGrid,output_timestep,startdate,date,ixPar,j
    ! Depending on the NWM forecast config, we will be outputting different
    ! varibles. DO NOT MODIFY THESE ARRAYS WITHOUT CONSULTING NCAR OR
    ! OWP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   if(nlst_rt(1)%iocFlag .eq. 0) then
+   if(nlst_rt(1)%io_config_outputs .eq. 0) then
       ! All
       fileMeta%outFlag(:) = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,&
                              1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,&
                              1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,&
                              1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,&
                              1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-   else if(nlst_rt(1)%iocFlag .eq. 1) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 1) then
       ! Analysis and Assimilation
       fileMeta%outFlag(:) = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,&
                              0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,&
                              0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,&
                              0,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,&
                              0,0,0,0,0,0,0,0,0,1,0,0,1,0,1]
-   else if(nlst_rt(1)%iocFlag .eq. 2) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 2) then
       ! Short Range
       fileMeta%outFlag(:) = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,&
                              0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,&
                              0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,&
                              0,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,&
                              0,0,0,0,0,0,0,0,0,1,0,0,1,0,1]
-   else if(nlst_rt(1)%iocFlag .eq. 3) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 3) then
       ! Medium Range
       fileMeta%outFlag(:) = [0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,&
                              0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,&
                              0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,&
                              0,0,1,1,1,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,&
                              0,0,0,0,0,0,0,0,0,1,1,1,1,0,1]
-   else if(nlst_rt(1)%iocFlag .eq. 4) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 4) then
       ! Long Range
       fileMeta%outFlag(:) = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,&
                              1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,&
                              0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,&
                              0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,&
                              0,0,0,0,0,0,0,0,0,1,1,0,1,1,0]
-   else if(nlst_rt(1)%iocFlag .eq. 5) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 5) then
       ! Retrospective
       fileMeta%outFlag(:) = [0,0,0,0,0,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,& !1-20
                              1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,& !21-40
                              0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,& !41-60
                              1,0,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,& !61-80
                              0,0,0,0,0,0,0,0,0,1,0,0,0,0,0]            !81-95
-   else if(nlst_rt(1)%iocFlag .eq. 6) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 6) then
       ! Diagnostics
       fileMeta%outFlag(:) = [0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,&
                              1,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,&
@@ -1195,9 +1163,10 @@ subroutine output_NoahMP_NWM(outDir,iGrid,output_timestep,startdate,date,ixPar,j
          iret = nf90_put_att(ftnNoahMP,yVarId,'resolution',fileMeta%yRes)
          call nwmCheck(diagFlag,iret,'ERROR: Unable to place resolution attribute into y coordinate variable')
 
-         ! Define compression for meta-variables. Only compress if nwmIo is set
+         ! Define compression for meta-variables. Only compress if
+         ! io_form_outputs is set
          ! to 1.
-         if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+         if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
             iret = nf90_def_var_deflate(ftn,timeId,0,1,2)
             call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression level for time.')
             iret = nf90_def_var_deflate(ftn,refTimeId,0,1,2)
@@ -1239,7 +1208,7 @@ subroutine output_NoahMP_NWM(outDir,iGrid,output_timestep,startdate,date,ixPar,j
          ! metadata attributes. 
          do iTmp=1,fileMeta%numVars
             if(fileMeta%outFlag(iTmp) .eq. 1) then
-               if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then 
+               if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then 
                   if(fileMeta%numLev(iTmp) .eq. fileMeta%numSoilLayers) then
                      iret = nf90_def_var(ftnNoahMP,trim(fileMeta%varNames(iTmp)),nf90_int,(/dimId(2),dimId(4),dimId(3),dimId(1)/),varId)
                   else if(fileMeta%numLev(iTmp) .eq. fileMeta%numSnowLayers) then
@@ -1268,8 +1237,8 @@ subroutine output_NoahMP_NWM(outDir,iGrid,output_timestep,startdate,date,ixPar,j
                ! compression level of 2. In addition, we are choosing to turn the shuffle
                ! filter off for now. Kelley Eicher did some testing with this and
                ! determined that the benefit wasn't worth the extra time spent writing output.
-               ! Only compress if nwmIo is set to 1.
-               if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+               ! Only compress if io_form_outputs is set to 1.
+               if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
                   iret = nf90_def_var_deflate(ftnNoahMP,varId,0,1,2)
                   call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression for: '//trim(fileMeta%varNames(iTmp)))
                endif
@@ -1285,7 +1254,7 @@ subroutine output_NoahMP_NWM(outDir,iGrid,output_timestep,startdate,date,ixPar,j
                call nwmCheck(diagFlag,iret,'ERROR: Unable to place grid_mapping attribute into variable: '//trim(fileMeta%varNames(iTmp)))
                iret = nf90_put_att(ftnNoahMP,varId,'esri_pe_string',trim(fileMeta%projEsri))
                call nwmCheck(diagFlag,iret,'ERROR: Unable to place esri_pe_string attribute into variable: '//trim(fileMeta%varNames(iTmp)))
-               if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+               if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                   iret = nf90_put_att(ftnNoahMP,varId,'_FillValue',fileMeta%fillComp(iTmp))
                   call nwmCheck(diagFlag,iret,'ERROR: Unable to place Fill value attribute into variable '//trim(fileMeta%varNames(iTmp)))
                   iret = nf90_put_att(ftnNoahMP,varId,'missing_value',fileMeta%missingComp(iTmp))
@@ -1474,7 +1443,7 @@ subroutine output_NoahMP_NWM(outDir,iGrid,output_timestep,startdate,date,ixPar,j
       if(myId .eq. 0) then
          iret = nf90_inq_varid(ftnNoahMP,trim(fileMeta%varNames(varInd)),varId)
          call nwmCheck(diagFlag,iret,'ERROR: Unable to find variable ID for var: '//trim(fileMeta%varNames(varInd)))
-         if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+         if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
             if(fileMeta%numLev(varInd) .eq. 1) then
                iret = nf90_put_var(ftnNoahMP,varId,globalOutComp,(/1,1,1/),(/global_nx,global_ny,1/))
             else
@@ -1608,32 +1577,35 @@ subroutine output_rt_NWM(domainId,iGrid)
       myId = 0
    endif
 
+   ! Some sanity checking here. 
+   if(nlst_rt(domainId)%RTOUT_DOMAIN .eq. 0) then
+      ! No output requested here. Return to the parent calling program.
+      return
+   endif
+
    ! Initialize NWM dictionary derived type containing all the necessary metadat
    ! for the output file.
    call initRtDomainDict(fileMeta,myId,diagFlag)
 
-   ! Depending on the NWM forecast config, we will be outputting different
-   ! varibles. DO NOT MODIFY THESE ARRAYS WITHOUT CONSULTING NCAR OR
-   ! OWP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   if(nlst_rt(domainId)%iocFlag .eq. 0) then
+   if(nlst_rt(domainId)%io_config_outputs .eq. 0) then
       ! All
       fileMeta%outFlag(:) = [1,1,1,1]
-   else if(nlst_rt(domainId)%iocFlag .eq. 1) then
+   else if(nlst_rt(domainId)%io_config_outputs .eq. 1) then
       ! Analysis and Assimilation
       fileMeta%outFlag(:) = [1,1,0,0]
-   else if(nlst_rt(domainId)%iocFlag .eq. 2) then
+   else if(nlst_rt(domainId)%io_config_outputs .eq. 2) then
       ! Short Range
       fileMeta%outFlag(:) = [1,1,0,0]
-   else if(nlst_rt(domainId)%iocFlag .eq. 3) then
+   else if(nlst_rt(domainId)%io_config_outputs .eq. 3) then
       ! Medium Range
       fileMeta%outFlag(:) = [1,1,0,0]
-   else if(nlst_rt(domainId)%iocFlag .eq. 4) then
+   else if(nlst_rt(domainId)%io_config_outputs .eq. 4) then
       ! Long Range
       fileMeta%outFlag(:) = [1,1,0,0]
-   else if(nlst_rt(domainId)%iocFlag .eq. 5) then
+   else if(nlst_rt(domainId)%io_config_outputs .eq. 5) then
       ! Retrospective
       fileMeta%outFlag(:) = [1,1,0,0]
-   else if(nlst_rt(domainId)%iocFlag .eq. 6) then
+   else if(nlst_rt(domainId)%io_config_outputs .eq. 6) then
       ! Diagnostics
       fileMeta%outFlag(:) = [1,1,0,0]
    else
@@ -1748,8 +1720,8 @@ subroutine output_rt_NWM(domainId,iGrid)
       iret = nf90_put_att(ftn,yVarId,'resolution',fileMeta%yRes)
       call nwmCheck(diagFlag,iret,'ERROR: Unable to place resolution attribute into y coordinate variable')
  
-      ! Define compression for meta-variables only if nwmIo is set to 1.
-      if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+      ! Define compression for meta-variables only if io_form_outputs is set to 1.
+      if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
          iret = nf90_def_var_deflate(ftn,timeId,0,1,2)
          call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression level for time.')
          iret = nf90_def_var_deflate(ftn,refTimeId,0,1,2)
@@ -1791,7 +1763,7 @@ subroutine output_rt_NWM(domainId,iGrid)
       ! metadata attributes. 
       do iTmp=1,fileMeta%numVars
          if(fileMeta%outFlag(iTmp) .eq. 1) then
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_def_var(ftn,trim(fileMeta%varNames(iTmp)),nf90_int,(/dimId(2),dimId(3),dimId(1)/),varId)
             else
                iret = nf90_def_var(ftn,trim(fileMeta%varNames(iTmp)),nf90_float,(/dimId(2),dimId(3),dimId(1)/),varId)
@@ -1808,8 +1780,8 @@ subroutine output_rt_NWM(domainId,iGrid)
             ! compression level of 2. In addition, we are choosing to turn the shuffle
             ! filter off for now. Kelley Eicher did some testing with this and
             ! determined that the benefit wasn't worth the extra time spent writing output.
-            ! Only compress if nwmIo is set to 1.
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+            ! Only compress if io_form_outputs is set to 1.
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
                iret = nf90_def_var_deflate(ftn,varId,0,1,2)
                call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression for: '//trim(fileMeta%varNames(iTmp)))
             endif
@@ -1825,7 +1797,7 @@ subroutine output_rt_NWM(domainId,iGrid)
             call nwmCheck(diagFlag,iret,'ERROR: Unable to place grid_mapping attribute into variable: '//trim(fileMeta%varNames(iTmp)))
             iret = nf90_put_att(ftn,varId,'esri_pe_string',trim(fileMeta%projEsri))
             call nwmCheck(diagFlag,iret,'ERROR: Unable to place esri_pe_string attribute into variable: '//trim(fileMeta%varNames(iTmp)))
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_put_att(ftn,varId,'_FillValue',fileMeta%fillComp(iTmp))
                call nwmCheck(diagFlag,iret,'ERROR: Unable to place Fill value attribute into variable '//trim(fileMeta%varNames(iTmp)))
                iret = nf90_put_att(ftn,varId,'missing_value',fileMeta%missingComp(iTmp))
@@ -1986,7 +1958,7 @@ subroutine output_rt_NWM(domainId,iGrid)
          if(myId .eq. 0) then
             iret = nf90_inq_varid(ftn,trim(fileMeta%varNames(iTmp2)),varId)
             call nwmCheck(diagFlag,iret,'ERROR: Unable to find variable ID for var: '//trim(fileMeta%varNames(iTmp2)))
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_put_var(ftn,varId,globalOutComp,(/1,1,1/),(/RT_DOMAIN(domainId)%g_ixrt,RT_DOMAIN(domainId)%g_jxrt,1/))
             else
                iret = nf90_put_var(ftn,varId,globalOutReal,(/1,1,1/),(/RT_DOMAIN(domainId)%g_ixrt,RT_DOMAIN(domainId)%g_jxrt,1/))
@@ -2111,32 +2083,35 @@ subroutine output_lakes_NWM(domainId,iGrid)
       myId = 0
    endif
 
+   ! Some sanity checking here. 
+   if(nlst_rt(domainId)%outlake .eq. 0) then
+      ! No output requested here. Return to the parent calling program.
+      return
+   endif
+
    ! Initialize NWM dictionary derived type containing all the necessary metadat
    ! for the output file.
    call initLakeDict(fileMeta)
 
-   ! Depending on the NWM forecast config, we will be outputting different
-   ! varibles. DO NOT MODIFY THESE ARRAYS WITHOUT CONSULTING NCAR OR
-   ! OWP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   if(nlst_rt(1)%iocFlag .eq. 0) then
+   if(nlst_rt(1)%io_config_outputs .eq. 0) then
       ! All
       fileMeta%outFlag(:) = [1,1] 
-   else if(nlst_rt(1)%iocFlag .eq. 1) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 1) then
       ! Analysis and Assimilation
       fileMeta%outFlag(:) = [1,1]
-   else if(nlst_rt(1)%iocFlag .eq. 2) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 2) then
       ! Short Range
       fileMeta%outFlag(:) = [1,1]
-   else if(nlst_rt(1)%iocFlag .eq. 3) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 3) then
       ! Medium Range
       fileMeta%outFlag(:) = [1,1]
-   else if(nlst_rt(1)%iocFlag .eq. 4) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 4) then
       ! Long Range
       fileMeta%outFlag(:) = [1,1]
-   else if(nlst_rt(1)%iocFlag .eq. 5) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 5) then
       ! Retrospective
       fileMeta%outFlag(:) = [1,1]
-   else if(nlst_rt(1)%iocFlag .eq. 6) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 6) then
       ! Diagnostics
       fileMeta%outFlag(:) = [1,1]
    else
@@ -2397,8 +2372,8 @@ subroutine output_lakes_NWM(domainId,iGrid)
       call nwmCheck(diagFlag,iret,'ERROR: Unable to place units attribute into water_sfc_elev variable')
 
       ! Define deflation levels for these meta-variables. For now, we are going to
-      ! default to a compression level of 2. Only compress if nwmIo is set to 1.
-      if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then 
+      ! default to a compression level of 2. Only compress if io_form_outputs is set to 1.
+      if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then 
          iret = nf90_def_var_deflate(ftn,timeId,0,1,2)
          call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression level for time.')
          iret = nf90_def_var_deflate(ftn,featureVarId,0,1,2)
@@ -2421,7 +2396,7 @@ subroutine output_lakes_NWM(domainId,iGrid)
       do iTmp=1,fileMeta%numVars
          if(fileMeta%outFlag(iTmp) .eq. 1) then
             ! First create variable
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_def_var(ftn,trim(fileMeta%varNames(iTmp)),nf90_int,dimId(1),varId)
             else
                iret = nf90_def_var(ftn,trim(fileMeta%varNames(iTmp)),nf90_float,dimId(1),varId)
@@ -2438,8 +2413,8 @@ subroutine output_lakes_NWM(domainId,iGrid)
             ! compression level of 2. In addition, we are choosing to turn the shuffle
             ! filter off for now. Kelley Eicher did some testing with this and
             ! determined that the benefit wasn't worth the extra time spent writing output.
-            ! Only compress if nwmIo is set to 1.
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+            ! Only compress if io_form_outputs is set to 1.
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
                iret = nf90_def_var_deflate(ftn,varId,0,1,2)
                call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression for: '//trim(fileMeta%varNames(iTmp)))
             endif
@@ -2451,7 +2426,7 @@ subroutine output_lakes_NWM(domainId,iGrid)
             call nwmCheck(diagFlag,iret,'ERROR: Unable to place units attribute into variable '//trim(fileMeta%varNames(iTmp)))
             iret = nf90_put_att(ftn,varId,'coordinates',trim(fileMeta%coordNames(iTmp)))
             call nwmCheck(diagFlag,iret,'ERROR: Unable to place coordinates attribute into variable '//trim(fileMeta%varNames(iTmp)))
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_put_att(ftn,varId,'_FillValue',fileMeta%fillComp(iTmp))
                call nwmCheck(diagFlag,iret,'ERROR: Unable to place Fill value attribute into variable '//trim(fileMeta%varNames(iTmp)))
                iret = nf90_put_att(ftn,varId,'missing_value',fileMeta%missingComp(iTmp))
@@ -2494,7 +2469,7 @@ subroutine output_lakes_NWM(domainId,iGrid)
             call nwmCheck(diagFlag,iret,'ERROR: Unable to find variable ID for var: '//trim(fileMeta%varNames(iTmp)))
 
             ! Put data into NetCDF file
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_put_var(ftn,varId,varOutInt)
             else
                iret = nf90_put_var(ftn,varId,varOutReal(iTmp,:))
@@ -2654,6 +2629,17 @@ subroutine output_chrtout_grd_NWM(domainId,iGrid)
 #else
    diagFlag = 0
 #endif
+    
+   ! We will print a warning to the user if they request CHRTOUT_GRID under
+   ! reach-based routing. Currently, this is not supported as we don't have a
+   ! way to map reaches to individual cells on the channel grid in the Fulldom
+   ! file.
+   if(nlst_rt(domainId)%CHRTOUT_GRID .eq. 1) then
+      if(nlst_rt(domainId)%channel_option .ne. 3) then
+         call postDiagMsg(diagFlag,'WARNING: CHRTOUT_GRID only available for gridded channel routing, not reach-based routing.')
+         return
+      endif
+   endif
 
    ! If we are running over MPI, determine which processor number we are on.
    ! If not MPI, then default to 0, which is the I/O ID.
@@ -2670,16 +2656,6 @@ subroutine output_chrtout_grd_NWM(domainId,iGrid)
    if(nlst_rt(domainId)%CHRTOUT_GRID .eq. 0) then
       ! No output requested here. Return to the parent calling program.
       return
-   endif
-
-   if(nlst_rt(domainId)%CHRTOUT_GRID .ne. 1) then
-      call nwmCheck(diagFlag,1,'ERROR: CHRTOUT_GRID value of 0 or 1 only allowed.')
-   endif
-
-   ! We must assume gridded routing is in place on a channel grid for this
-   ! routine to be valid. 
-   if(nlst_rt(domainId)%channel_option .ne. 3) then
-      call nwmCheck(diagFlag,1,'ERROR: CHRTOUT_GRID only valid for channel_option of 3.')
    endif
 
    ! Initialize qlink arrays and collect data from processors for output.
@@ -2717,9 +2693,6 @@ subroutine output_chrtout_grd_NWM(domainId,iGrid)
    if(nlst_rt(domainId)%channel_option .eq. 3) then
       call write_chanel_real(strFlowLocal,RT_DOMAIN(domainId)%map_l2g,gNumLnks,lNumLnks,g_qlink(:,1))
       call write_chanel_real(RT_DOMAIN(domainId)%qlink(:,2),RT_DOMAIN(domainId)%map_l2g,gNumLnks,lNumLnks,g_qlink(:,2))
-   else
-      call ReachLS_write_io(strFlowLocal,g_qlink(:,1))
-      call ReachLS_write_io(RT_DOMAIN(domainId)%qlink(:,2),g_qlink(:,2))
    endif
    call write_IO_rt_int(RT_DOMAIN(domainId)%GCH_NETLNK, CH_NETLNK)
 
@@ -2838,8 +2811,8 @@ subroutine output_chrtout_grd_NWM(domainId,iGrid)
       iret = nf90_put_att(ftn,yVarId,'resolution',fileMeta%yRes)
       call nwmCheck(diagFlag,iret,'ERROR: Unable to place resolution attribute into y coordinate variable')
 
-      ! Define compression for meta-variables only if nwmIo is set to 1.
-      if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+      ! Define compression for meta-variables only if io_form_outputs is set to 1.
+      if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
          iret = nf90_def_var_deflate(ftn,timeId,0,1,2)
          call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression level for time.')
          iret = nf90_def_var_deflate(ftn,refTimeId,0,1,2)
@@ -2893,8 +2866,8 @@ subroutine output_chrtout_grd_NWM(domainId,iGrid)
       call nwmCheck(diagFlag,iret,'ERROR: Unable to place grid_mapping attribute into variable: index')
       iret = nf90_put_att(ftn,indexVarId,'esri_pe_string',trim(fileMeta%projEsri))
       call nwmCheck(diagFlag,iret,'ERROR: Unable to place esri_pe_string attribute into variable: index')
-      ! Define compression for meta-variables only if nwmIo is set to 1.
-      if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+      ! Define compression for meta-variables only if io_form_outputs is set to 1.
+      if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
          iret = nf90_def_var_deflate(ftn,indexVarId,0,1,2)
          call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression level for index.')
       endif
@@ -2903,7 +2876,7 @@ subroutine output_chrtout_grd_NWM(domainId,iGrid)
       ! metadata attributes. 
       do iTmp=1,fileMeta%numVars
          if(fileMeta%outFlag(iTmp) .eq. 1) then
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_def_var(ftn,trim(fileMeta%varNames(iTmp)),nf90_int,(/dimId(2),dimId(3),dimId(1)/),varId)
             else
                iret = nf90_def_var(ftn,trim(fileMeta%varNames(iTmp)),nf90_float,(/dimId(2),dimId(3),dimId(1)/),varId)
@@ -2923,8 +2896,8 @@ subroutine output_chrtout_grd_NWM(domainId,iGrid)
             ! filter off for now. Kelley Eicher did some testing with this and
             ! determined that the benefit wasn't worth the extra time spent
             ! writing output.
-            ! Only compress if nwmIo is set to 1.
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+            ! Only compress if io_form_outputs is set to 1.
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
                iret = nf90_def_var_deflate(ftn,varId,0,1,2)
                call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression for: '//trim(fileMeta%varNames(iTmp)))
             endif
@@ -2940,7 +2913,7 @@ subroutine output_chrtout_grd_NWM(domainId,iGrid)
             call nwmCheck(diagFlag,iret,'ERROR: Unable to place grid_mapping attribute into variable: '//trim(fileMeta%varNames(iTmp)))
             iret = nf90_put_att(ftn,varId,'esri_pe_string',trim(fileMeta%projEsri))
             call nwmCheck(diagFlag,iret,'ERROR: Unable to place esri_pe_string attribute into variable: '//trim(fileMeta%varNames(iTmp)))
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_put_att(ftn,varId,'_FillValue',fileMeta%fillComp(iTmp))
                call nwmCheck(diagFlag,iret,'ERROR: Unable to place Fill value attribute into variable '//trim(fileMeta%varNames(iTmp)))
                iret = nf90_put_att(ftn,varId,'missing_value',fileMeta%missingComp(iTmp))
@@ -3037,7 +3010,7 @@ subroutine output_chrtout_grd_NWM(domainId,iGrid)
       ! Place streamflow grid into output file.
       iret = nf90_inq_varid(ftn,'streamflow',varId)
       call nwmCheck(diagFlag,iret,'ERROR: Unable to locate streamflow variable.')
-      if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+      if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
          iret = nf90_put_var(ftn,varId,tmpFlow,(/1,1,1/),(/RT_DOMAIN(domainId)%g_ixrt,RT_DOMAIN(domainId)%g_jxrt,1/))
       else
          iret = nf90_put_var(ftn,varId,tmpFlowReal,(/1,1,1/),(/RT_DOMAIN(domainId)%g_ixrt,RT_DOMAIN(domainId)%g_jxrt,1/))
@@ -3152,6 +3125,12 @@ subroutine output_lsmOut_NWM(domainId)
 #endif
    else
       myId = 0
+   endif
+
+   ! Some sanity checking here. 
+   if(nlst_rt(domainId)%LSMOUT_DOMAIN .eq. 0) then
+      ! No output requested here. Return to the parent calling program.
+      return
    endif
 
    ! Call routine to initialize metadata structure
@@ -3281,9 +3260,9 @@ subroutine output_lsmOut_NWM(domainId)
       iret = nf90_put_att(ftn,yVarId,'resolution',fileMeta%yRes)
       call nwmCheck(diagFlag,iret,'ERROR: Unable to place resolution attribute into y coordinate variable')
 
-      ! Define compression for meta-variables. Only compress if nwmIo is set
+      ! Define compression for meta-variables. Only compress if io_form_outputs is set
       ! to 1.
-      if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+      if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
          iret = nf90_def_var_deflate(ftn,timeId,0,1,2)
          call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression level for time.')
          iret = nf90_def_var_deflate(ftn,refTimeId,0,1,2)
@@ -3337,8 +3316,8 @@ subroutine output_lsmOut_NWM(domainId)
             ! compression level of 2. In addition, we are choosing to turn the shuffle
             ! filter off for now. Kelley Eicher did some testing with this and
             ! determined that the benefit wasn't worth the extra time spent writing output.
-            ! Only compress if nwmIo is set to 1.
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+            ! Only compress if io_form_outputs is set to 1.
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
                iret = nf90_def_var_deflate(ftn,varId,0,1,2)
                call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression for: '//trim(fileMeta%varNames(iTmp)))
             endif
@@ -3515,11 +3494,9 @@ subroutine output_lsmOut_NWM(domainId)
          endif
          if(mppFlag .eq. 1) then
 #ifdef MPP_LAND
-            !call write_IO_int(localCompTmp,globalCompTmp)
             call write_IO_real(localRealTmp,globalOutReal)
 #endif
          else
-            !globalCompTmp = localCompTmp
             globalOutReal = localRealTmp
          endif
          ! Sync all processes up.
@@ -3537,7 +3514,6 @@ subroutine output_lsmOut_NWM(domainId)
             call nwmCheck(diagFlag,iret,'ERROR: Unable to place data into output variable: '//trim(fileMeta%varNames(iTmp)))
          endif
 
-         !deallocate(globalCompTmp)
          deallocate(globalOutReal)
       endif
    enddo
@@ -3580,9 +3556,6 @@ implicit none
    ! Pass in "did" value from hydro driving program. 
    integer, intent(in) :: domainId
 
-   ! Derived types.
-   !type(chrtMeta) :: fileMeta
-
    ! Local variables
    integer :: mppFlag, diagFlag, ierr, myId
    integer :: seconds_since
@@ -3611,16 +3584,6 @@ implicit none
       return
    endif
 
-   ! Also, we are only allowing a split_output_count of 1.
-   if(nlst_rt(domainId)%split_output_count .ne. 1) then
-      call nwmCheck(diagFlag,1,'ERROR: split_output_count of 1 only allowed.')
-   endif
-
-   ! For now, only allow frxstPts for gridded routing. 
-   !if(nlst_rt(domainId)%channel_option .ne. 3) then
-   !   call nwmCheck(diagFlag,1,'ERROR: Only channel_option of 3 allowed.')
-   !endif
-
    ! If we are running over MPI, determine which processor number we are on.
    ! If not MPI, then default to 0, which is the I/O ID.
    if(mppFlag .eq. 1) then
@@ -3631,11 +3594,6 @@ implicit none
    else
       myId = 0
    endif
-
-   ! Initialize NWM dictionary derived type containing all the necessary metadat
-   ! for the output file. A couple variables from this type are needed for
-   ! frxstPts.
-   !call initChrtDict(fileMeta,diagFlag,myId)
 
    ! Calculate datetime information
    seconds_since = int(nlst_rt(1)%out_dt*60*(rt_domain(1)%out_counts-1))
@@ -3650,9 +3608,6 @@ implicit none
       else
          gSize = rt_domain(domainId)%gnlinks
       endif
-      !if(rt_domain(domainId)%gnlinksl .gt. rt_domain(domainId)%gnlinks) then
-      !   gSize = rt_domain(domainId)%gnlinksl
-      !endif
 
       ! Sync all processes up.
       if(mppFlag .eq. 1) then
@@ -3774,7 +3729,8 @@ implicit none
       if(numPtsOut .eq. 0) then
          ! Write warning message to user showing there are NO forecast points to
          ! write. Simply return to the main calling function.
-         call nwmCheck(diagFlag,1,'ERROR: No forecast points found for frxstPtsOut.')
+         call postDiagMsg(diagFlag,'WARNING: No forecast or gage points found for frxstPtsOut. No file will be created.')
+         return
       endif
 
       ! Allocate output arrays based on number of output forecast points. 
@@ -3943,12 +3899,6 @@ subroutine output_chanObs_NWM(domainId)
       return
    endif
 
-   ! Since this is NWM output, we are assuming only channel_option 2 is
-   ! acceptable.
-   !if(nlst_rt(domainId)%channel_option .ne. 3) then
-   !   call nwmCheck(diagFlag,1,'ERROR: Only channel_option of 3 allowed.')
-   !endif
-
    ! If we are running over MPI, determine which processor number we are on.
    ! If not MPI, then default to 0, which is the I/O ID.
    if(mppFlag .eq. 1) then
@@ -4016,9 +3966,6 @@ subroutine output_chanObs_NWM(domainId)
       else
          gSize = rt_domain(domainId)%gnlinks
       endif
-      !if(rt_domain(domainId)%gnlinksl .gt. rt_domain(domainId)%gnlinks) then
-      !   gSize = rt_domain(domainId)%gnlinksl
-      !endif
 
       ! Sync all processes up.
       if(mppFlag .eq. 1) then
@@ -4155,7 +4102,8 @@ subroutine output_chanObs_NWM(domainId)
       if(numPtsOut .eq. 0) then
          ! Write warning message to user showing there are NO forecast points to
          ! write. Simply return to the main calling function.
-         call nwmCheck(diagFlag,1,'ERROR: No forecast points found for CHANOBS.')
+         call postDiagMsg(diagFlag,'WARNING: No forecast or gage points found for CHANOBS. No file will be created.')
+         return
       endif
 
       ! Allocate output arrays based on number of output forecast points. 
@@ -4307,8 +4255,8 @@ subroutine output_chanObs_NWM(domainId)
 
       ! Define deflation levels for these meta-variables. For now, we are going
       ! to
-      ! default to a compression level of 2. Only compress if nwmIo is set to 1.
-      if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+      ! default to a compression level of 2. Only compress if io_form_outputs is set to 1.
+      if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
          iret = nf90_def_var_deflate(ftn,timeId,0,1,2)
          call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression level for time.')
          iret = nf90_def_var_deflate(ftn,featureVarId,0,1,2)
@@ -4334,7 +4282,7 @@ subroutine output_chanObs_NWM(domainId)
       do iTmp=1,fileMeta%numVars
          if(fileMeta%outFlag(iTmp) .eq. 1) then
             ! First create variable
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_def_var(ftn,trim(fileMeta%varNames(iTmp)),nf90_int,dimId(1),varId)
             else
                iret = nf90_def_var(ftn,trim(fileMeta%varNames(iTmp)),nf90_float,dimId(1),varId)
@@ -4354,8 +4302,8 @@ subroutine output_chanObs_NWM(domainId)
             ! filter off for now. Kelley Eicher did some testing with this and
             ! determined that the benefit wasn't worth the extra time spent
             ! writing
-            ! output. Only compress if nwmIo is set to 1.
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+            ! output. Only compress if io_form_outputs is set to 1.
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
                iret = nf90_def_var_deflate(ftn,varId,0,1,2)
                call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression for: '//trim(fileMeta%varNames(iTmp)))
             endif
@@ -4367,7 +4315,7 @@ subroutine output_chanObs_NWM(domainId)
             call nwmCheck(diagFlag,iret,'ERROR: Unable to place units attribute into variable '//trim(fileMeta%varNames(iTmp)))
             iret = nf90_put_att(ftn,varId,'coordinates',trim(fileMeta%coordNames(iTmp)))
             call nwmCheck(diagFlag,iret,'ERROR: Unable to place coordinates attribute into variable '//trim(fileMeta%varNames(iTmp)))
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_put_att(ftn,varId,'_FillValue',fileMeta%fillComp(iTmp))
                call nwmCheck(diagFlag,iret,'ERROR: Unable to place Fill value attribute into variable '//trim(fileMeta%varNames(iTmp)))
                iret = nf90_put_att(ftn,varId,'missing_value',fileMeta%missingComp(iTmp))
@@ -4412,7 +4360,7 @@ subroutine output_chanObs_NWM(domainId)
             call nwmCheck(diagFlag,iret,'ERROR: Unable to find variable ID for var: '//trim(fileMeta%varNames(iTmp)))
  
             ! Put data into NetCDF file
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_put_var(ftn,varId,varOutInt)
             else
                iret = nf90_put_var(ftn,varId,varOutReal(iTmp,:))
@@ -4591,41 +4539,42 @@ subroutine output_gw_NWM(domainId,iGrid)
       myId = 0
    endif
 
+   ! Some sanity checking here. 
+   if(nlst_rt(domainId)%output_gw .eq. 0) then
+      ! No output requested here. Return to the parent calling program.
+      return
+   endif
+
    ! Initialize NWM dictionary derived type containing all the necessary metadat
    ! for the output file.
    call initGwDict(fileMeta)
 
-   if(nlst_rt(1)%iocFlag .eq. 0) then
+   if(nlst_rt(1)%io_config_outputs .eq. 0) then
       ! All
       fileMeta%outFlag(:) = [1,1,1] 
-   else if(nlst_rt(1)%iocFlag .eq. 1) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 1) then
       ! Analysis and Assimilation
       fileMeta%outFlag(:) = [1,1,1]
-   else if(nlst_rt(1)%iocFlag .eq. 2) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 2) then
       ! Short Range
       fileMeta%outFlag(:) = [1,1,1]
-   else if(nlst_rt(1)%iocFlag .eq. 3) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 3) then
       ! Medium Range
       fileMeta%outFlag(:) = [1,1,1]
-   else if(nlst_rt(1)%iocFlag .eq. 4) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 4) then
       ! Long Range
       fileMeta%outFlag(:) = [1,1,1]
-   else if(nlst_rt(1)%iocFlag .eq. 5) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 5) then
       ! Retrospective
       fileMeta%outFlag(:) = [1,1,1]
-   else if(nlst_rt(1)%iocFlag .eq. 6) then
+   else if(nlst_rt(1)%io_config_outputs .eq. 6) then
       ! Diagnostics 
       fileMeta%outFlag(:) = [1,1,1]
    else
       call nwmCheck(diagFlag,1,'ERROR: Invalid IOC flag provided by namelist file.')
    endif
 
-   if(nlst_rt(domainId)%GWBASESWCRT .eq. 1) then
-      gnbasns = rt_domain(domainId)%gnumbasns
-   else
-      gnbasns = rt_domain(domainId)%gnumbasns
-      !gnbasns = rt_domain(domainId)%gnlinksl
-   endif
+   gnbasns = rt_domain(domainId)%gnumbasns
    gSize = gnbasns
 
    ! Collect and assemble local groundwater bucket arrays to a global array for
@@ -4650,14 +4599,15 @@ subroutine output_gw_NWM(domainId,iGrid)
          allocate(g_basnsInd(1))
       endif
 
-      if(nlst_rt(domainId)%channel_option .ne. 3) then
-         ! Reach-based routing
+      if(nlst_rt(domainId)%UDMP_OPT .eq. 1) then
+         ! This is ONLYL for NWM configuration with NHD channel routing. NCAR
+         ! reach-based routing has the GW physics initialized the same as with 
+         ! gridded routing. 
          call ReachLS_write_io(rt_domain(domainId)%qin_gwsubbas,g_qin_gwsubbas)
          call ReachLS_write_io(rt_domain(domainId)%qout_gwsubbas,g_qout_gwsubbas)
          call ReachLS_write_io(rt_domain(domainId)%z_gwsubbas,g_z_gwsubbas)
          call ReachLS_write_io(rt_domain(domainId)%linkid,g_basnsInd)
       else
-         ! Gridded routing
          call gw_write_io_real(rt_domain(domainId)%numbasns,rt_domain(domainId)%qin_gwsubbas,  &
                                rt_domain(domainId)%basnsInd,g_qin_gwsubbas)
          call gw_write_io_real(rt_domain(domainId)%numbasns,rt_domain(domainId)%qout_gwsubbas,  & 
@@ -4796,38 +4746,16 @@ subroutine output_gw_NWM(domainId,iGrid)
       iret = nf90_put_att(ftn,featureVarId,'cf_role',trim(fileMeta%cfRole)) 
       call nwmCheck(diagFlag,iret,'ERROR: Unable to place cf_role attribute into feature_id variable')
 
-      ! Create groundwater bucket lat/lon variables
-      !iret = nf90_def_var(ftn,"latitude",nf90_float,dimId(1),latVarId)
-      !call nwmCheck(diagFlag,iret,'ERROR: Unable to create latitude variable.')
-      !iret = nf90_put_att(ftn,latVarId,'long_name',trim(fileMeta%latLName))
-      !call nwmCheck(diagFlag,iret,'ERROR: Unable to place long_name attribute into latitude variable')
-      !iret = nf90_put_att(ftn,latVarId,'standard_name',trim(fileMeta%latStName))
-      !call nwmCheck(diagFlag,iret,'ERROR: Unable to place stndard_name attribute into latitude variable')
-      !iret = nf90_put_att(ftn,latVarId,'units',trim(fileMeta%latUnits))
-      !call nwmCheck(diagFlag,iret,'ERROR: Unable to place units attribute into latitude variable')
-      !iret = nf90_def_var(ftn,"longitude",nf90_float,dimId(1),lonVarId)
-      !call nwmCheck(diagFlag,iret,'ERROR: Unable to create longitude variable.')
-      !iret = nf90_put_att(ftn,lonVarId,'long_name',trim(fileMeta%lonLName))
-      !call nwmCheck(diagFlag,iret,'ERROR: Uanble to place long_name attribute into longitude variable')
-      !iret = nf90_put_att(ftn,lonVarId,'standard_name',trim(fileMeta%lonStName))
-      !call nwmCheck(diagFlag,iret,'ERROR: Unable to place stndard_name attribute into longitude variable')
-      !iret = nf90_put_att(ftn,lonVarId,'units',trim(fileMeta%lonUnits))
-      !call nwmCheck(diagFlag,iret,'ERROR: Unable to place units attribute into longitude variable')
-
       ! Define deflation levels for these meta-variables. For now, we are going
       ! to
-      ! default to a compression level of 2. Only compress if nwmIo is set to 1.
-      if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then 
+      ! default to a compression level of 2. Only compress if io_form_outputs is set to 1.
+      if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then 
          iret = nf90_def_var_deflate(ftn,timeId,0,1,2)
          call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression level for time.')
          iret = nf90_def_var_deflate(ftn,featureVarId,0,1,2)
          call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression level for feature_id.')
          iret = nf90_def_var_deflate(ftn,refTimeId,0,1,2)
          call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression level for reference_time.')
-         !iret = nf90_def_var_deflate(ftn,latVarId,0,1,2)
-         !call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression level for latitude.')
-         !iret = nf90_def_var_deflate(ftn,lonVarId,0,1,2)
-         !call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression level for longitude.')
       endif
 
       ! Allocate memory for the output variables, then place the real output
@@ -4840,7 +4768,8 @@ subroutine output_gw_NWM(domainId,iGrid)
       do iTmp=1,fileMeta%numVars
          if(fileMeta%outFlag(iTmp) .eq. 1) then
             ! First create variable
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            print*, "I = ",iTmp
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_def_var(ftn,trim(fileMeta%varNames(iTmp)),nf90_int,dimId(1),varId)
             else
                iret = nf90_def_var(ftn,trim(fileMeta%varNames(iTmp)),nf90_float,dimId(1),varId)
@@ -4857,8 +4786,8 @@ subroutine output_gw_NWM(domainId,iGrid)
             ! compression level of 2. In addition, we are choosing to turn the shuffle
             ! filter off for now. Kelley Eicher did some testing with this and
             ! determined that the benefit wasn't worth the extra time spent writing output.
-            ! Only compress if nwmIo is set to 1.
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 3)) then
+            ! Only compress if io_form_outputs is set to 1.
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 3)) then
                iret = nf90_def_var_deflate(ftn,varId,0,1,2)
                call nwmCheck(diagFlag,iret,'ERROR: Unable to define compression for: '//trim(fileMeta%varNames(iTmp)))
             endif
@@ -4868,9 +4797,7 @@ subroutine output_gw_NWM(domainId,iGrid)
             call nwmCheck(diagFlag,iret,'ERROR: Unable to place long_name attribute into variable '//trim(fileMeta%varNames(iTmp)))
             iret = nf90_put_att(ftn,varId,'units',trim(fileMeta%units(iTmp)))
             call nwmCheck(diagFlag,iret,'ERROR: Unable to place units attribute into variable '//trim(fileMeta%varNames(iTmp)))
-            !iret = nf90_put_att(ftn,varId,'coordinates',trim(fileMeta%coordNames(iTmp)))
-            !call nwmCheck(diagFlag,iret,'ERROR: Unable to place coordinates attribute into variable '//trim(fileMeta%varNames(iTmp)))
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_put_att(ftn,varId,'_FillValue',fileMeta%fillComp(iTmp))
                call nwmCheck(diagFlag,iret,'ERROR: Unable to place Fill value attribute into variable '//trim(fileMeta%varNames(iTmp)))
                iret = nf90_put_att(ftn,varId,'missing_value',fileMeta%missingComp(iTmp))
@@ -4913,7 +4840,7 @@ subroutine output_gw_NWM(domainId,iGrid)
             call nwmCheck(diagFlag,iret,'ERROR: Unable to find variable ID for var: '//trim(fileMeta%varNames(iTmp)))
 
             ! Put data into NetCDF file
-            if((nlst_rt(1)%nwmIo .eq. 1) .or. (nlst_rt(1)%nwmIo .eq. 2)) then
+            if((nlst_rt(1)%io_form_outputs .eq. 1) .or. (nlst_rt(1)%io_form_outputs .eq. 2)) then
                iret = nf90_put_var(ftn,varId,varOutInt)
             else
                iret = nf90_put_var(ftn,varId,varOutReal(iTmp,:))
@@ -4927,17 +4854,6 @@ subroutine output_gw_NWM(domainId,iGrid)
       call nwmCheck(diagFlag,iret,'ERROR: Unable to locate feature_id in NetCDF file.')
       iret = nf90_put_var(ftn,varId,g_basnsInd)
       call nwmCheck(diagFlag,iret,'ERROR: Unable to place data into feature_id output variable.')
-
-      ! Place groundwater bucket metadata into NetCDF file
-      !iret = nf90_inq_varid(ftn,'latitude',varId)
-      !call nwmCheck(diagFlag,iret,'ERROR: Unable to locate latitude in NetCDF file.')
-      !iret = nf90_put_var(ftn,varId,g_lakeLatOut)   
-      !call nwmCheck(diagFlag,iret,'ERROR: Unable to place data into latitude output variable.')
-
-      !iret = nf90_inq_varid(ftn,'longitude',varId)
-      !call nwmCheck(diagFlag,iret,'ERROR: Unable to locate longitude in NetCDF file.')
-      !iret = nf90_put_var(ftn,varId,g_lakeLonOut)
-      !call nwmCheck(diagFlag,iret,'ERROR: Unable to place data into longitude output variable.')
 
       ! Place time values into time variables.
       iret = nf90_inq_varid(ftn,'time',varId)
@@ -5038,6 +4954,7 @@ subroutine checkRouteGages(diagFlag,nElements,indexArray)
    ! Loop over gages. If a non-empty string is found, then change the indexArray
    ! value for that element from 0 to 1.
    where(gages .ne. '               ') indexArray = 1
+   where(gages .eq. '') indexArray = 0
 
    iret = nf90_close(ftnRt)
 

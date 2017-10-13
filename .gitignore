@@ -3,5 +3,5 @@
 .Rhistory
 *.Rproj
 *.DS_Store
-testcase/
 dockerImages/
+data/

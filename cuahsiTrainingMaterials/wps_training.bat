@@ -1,1 +1,0 @@
-cmd /c start PowerShell -NoExit -Command "$ipaddress = $(ipconfig | where {$_ -match 'IPv4.+\s(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' } | out-null; $Matches[1]); docker stop wps_docker; docker rm wps_docker; docker run -it --name wps_docker -e DISPLAY="$($ipaddress):0.0" -v  %userprofile%/documents/cuahsiTrainingMaterials:/home/cuahsi/cuahsiTrainingMaterials wps_docker"

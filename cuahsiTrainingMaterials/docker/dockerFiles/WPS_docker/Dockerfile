@@ -26,9 +26,12 @@ RUN apt-get update \
   bzip2 \
   ncview \
   vim \
+  nco \
   libswitch-perl \
+  libxrender1 \
+  libfontconfig1 \
+  libxext6 \
   && apt-get clean
-
 
 WORKDIR /
 
@@ -81,6 +84,12 @@ WORKDIR /home/cuahsi/WRF_WPS/WPS
 RUN printf '1' | ./configure \
 	&& ./compile geogrid
 
+# install NCL
+RUN wget https://www.earthsystemgrid.org/download/fileDownload.html?logicalFileId=154af009-fa02-11e6-a976-00c0f03d5b7c \
+  && mkdir /usr/local/ncl-6.4.0 \
+  && tar -xzf fileDownload.html?logicalFileId=154af009-fa02-11e6-a976-00c0f03d5b7c -C /usr/local/ncl-6.4.0 \
+  && rm fileDownload.html?logicalFileId=154af009-fa02-11e6-a976-00c0f03d5b7c
+
 #Add cuahsi user
 RUN useradd -ms /bin/bash cuahsi
 RUN usermod -aG sudo cuahsi
@@ -92,4 +101,5 @@ RUN chown -R cuahsi /home/cuahsi
 USER cuahsi
 WORKDIR /home/cuahsi
 ENV NETCDF=/usr/local
-
+ENV NCARG_ROOT=/usr/local/ncl-6.4.0
+ENV PATH=$NCARG_ROOT/bin:$PATH

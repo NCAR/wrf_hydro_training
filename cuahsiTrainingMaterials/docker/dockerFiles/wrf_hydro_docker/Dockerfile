@@ -29,12 +29,14 @@ RUN apt-get install -yq --no-install-recommends \
     m4 \
     make\
     libswitch-perl \
+    libxrender1 \
+    libfontconfig1 \
+    libxext6 \
+    nco\
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-    #ncl dep#libxrender1 \
-    #ncl dep#libfontconfig1 \
-    #ncl dep#libxext6 \
+
 
 # Download, build, and install MPICH
 RUN mkdir /tmp/mpich-src
@@ -79,10 +81,10 @@ RUN cd /tmp/netcdf-fortran-4.4.4 && make install
 ENV NETCDF=/usr/local
 
 # install NCL
-#RUN wget https://www.earthsystemgrid.org/download/fileDownload.html?logicalFileId=154af009-fa02-11e6-a976-00c0f03d5b7c \
-#  && mkdir /usr/local/ncl-6.4.0 \
-#  && tar -xzf fileDownload.html?logicalFileId=154af009-fa02-11e6-a976-00c0f03d5b7c -C /usr/local/ncl-6.4.0 \
-#  && rm fileDownload.html?logicalFileId=154af009-fa02-11e6-a976-00c0f03d5b7c
+RUN wget https://www.earthsystemgrid.org/download/fileDownload.html?logicalFileId=154af009-fa02-11e6-a976-00c0f03d5b7c \
+  && mkdir /usr/local/ncl-6.4.0 \
+  && tar -xzf fileDownload.html?logicalFileId=154af009-fa02-11e6-a976-00c0f03d5b7c -C /usr/local/ncl-6.4.0 \
+  && rm fileDownload.html?logicalFileId=154af009-fa02-11e6-a976-00c0f03d5b7c
 
 #Get the model code from https://github.com/NCAR/wrf_hydro_nwm/archive/master.zip
 ADD wrf_hydro_source /home/cuahsi/wrf_hydro_source
@@ -98,5 +100,5 @@ RUN usermod -aG sudo cuahsi
 USER cuahsi
 WORKDIR /home/cuahsi
 ENV NETCDF=/usr/local
-#ENV NCARG_ROOT=/usr/local/ncl-6.4.0
-#ENV PATH=$NCARG_ROOT/bin:$PATH
+ENV NCARG_ROOT=/usr/local/ncl-6.4.0
+ENV PATH=$NCARG_ROOT/bin:$PATH
