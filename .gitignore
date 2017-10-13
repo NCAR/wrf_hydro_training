@@ -3,6 +3,5 @@
 .Rhistory
 *.Rproj
 *.DS_Store
-testcase/
 dockerImages/
-exerciseData/
+data/
