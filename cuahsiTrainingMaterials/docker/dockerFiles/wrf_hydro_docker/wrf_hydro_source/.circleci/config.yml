@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: jmillsncar/wrf_hydro_gnu
+    working_directory: /home/circleci/wrf_hydro_source
+    steps:
+      - checkout
+      - run:
+          name: Configure model
+          command: cd trunk/NDHMS/; ./setEnvar.sh; ./configure 2
+      - run:
+          name: Compile model
+          command: cd trunk/NDHMS/; ./compile_offline_NoahMP.sh
+
+          

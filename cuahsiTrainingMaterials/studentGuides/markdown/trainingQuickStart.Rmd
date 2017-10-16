@@ -2,5 +2,15 @@
 title: "Training Quickstart Guide"
 author: "Joe Mills"
 date: "10/5/2017"
-output: html_document
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
 ---
+
+#Some thing
+
+##Some Sub Thing
+```
+The code we want the to type
+```
