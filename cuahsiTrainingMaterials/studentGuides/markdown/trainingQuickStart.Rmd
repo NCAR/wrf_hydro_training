@@ -1,6 +1,0 @@
----
-title: "Training Quickstart Guide"
-author: "Joe Mills"
-date: "10/5/2017"
-output: html_document
----

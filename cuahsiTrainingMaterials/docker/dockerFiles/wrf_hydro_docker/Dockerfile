@@ -32,7 +32,8 @@ RUN apt-get install -yq --no-install-recommends \
     libxrender1 \
     libfontconfig1 \
     libxext6 \
-    nco\
+    nco \
+	nano \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
