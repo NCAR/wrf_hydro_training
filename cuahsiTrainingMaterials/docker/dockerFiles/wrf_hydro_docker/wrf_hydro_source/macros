@@ -1,2 +1,0 @@
-NETCDF_INC = /usr/local/include
-NETCDF_LIB = /usr/local/lib

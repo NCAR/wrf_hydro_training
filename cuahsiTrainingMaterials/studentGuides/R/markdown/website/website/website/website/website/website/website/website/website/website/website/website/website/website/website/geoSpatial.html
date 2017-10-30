@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Arezoo Rafieeinasab &amp; Aubrey Dugger" />
+
+<meta name="date" content="2017-10-19" />
+
+<title>Spatial tools</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">WRF-Hydro Training Exercises</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="streamflowEvalReach.html">
+    <span class="fa fa-user"></span>
+     
+    Streamflow Evaluation
+  </a>
+</li>
+<li>
+  <a href="snotel_get.html">
+    <span class="fa fa-rss"></span>
+     
+    Snow evaluation
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="mailto:jmills@ucar.edu">
+    <span class="fa fa-envelope-o"></span>
+     
+    Contact me
+  </a>
+</li>
+<li>
+  <a href="https://ral.ucar.edu/projects/wrf_hydro/overview">
+    <span class="fa fa-github"></span>
+     
+    Project page
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Spatial tools</h1>
+<h4 class="author"><em>Arezoo Rafieeinasab &amp; Aubrey Dugger</em></h4>
+<h4 class="date"><em>2017-10-19</em></h4>
+
+</div>
+
+
+<p>For most of the postprocessing, there is a need to create spatial maps, aggregate over spatial units and also produce georeference raster and shapefiles. Many of the existing functions in available spatial libraries such as SP, RGDAL, RGEOS and Raster have been wrapped in rwrfhydro to serve our purpose. Here we explain these spatial functions, their applications as well as some examples.</p>
+<div id="list-of-the-available-functions" class="section level1">
+<h1>List of the available functions</h1>
+<ul>
+<li>GetProj</li>
+<li>GetGeogridSpatialInfo</li>
+<li>ExportGeogrid</li>
+<li>GetGeogridIndex</li>
+<li>GetTimeZone</li>
+<li>GetRfc</li>
+<li>GetPoly</li>
+<li>PolygonToRaster</li>
+</ul>
+</div>
+<div id="general-info" class="section level1">
+<h1>General Info</h1>
+<p>Load the rwrfhydro package.</p>
+<pre class="r"><code>&gt; library(rwrfhydro)</code></pre>
+<p>Set data path to Front Range test case.</p>
+<pre class="r"><code>&gt; fcPath &lt;- &#39;../data/&#39;</code></pre>
+<p>Geogrid file is one of the DOMAIN files containing all the base geographic information on the model domain such as the geographic coordinate system, latitude, longitude of each pixel and so on. This file is used frequently. Set the path to geogrid file.</p>
+<pre class="r"><code>&gt; geoFile &lt;- paste0(fcPath,&#39;/geo_em.nc&#39;)</code></pre>
+</div>
+<div id="getproj" class="section level1">
+<h1>GetProj</h1>
+<p>To be able to use any of the spatial tools in R, projection information of the model domain is required. Some of the model input and output files are based on geogrid file domain. <code>GetProj</code> pull projection information of WRF-Hydro modeling domain from geogrid file. It takes only <code>geoFile</code>; the path to the geogrid file and return the projection information as a character.</p>
+<pre class="r"><code>&gt; proj4 &lt;- GetProj(geoFile)
+&gt; proj4</code></pre>
+<pre><code>[1] &quot;+proj=lcc +lat_1=30 +lat_2=60 +lat_0=39.5269966125488 +lon_0=-97 +x_0=0 +y_0=0 +a=6370000 +b=6370000 +units=m +no_defs&quot;</code></pre>
+</div>
+<div id="getgeogridspatialinfo" class="section level1">
+<h1>GetGeogridSpatialInfo</h1>
+<p>It pulls necessary geospatial information about WRF-Hydro modeling domain from geogrid file used for regridding and projection. It only requires the address to the geogrid file and return a data frame containing geospatial information such as the projection information, number of rows and columns and size of the grids.</p>
+<pre class="r"><code>&gt; geoInfo &lt;- GetGeogridSpatialInfo(geoFile)
+&gt; geoInfo</code></pre>
+<pre><code>    DX   DY GRID_TYPE     LAT1      LON1 REF_LAT REF_LON SPLAT1 SPLAT2
+1 1000 1000         C 37.82216 -106.6699  39.527     -97     30     60
+  POLE_LAT POLE_LON MAP_PROJ NCOL NROW
+1       90        0        1  336  335</code></pre>
+</div>
+<div id="exportgeogrid" class="section level1">
+<h1>ExportGeogrid</h1>
+<p>If you need to create a georeferenced TIFF file from any variable in a netcdf file having the same domain and pixel size as the geogrid file, then you need to use <code>ExportGeogrid</code> function. It takes a NetCDF file having lat/lon information and converts the specified variable into a georeferenced TIFF file for use in standard GIS tools. Let’s export one variable from the geogrid file. You can get a list of all available variables in the <code>geoFile</code> using <code>ncdump</code> function in rwrfhydro.</p>
+<pre class="r"><code>&gt; head(ncdump(geoFile))</code></pre>
+<p>To create a georeferenced TIFF file from HGT_M field, you only need to provide the address to geogrid file (<code>geoFile</code>), the name of the variable (<code>HGT_M</code>) and the name of the output file (<code>geogrid_hgt.tif</code>).</p>
+<pre class="r"><code>&gt; ExportGeogrid(geoFile,&quot;HGT_M&quot;, &quot;geogrid_hgt.tiff&quot;)</code></pre>
+<p>You can use the provided file in any standard GIS platform. Let’s read it into memory as a raster and dispaly it.</p>
+<pre class="r"><code>&gt; # read the saved tiff file
+&gt; r &lt;- raster::raster(&quot;geogrid_hgt.tiff&quot;)
+&gt; 
+&gt; # plot the imported raster from tiff file
+&gt; raster::plot(r, main = &quot;HGT_M&quot;)
+&gt; 
+&gt; # check the raster information. Notice that geographic coordinate information has been added.
+&gt; r</code></pre>
+<pre><code>class       : RasterLayer 
+dimensions  : 335, 336, 112560  (nrow, ncol, ncell)
+resolution  : 1000, 1000  (x, y)
+extent      : -825999, -489999, -134953.4, 200046.6  (xmin, xmax, ymin, ymax)
+coord. ref. : +proj=lcc +lat_1=30 +lat_2=60 +lat_0=39.5269966125488 +lon_0=-97 +x_0=0 +y_0=0 +a=6370000 +b=6370000 +units=m +no_defs 
+data source : /Volumes/d1/jmills/wrf_hydro_training/cuahsiTrainingMaterials/studentGuides/R/markdown/geogrid_hgt.tiff 
+names       : geogrid_hgt </code></pre>
+<p><img src="geoSpatial_files/figure-html/plot1-1.png" width="600" height="600" /></p>
+<p>Many of the input and output files such as LDASOUT output file do not contain lat/lon coordinates but they match the geogrid file. In that case, you could feed the geogrid file <code>geoFile</code> from which the lat/lon information will be taken.</p>
+<pre class="r"><code>&gt; # file = paste0(fcPath,&quot;/FORCING/2013071300.LDASIN_DOMAIN1&quot;)
+&gt; # 
+&gt; # # we will read the RAINRATE variable from the 2013071300.LDASIN_DOMAIN1 file
+&gt; # ExportGeogrid(file,
+&gt; #               inVar=&quot;RAINRATE&quot;,
+&gt; #               outFile=&quot;RAINRATE.tiff&quot;,
+&gt; #               inCoordFile=geoFile)
+&gt; # 
+&gt; # # read thecreated tiff file
+&gt; # r &lt;- raster::raster(&quot;RAINRATE.tiff&quot;)
+&gt; # 
+&gt; # # plot the imported raster from tiff file
+&gt; # raster::plot(r*3600, main = &quot;RAINRATE (mm/hr)&quot;)
+&gt; # 
+&gt; # # check the raster information and notice geographic coordinate information has been added
+&gt; # r</code></pre>
+</div>
+<div id="getgeogridindex" class="section level1">
+<h1>GetGeogridIndex</h1>
+<p>To be able to use a bunch of tools such as <code>GetMultiNcdf</code>, one needs to have the indices or the location of each cell within the domain. <code>GetGeogridIndex</code> get geogrid cell indices from lat/lon (or other) coordinates. <code>GetGeogridIndex</code> reads in a set of lat/lon (or other) coordinates and generates a corresponding set of geogrid index pairs. You can assign a projection to the points using <code>proj4</code> argument which will be used to transform the point to the <code>geoFile</code> coordinate system. Check the vignette on precipitation for usage. If the point falls outside the domain, it will return <code>NA</code> value.</p>
+<pre class="r"><code>&gt; sg &lt;- data.frame(lon = seq(-107.0, -104.5, length.out = 10),
++                  lat = seq(39, 41.0, length.out = 10))
+&gt; GetGeogridIndex(sg, geoFile)</code></pre>
+<pre><code>    we  sn
+1   NA  NA
+2   15 152
+3   41 173
+4   67 194
+5   92 215
+6  118 237
+7  143 258
+8  168 280
+9  193 301
+10 218 323</code></pre>
+</div>
+<div id="gettimezone" class="section level1">
+<h1>GetTimeZone</h1>
+<p>Many of the point observations are reported in local time and needs to be converted to UTC time to be comparable with WRF-Hydro input and outputs. <code>GetTimeZone</code> return the time zone for any point having longitude and latitude. It takes a dataframe containing at least two fields of <code>latitude</code> and <code>longitude</code>, overlays the <code>points</code> with a timezone shapefile (can be downloded from <a href="http://efele.net/maps/tz/world/" class="uri">http://efele.net/maps/tz/world/</a>). The shapefile is also provided in rwrfhydro data and it is called <code>timeZone</code>.</p>
+<pre class="r"><code>&gt; # timeZone has been provided by rwrfhydro as a SpatialPolygonDataFrame
+&gt; class(timeZone)</code></pre>
+<pre><code>[1] &quot;SpatialPolygonsDataFrame&quot;
+attr(,&quot;package&quot;)
+[1] &quot;sp&quot;</code></pre>
+<pre class="r"><code>&gt; # Shows the available timezone (TZID column in timeZone@data)
+&gt; head(timeZone@data)</code></pre>
+<pre><code>                 TZID
+0    America/Dominica
+1  America/St_Vincent
+2 Australia/Lord_Howe
+3        Asia/Kashgar
+4      Pacific/Wallis
+5      Asia/Jerusalem</code></pre>
+<p>Function has three arguments.</p>
+<ul>
+<li><code>points</code>: A dataframe of the points. The dataframe should contain at least two fields called <code>latitude</code> and <code>longitude</code>.</li>
+<li><code>proj4</code>: Projection of the <code>points</code> to be used in transforming the <code>points</code> projection to <code>timeZone</code> projection. Default is <code>+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0</code> which is the same as the <code>timezone</code> projection.</li>
+<li><code>parallel</code>: If the number of points are high you can parallelize the process.</li>
+</ul>
+<p>It will return the <code>points</code> dataframe with an added column called <code>timeZone</code>. It will return NA in case a point does not fall in any polygon. Now let’s generate some random points and find their corresponding time zone information.</p>
+<pre class="r"><code>&gt; # Provide a dataframe of 10 points having longitude and latitude as column name.
+&gt; sg &lt;- data.frame(longitude = seq(-110, -80, length.out = 10),
++ latitude = seq(30, 50, length.out = 10))
+&gt; 
+&gt; # Find the time zone for each point
+&gt; sg &lt;- GetTimeZone(sg)
+&gt; sg</code></pre>
+<pre><code>             timeZone  longitude latitude
+1  America/Hermosillo -110.00000 30.00000
+2      America/Denver -106.66667 32.22222
+3      America/Denver -103.33333 34.44444
+4     America/Chicago -100.00000 36.66667
+5     America/Chicago  -96.66667 38.88889
+6     America/Chicago  -93.33333 41.11111
+7     America/Chicago  -90.00000 43.33333
+8                &lt;NA&gt;  -86.66667 45.55556
+9     America/Toronto  -83.33333 47.77778
+10    America/Toronto  -80.00000 50.00000</code></pre>
+</div>
+<div id="getrfc" class="section level1">
+<h1>GetRfc</h1>
+<p>US has 13 River Forecast Centers (RFC) and many of the statistics are desired to be grouped into River Forecast Center level so it would be easier to compare with the performance of the RFC models in the past. The RFC boundary shapefile is provided in rwrfhydro data and is called <code>rfc</code>.</p>
+<pre class="r"><code>&gt; class(rfc)</code></pre>
+<pre><code>[1] &quot;SpatialPolygonsDataFrame&quot;
+attr(,&quot;package&quot;)
+[1] &quot;sp&quot;</code></pre>
+<pre class="r"><code>&gt; # Shows the available rfc, name of the column is BASIN_ID
+&gt; head(rfc@data)</code></pre>
+<pre><code>  SITE_ID STATE           RFC_NAME                  RFC_CITY BASIN_ID
+0     ACR    AK             Alaska                 Anchorage    AKRFC
+1     KRF    MO     Missouri Basin Kansas City/Pleasant Hill    MBRFC
+2     STR    UT     Colorado Basin            Salt Lake City    CBRFC
+3     TUA    OK Arkansas-Red Basin                     Tulsa    ABRFC
+4     RSA    CA  California-Nevada                Sacramento    CNRFC
+5     ORN    LA  Lower Mississippi   New Orleans/Baton Rouge    LMRFC</code></pre>
+<p><code>GetRfc</code> return the RFC name for any point having <code>longitude</code> and <code>latitude</code>. It takes a dataframe containing at least two fields of <code>latitude</code> and <code>longitude</code>, overlays the points with a <code>rfc</code> SpatialPolygonDataFrame and return the rfc’s BASIN_ID. Function has three arguments.</p>
+<ul>
+<li><code>points</code>: A dataframe of the points. The dataframe should contain at least two fields called <code>latitude</code> and <code>longitude</code>.</li>
+<li><code>proj4</code>: Projection of the <code>points</code> to be used in transforming the <code>points</code> projection to <code>rfc</code> projection. Default is <code>+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0</code>.</li>
+<li><code>parallel</code>: If the number of points are high you can parallelize the process.</li>
+</ul>
+<p>It will return the <code>points</code> dataframe with an added column called <code>rfc</code>. It will return NA in case the point is not within any RFC.</p>
+<pre class="r"><code>&gt; # Provide a dataframe of 10 points having longitude and latitude as column name.
+&gt; sg &lt;- data.frame(longitude = seq(-110, -80, length.out = 10),
++                  latitude = seq(30, 50, length.out = 10))
+&gt; 
+&gt; # Find the rfc for each point
+&gt; sg &lt;- GetRfc(sg)
+&gt; sg</code></pre>
+<pre><code>     rfc  longitude latitude
+1   &lt;NA&gt; -110.00000 30.00000
+2  WGRFC -106.66667 32.22222
+3  WGRFC -103.33333 34.44444
+4  ABRFC -100.00000 36.66667
+5  MBRFC  -96.66667 38.88889
+6  NCRFC  -93.33333 41.11111
+7  NCRFC  -90.00000 43.33333
+8   &lt;NA&gt;  -86.66667 45.55556
+9   &lt;NA&gt;  -83.33333 47.77778
+10  &lt;NA&gt;  -80.00000 50.00000</code></pre>
+</div>
+<div id="getpoly" class="section level1">
+<h1>GetPoly</h1>
+<p><code>Getpoly</code> is similar to <code>GetRfc</code>, it is a wrapper for function <code>sp::over</code>. It takes a dataframe containing at least two fields of <code>latitude</code> and <code>longitude</code>, overlays the points with a <code>SpatialPolygonDataFrame</code> and return the requested attribute from the polygon. One could use the available <code>SpatialPolygon*</code> loaded into memory or provide the address to the location of a polygon shapefile and the name of the shapefile and it will read the polygon using <code>rgdal::readOGR</code> function.</p>
+<p>Let’s get the RFC information from <code>GetPoly</code> instead of <code>GetRfc</code>. Here we provide the name of the <code>SpatialPolygon*</code> and using argument <code>join</code> request one of the attributes of the polygon. For example, here we have requested the <code>BASIN_ID</code>, <code>RFC_NAME</code> and <code>RFC_CITY</code>.</p>
+<pre class="r"><code>&gt; # Provide a dataframe of 10 points having longitude and latitude
+&gt; sg &lt;- data.frame(longitude = seq(-110, -80, length.out = 10),
++ latitude = seq(30, 50, length.out = 10))
+&gt; 
+&gt; # Find the ID of RFC for each point
+&gt; sg &lt;- GetPoly(points = sg, polygon = rfc, join = &quot;BASIN_ID&quot;)
+&gt; 
+&gt; # Find the full name of RFC for each point
+&gt; sg &lt;- GetPoly(points = sg, polygon = rfc, join = &quot;RFC_NAME&quot;)
+&gt; 
+&gt; # Find the headquarter of RFC for each point
+&gt; sg &lt;- GetPoly(points = sg, polygon = rfc, join = &quot;RFC_CITY&quot;)
+&gt; sg</code></pre>
+<pre><code>   BASIN_ID           RFC_NAME                  RFC_CITY  longitude
+1      &lt;NA&gt;               &lt;NA&gt;                      &lt;NA&gt; -110.00000
+2     WGRFC          West Gulf         Dallas/Fort Worth -106.66667
+3     WGRFC          West Gulf         Dallas/Fort Worth -103.33333
+4     ABRFC Arkansas-Red Basin                     Tulsa -100.00000
+5     MBRFC     Missouri Basin Kansas City/Pleasant Hill  -96.66667
+6     NCRFC      North Central               Minneapolis  -93.33333
+7     NCRFC      North Central               Minneapolis  -90.00000
+8      &lt;NA&gt;               &lt;NA&gt;                      &lt;NA&gt;  -86.66667
+9      &lt;NA&gt;               &lt;NA&gt;                      &lt;NA&gt;  -83.33333
+10     &lt;NA&gt;               &lt;NA&gt;                      &lt;NA&gt;  -80.00000
+   latitude
+1  30.00000
+2  32.22222
+3  34.44444
+4  36.66667
+5  38.88889
+6  41.11111
+7  43.33333
+8  45.55556
+9  47.77778
+10 50.00000</code></pre>
+</div>
+<div id="polytoraster" class="section level1">
+<h1>PolyToRaster</h1>
+<div id="attention-function-polytoraster-will-not-work-on-the-training-computers-since-it-requires-library-rgeos-which-is-not-available-on-the-systems." class="section level3">
+<h3>!!!ATTENTION!!! Function PolyToRaster will not work on the training computers since it requires library ‘rgeos’ which is not available on the systems.</h3>
+<p>If one wants to create a mask in the model domain (geogrid file), then needs to use <code>PolyToRaster</code>. It first picks up the required geographic information (like <code>proj4</code>) from the geogrid file (<code>geoFile</code>) and then use <code>raster::rasterize</code> function to grab the mask or attribute values from the <code>SpatialPolygonDataFrame</code>. This function is basically wrapping the <code>raster::rasterize</code> function to serve our purpose. Below is a few different way one could use this function.</p>
+<p>Example: Let’s get the RFC’s ID for each pixel within the Front Range domain. This is equivalent to rasterizing the <code>rfc</code> <code>SpatialPolygonDataFrame</code> based on the <code>BASIN_ID</code>.</p>
+<pre class="r"><code>&gt; r &lt;- PolyToRaster(geoFile = geoFile,
++                   useRfc = TRUE,
++                   field =&quot;BASIN_ID&quot;)</code></pre>
+<p>To know what are the corresponding values to the integer values used in rasterized output, use the following command.</p>
+<pre class="r"><code>&gt; r@data@attributes</code></pre>
+<p>As the result shows the rectangle domain is partially in ABRFC, CBRFC, MBRFC and WGRFC</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

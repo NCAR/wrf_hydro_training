@@ -1,0 +1,1 @@
+cmd /c start PowerShell -Command "docker stop R_studio; docker rm R_studio; docker run --name R_studio -d -p 8787:8787 -v  C:/ClassMaterials:/home/rstudio/ClassMaterials rwrfhydro; Start-Process 'chrome.exe' -ArgumentList 'http://localhost:8787'"

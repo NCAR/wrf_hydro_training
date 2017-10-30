@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Logan Karsten" />
+
+<meta name="date" content="2017-10-19" />
+
+<title>Collect SNOTEL SWE from Niwot Ridge and compare directly to model output</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">WRF-Hydro Training Exercises</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="streamflowEvalReach.html">
+    <span class="fa fa-user"></span>
+     
+    Streamflow Evaluation
+  </a>
+</li>
+<li>
+  <a href="snotel_get.html">
+    <span class="fa fa-rss"></span>
+     
+    Snow evaluation
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="mailto:jmills@ucar.edu">
+    <span class="fa fa-envelope-o"></span>
+     
+    Contact me
+  </a>
+</li>
+<li>
+  <a href="https://ral.ucar.edu/projects/wrf_hydro/overview">
+    <span class="fa fa-github"></span>
+     
+    Project page
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Collect SNOTEL SWE from Niwot Ridge and compare directly to model output</h1>
+<h4 class="author"><em>Logan Karsten</em></h4>
+<h4 class="date"><em>2017-10-19</em></h4>
+
+</div>
+
+
+<div id="background" class="section level1">
+<h1>Background</h1>
+<p>Pull SNOTEL SWE at a selected site within the WRF-Hydro model domain. This vignette also reads in SWE from the model output using the coordinates from the SNOTEL metadata. Plots comparing the data are generated for the user.</p>
+</div>
+<div id="setup" class="section level1">
+<h1>Setup</h1>
+<p>Load the rwrfhydro package.</p>
+<pre class="r"><code>library(rwrfhydro)</code></pre>
+<p>Load ggplot2 for plotting puposes.</p>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<p>Establish paths to the model output and geogrid file for the test case.</p>
+<pre class="r"><code>geoFile &lt;- &#39;../data/geo_em.nc&#39;
+modelDir &lt;- &#39;../data/OUTPUT_SPRING_REACH&#39;</code></pre>
+<p>Establish the SNOTEL site of interest.</p>
+<pre class="r"><code>stationMeta &lt;- subset(snotelMeta, site_name == &quot;Hourglass Lake &quot;)</code></pre>
+</div>
+<div id="data-extraction" class="section level1">
+<h1>Data Extraction</h1>
+<p>Obtain the domain I/J coordinates using the SNOTEL lat/lon and the GetGeogridIndex function contained within rwrfhydro.</p>
+<pre class="r"><code>snoIJ &lt;- GetGeogridIndex(data.frame(lon=stationMeta$lon, lat=stationMeta$lat), geoFile)</code></pre>
+<p>Pull all SNOTEL observations for the given site for the 2012/2013 years.</p>
+<pre class="r"><code>snoObs &lt;- GetSnotel(stationMeta$site_id,series=&quot;Daily&quot;,startYr=2012,endYr=2013)</code></pre>
+<p>Pull modeled SWE at the SNOTEL point from the model directory. For a detailed explanation on the method of model extraction, see the GetMultiNcdf vignette for further explanation. Data is pulled from the pixel cell corresponding to the SNOTEL site.</p>
+<pre class="r"><code>lsmFiles &lt;- list.files(path=modelDir,pattern=&#39;0000.LDASOUT_DOMAIN&#39;,full.names=TRUE)
+fList &lt;- list(lsm=lsmFiles)
+lsmVars &lt;- list(SWE=&#39;SNEQV&#39;)
+varList &lt;- list(lsm=lsmVars)
+lsmInds &lt;- list(SWE=list(start=c(snoIJ$we,snoIJ$sn,1),end=c(snoIJ$we,snoIJ$sn,1),stat=&#39;mean&#39;))
+indList &lt;- list(lsm=lsmInds)
+fileData &lt;- GetMultiNcdf(file=fList,var=varList,ind=indList,parallel=FALSE)</code></pre>
+<p>Next, subset observations based on the date range that is contained within the modeled data frame. We will then append the subsetted obserations into the data frame in preparation for plotting.</p>
+<pre class="r"><code>fileData$obsSWE &lt;- NA
+for (step in 1:length(fileData$value)){
+   modPOSIX &lt;- fileData$POSIXct[step]
+   ind &lt;- which(snoObs$Date == as.Date(modPOSIX))
+   if (length(ind) != 0){
+      fileData$obsSWE[step] &lt;- snoObs$SWE_mm[ind[1]]
+   }
+}</code></pre>
+<p>Finally, plot the modeled values agains the observed SWE for this SNOTEL point using the ggplot2 package.</p>
+<pre class="r"><code>plotTitle &lt;- paste0(&#39;Modeled SWE Against Observations for: &#39;,stationMeta$site_name[1])
+ggplot(fileData,aes(x=POSIXct,y=value,color=&#39;Simulated&#39;)) + geom_line() + 
+  geom_line(data=fileData, aes(x=POSIXct,y=obsSWE,color=&#39;Observed&#39;),size=1.2,linetype=&#39;dashed&#39;) +
+  scale_color_manual(name=&#39;Legend&#39;,values=c(&#39;black&#39;,&#39;red&#39;)) + 
+  ggtitle(plotTitle) + xlab(&#39;Date&#39;) + ylab(&#39;SWE (mm)&#39;)</code></pre>
+<p><img src="snotel_get_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

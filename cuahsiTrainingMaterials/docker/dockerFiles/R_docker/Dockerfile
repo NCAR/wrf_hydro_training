@@ -13,7 +13,9 @@ RUN apt-get update
 RUN apt-get install -yq --no-install-recommends \
     wget \
     libhdf5-dev \
+    nco \
     m4 \
+	libgdal-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 #For ggmap
@@ -36,3 +38,7 @@ RUN Rscript -e "devtools::install_github('NCAR/rwrfhydro')"
 # Install doMC and foreach
 RUN Rscript -e "install.packages('doMC')"
 RUN Rscript -e "install.packages('foreach')"
+
+#Install rgdal and rgeos
+RUN Rscript -e "install.packages('rgdal')"
+RUN Rscript -e "install.packages('rgeos')"
