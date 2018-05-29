@@ -26,15 +26,14 @@ If your simulation ran successfully, there should now be a large number of outpu
 Now it is time to compare the result of the two runs in this experiments together. Let s take a look at the streamflow time series. Open the chanobs multi-file dataset We are going to use the *CHANOBS* files because it will limit the number of grid cells to only those which we have specified have a gage. 
 
 ### Joe needs to change this part to python:
+```R
 # plot the warm start vs the cold start
+library(foreach)
 
-# list the cold start CHRTOUT files
-```R 
+# list the cold start CHANOBS files and read in all the files
 chrtFiles <- list.files("/glade2/scratch2/arezoo/wrf-hydro-training/output/lesson4/cold_start",
                         glob2rx("*CHANOBS*"), 
                         full.names = TRUE)
-
-library(foreach)
 coldStart <- foreach(f = chrtFiles, .combine = rbind.data.frame) %do% {
   a <- rwrfhydro::GetNcdfFile(f, variables = c("time", "reference_time"), 
                               exclude = TRUE)
@@ -42,7 +41,7 @@ coldStart <- foreach(f = chrtFiles, .combine = rbind.data.frame) %do% {
   return(a)
 }
 
-# list the warm start CHRTOUT files
+# list the warm start CHANOBS files and read in all the files
 chrtFiles <- list.files("/glade2/scratch2/arezoo/wrf-hydro-training/output/lesson4/run_gridded_baseline/",
                         glob2rx("*CHANOBS*"), 
                         full.names = TRUE)
@@ -54,7 +53,7 @@ warmStart <- foreach(f = chrtFiles, .combine = rbind.data.frame) %do% {
   return(a)
 }
 
-# merge the cold and warm start and compare it together:
+# concatenate the cold and warm start and compare it together and then plot it
 coldStart$run <- "ColdStart"
 warmStart$run <- "warmStart"
 merged <- rbind(coldStart, warmStart)
