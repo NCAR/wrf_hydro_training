@@ -60,4 +60,4 @@ merged <- rbind(coldStart, warmStart)
 library(ggplot2)
 ggplot(data = merged) + geom_line(aes(time, streamflow, color = run)) + facet_wrap(~feature_id)
 ```
-
+Lets investigate why do we see this difference. 
