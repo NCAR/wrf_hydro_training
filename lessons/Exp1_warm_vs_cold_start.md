@@ -134,3 +134,12 @@ mpirun -np 4 ./wrf_hydro.exe >> run.log 2>&1
 ```
 If your simulation ran successfully, there should now be a large number of output files in the ~/wrf-hydro-training/output/lesson4/cold_start. 
 
+## Comparison of the cold versus warm start
+Now it is time to compare the result of the two runs in this experiments together. Let s take a look at the streamflow time series. Open the chanobs multi-file dataset We are going to use the *CHANOBS* files because it will limit the number of grid cells to only those which we have specified have a gage. 
+
+NOTE: open_mfdataset supports wildcards for pattern matching but requires that the path be absolute with no tilde
+
+We will use wildcards * to open all files that contain 'CHANOBS' in the name.
+
+**NOTE: Because we are opening multiple files, we need to tell xarray how to concatenate them. Because this is a timeseries with time dimension called 'time' we will specify 'time' as the concatenation dimension.
+
