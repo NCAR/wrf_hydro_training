@@ -120,8 +120,8 @@ ls ~/wrf-hydro-training/output/lesson4/cold_start | tail -40
 ```
 
 If one does not provide restart files in the namelist, the simulation would be a cold start. To do that make the following changes in the namelists. 
-1.	Comment out this line *RESTART_FILENAME_REQUESTED = "RESTART/RESTART.2011082600_DOMAIN1"* in the namelist.hrldas by adding “!” to the start of the line. 
-1.	Comment out this line *RESTART_FILE  = 'RESTART/HYDRO_RST.2011-08-26_00_00_DOMAIN1'* in the hydro.namelist by adding “!” to the start of the line. 
+1.	Comment out this line **RESTART_FILENAME_REQUESTED = "RESTART/RESTART.2011082600_DOMAIN1"** in the namelist.hrldas by adding “!” to the start of the line. 
+1.	Comment out this line **RESTART_FILE  = 'RESTART/HYDRO_RST.2011-08-26_00_00_DOMAIN1'** in the hydro.namelist by adding “!” to the start of the line. 
 
 ### Step 5. Running WRF-Hydro 
 Now that we have constructed our simulation directory, we can run our simulation. For this we will be using the mpi run command, which has a number of arguments. For this simple case, we only need to supply one argument, the number of cores. This is done with the -np argument, and we will set it to 4 cores.
