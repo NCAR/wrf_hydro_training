@@ -32,6 +32,7 @@ mpirun -np 4 ./wrf_hydro.exe >> run.log 2>&1
 ```
 If your simulation ran successfully, there should now be a large number of output files in the ~/wrf-hydro-training/output/lesson4/noTerrainRouting.
 
-
+## Comparing the streamflow simulations
+Let s look at the streamflow simulations with the 
 
 
