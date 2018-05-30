@@ -99,13 +99,4 @@ merged <- rbind(noGW, GW_passThrough, GW_Exp, obs[, names(noGW)])
 library(ggplot2)
 ggplot(data = merged) + geom_line(aes(time, streamflow, color = run)) + facet_wrap(~feature_id)
 ```
-
-
-hydro.namelist:
-● GWBASESWCRT - Switch to activate groundwater bucket module.
-● GWBUCKPARM_file - Path to groundwater bucket parameter file.
-● gwbasmskfil (optional) - Path to netcdf groundwater basin mask file if using an explicit
-groundwater basin 2d grid.
-● UDMP_OPT (optional) - Switch to activate user-defined mapping between land surface model
-grid and conceptual basins.
-● udmap_file (optional) - If user-defined mapping is active, path to spatial-weights file.
+Now, lets take a look at the plots and interpret them. When user turns off the groundwater, the water which percolate to the deep soil just disppears and does not emerge to the stream, therefore, the mass balance gets violated. Also, since the water does not reach to streams, the simulated streamflow would be less than when groundwater in turned on. Pass-through and exponential options keep the mass balance. The pass-through will place all the water percoalated to the deep soil directly to the stream and therefore the hydrograph is sharper and peaks sooner than the exponential test case.
