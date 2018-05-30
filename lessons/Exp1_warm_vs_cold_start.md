@@ -98,4 +98,4 @@ library(ggplot2)
 ggplot(data = merged, aes(x = x, y = y)) + 
   geom_raster(aes(fill = soilM)) + facet_grid(soilColumn~run) 
   ```
-  As you would see in this plot, for the cold start the soil is almost dry while for the warm start run, there is considerable amount of water in soil. As a result they have different response to the rainfall event and in the cold start run, since the soil is dry, it has a higher capacity to store water and therefore it does not run off. This experiments is just to emphasize on the impact of a spin up for any simulation, here WRF-Hydro simulations. 
+  As you would see in this plot, for the cold start the soil is almost dry while for the warm start run, there is considerable amount of water in soil. As a result they have different response to the rainfall event and in the cold start run. Since the soil is dry, it has a higher capacity to store water and therefore it does not run off. This experiments is just to emphasize on the impact of a spin up for any simulation, here WRF-Hydro simulations. 
