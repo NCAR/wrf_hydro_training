@@ -60,4 +60,41 @@ merged <- rbind(coldStart, warmStart)
 library(ggplot2)
 ggplot(data = merged) + geom_line(aes(time, streamflow, color = run)) + facet_wrap(~feature_id)
 ```
-Lets investigate why do we see this difference. 
+Now lets investigate why do we see this difference between the two. There is one option in the hydro.namelist to output the starting state of the simulation. 
+
+```
+! Option to write output files at time 0 (restart cold start time): 0=no, 1=yes (default)
+t0OutputFlag = 1
+```
+
+Soil moisture is one of the important state variabels which will have an impact 
+
+soil moisture content at the start of the two simulations, and see how it impacts our simulations.
+
+
+
+```R
+###### Let s plot the soil moiture state at the start of the run between the two runs ...
+
+coldStartS <- rwrfhydro::GetNcdfFile("~/wrf-hydro-training/output/lesson4/cold_start/201108260000.LDASOUT_DOMAIN1",
+                                     variables = "SOIL_M", quiet = TRUE)$SOIL_M
+coldStartS_df <- data.frame(soilM = c(coldStartS), 
+                            i = rep(1:dim(coldStartS)[1], dim(coldStartS)[2]*dim(coldStartS)[3]), 
+                            soilColumn = rep(rep(1:dim(coldStartS)[2], each = dim(coldStartS)[1]), dim(coldStartS)[3]),
+                            k = rep(1:dim(coldStartS)[3], each = dim(coldStartS)[1]*dim(coldStartS)[2]))
+coldStartS_df$run <- "Cold Start"
+
+warmStartS <- rwrfhydro::GetNcdfFile("~/wrf-hydro-training/output/lesson4/run_gridded_baseline/201108260000.LDASOUT_DOMAIN1", 
+                                     variables = "SOIL_M", quiet = TRUE)$SOIL_M
+warmStartS_df <- data.frame(soilM = c(warmStartS), 
+           i = rep(1:dim(warmStartS)[1], dim(warmStartS)[2]*dim(warmStartS)[3]), 
+           soilColumn = rep(rep(1:dim(warmStartS)[2], each = dim(warmStartS)[1]), dim(warmStartS)[3]),
+           k = rep(1:dim(warmStartS)[3], each = dim(warmStartS)[1]*dim(warmStartS)[2]))
+warmStartS_df$run <- "Warm Start"
+
+merged <- rbind(coldStartS_df, warmStartS_df)
+
+library(ggplot2)
+ggplot(data = merged, aes(x = i, y = k)) + 
+  geom_raster(aes(fill = soilM)) + facet_grid(soilColumn~run) 
+  ```
