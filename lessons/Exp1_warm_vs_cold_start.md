@@ -60,18 +60,14 @@ merged <- rbind(coldStart, warmStart)
 library(ggplot2)
 ggplot(data = merged) + geom_line(aes(time, streamflow, color = run)) + facet_wrap(~feature_id)
 ```
-Now lets investigate why do we see this difference between the two. There is one option in the hydro.namelist to output the starting state of the simulation. 
+Now lets investigate why do we see this difference between the two. There is one option in the hydro.namelist to output the starting state of the simulation which was set to 1 at the two model simulations. This allows us to compare the two runs at the initial time step.
 
 ```
 ! Option to write output files at time 0 (restart cold start time): 0=no, 1=yes (default)
 t0OutputFlag = 1
 ```
 
-Soil moisture is one of the important state variabels which will have an impact 
-
-soil moisture content at the start of the two simulations, and see how it impacts our simulations.
-
-
+Note that in the above hydrographs the streamflow for the cold start run is zero while in the warm start run the streams are not empty. Now let s take a look at the soil moisture as one of the important state variabels impacting the streamflow values. 
 
 ```R
 ###### Let s plot the soil moiture state at the start of the run between the two runs ...
@@ -98,3 +94,4 @@ library(ggplot2)
 ggplot(data = merged, aes(x = i, y = k)) + 
   geom_raster(aes(fill = soilM)) + facet_grid(soilColumn~run) 
   ```
+  As you would see in this plot, for the cold start the soil is almost dry while for the warm start run, there is considerable amount of water in soil. As a result they have different response to the rainfall event and in the cold start run, since the soil is dry, it has a higher capacity to store water and therefore it does not run off. This experiments is just to emphasize on the impact of a spin up for any simulation, here WRF-Hydro simulations. 
