@@ -1,4 +1,4 @@
-#Providing supplemental forcing
+# Providing supplemental forcing
 
 There are certain times that the user wants to combine atmospheric analyses from reanalysis products or other models with a separate analysis of precipitation (e.g. a gridded gauge product, radar QPE, nowcasts, satellite QPE, etc). To enable such behaviour, the user can change the forcing option to 6 to use supplementary precipiation files.
 
