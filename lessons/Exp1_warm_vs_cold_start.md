@@ -67,31 +67,35 @@ Now lets investigate why do we see this difference between the two. There is one
 t0OutputFlag = 1
 ```
 
-Note that in the above hydrographs the streamflow for the cold start run is zero while in the warm start run the streams are not empty. Now let s take a look at the soil moisture as one of the important state variabels impacting the streamflow values. 
+Note that in the above hydrographs the streamflow for the cold start run is zero while in the warm start run the streams are not empty. Now let s take a look at the soil moisture content at the inirial time step as one of the important state variabels impacting the streamflow values. 
 
 ```R
-###### Let s plot the soil moiture state at the start of the run between the two runs ...
+# Read the soil moisture content at the start of the cold start run, and convert it to a data.frame
 
 coldStartS <- rwrfhydro::GetNcdfFile("~/wrf-hydro-training/output/lesson4/cold_start/201108260000.LDASOUT_DOMAIN1",
                                      variables = "SOIL_M", quiet = TRUE)$SOIL_M
 coldStartS_df <- data.frame(soilM = c(coldStartS), 
-                            i = rep(1:dim(coldStartS)[1], dim(coldStartS)[2]*dim(coldStartS)[3]), 
+                            x = rep(1:dim(coldStartS)[1], dim(coldStartS)[2]*dim(coldStartS)[3]), 
                             soilColumn = rep(rep(1:dim(coldStartS)[2], each = dim(coldStartS)[1]), dim(coldStartS)[3]),
-                            k = rep(1:dim(coldStartS)[3], each = dim(coldStartS)[1]*dim(coldStartS)[2]))
+                            y = rep(1:dim(coldStartS)[3], each = dim(coldStartS)[1]*dim(coldStartS)[2]))
 coldStartS_df$run <- "Cold Start"
+
+# Read the soil moisture content at the start of the warm start run, and convert it to a data.frame
 
 warmStartS <- rwrfhydro::GetNcdfFile("~/wrf-hydro-training/output/lesson4/run_gridded_baseline/201108260000.LDASOUT_DOMAIN1", 
                                      variables = "SOIL_M", quiet = TRUE)$SOIL_M
 warmStartS_df <- data.frame(soilM = c(warmStartS), 
-           i = rep(1:dim(warmStartS)[1], dim(warmStartS)[2]*dim(warmStartS)[3]), 
+           x = rep(1:dim(warmStartS)[1], dim(warmStartS)[2]*dim(warmStartS)[3]), 
            soilColumn = rep(rep(1:dim(warmStartS)[2], each = dim(warmStartS)[1]), dim(warmStartS)[3]),
-           k = rep(1:dim(warmStartS)[3], each = dim(warmStartS)[1]*dim(warmStartS)[2]))
+           y = rep(1:dim(warmStartS)[3], each = dim(warmStartS)[1]*dim(warmStartS)[2]))
 warmStartS_df$run <- "Warm Start"
 
+# concatenate the two runs
 merged <- rbind(coldStartS_df, warmStartS_df)
 
+# Plot the soil moiture state at the start of the run between the two runs
 library(ggplot2)
-ggplot(data = merged, aes(x = i, y = k)) + 
+ggplot(data = merged, aes(x = x, y = y)) + 
   geom_raster(aes(fill = soilM)) + facet_grid(soilColumn~run) 
   ```
   As you would see in this plot, for the cold start the soil is almost dry while for the warm start run, there is considerable amount of water in soil. As a result they have different response to the rainfall event and in the cold start run, since the soil is dry, it has a higher capacity to store water and therefore it does not run off. This experiments is just to emphasize on the impact of a spin up for any simulation, here WRF-Hydro simulations. 
