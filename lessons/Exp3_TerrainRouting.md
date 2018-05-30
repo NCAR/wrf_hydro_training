@@ -14,9 +14,15 @@ There are few peices in the hydro.namelist which are related to the overland flo
 ! Switch to activate surface overland flow routing...(0=no, 1=yes)
 OVRTSWCRT = 0
 ```
-There are two other piece of information in the hydro.namelist which are related to the overland flow routing, the *rt_option* and *DTRT_TER* which specify the type of the terrain routing and  the terrain routing model timestep, repectively. When you user turns off the switch, there is no need to change these options, just leave it as is. 
+There are four other pieces of information in the hydro.namelist which are related to the overland flow routing. The *DXRT* and *AGGFACTRT* control the relative spatial resolution of the terrain routing grid compared to the land model. The *rt_option* and *DTRT_TER* which specify the type of the terrain routing and  the terrain routing model timestep, repectively. When you user turns off the switch, there is no need to change these options, just leave it as is. 
 
 ```
+! Specify the grid spacing of the terrain routing grid...(meters)
+DXRT = 250.0
+
+! Specify the integer multiple between the land model grid and the terrain routing grid...(integer)
+AGGFACTRT = 4
+
 ! Specify overland flow routing option: 1=Steepest Descent (D8) 2=CASC2D (not active)
 ! NOTE: Currently subsurface flow is only steepest descent
 rt_option = 1
