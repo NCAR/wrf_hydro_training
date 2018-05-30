@@ -71,7 +71,6 @@ Note that in the above hydrographs the streamflow for the cold start run is zero
 
 ```R
 # Read the soil moisture content at the start of the cold start run, and convert it to a data.frame
-
 coldStartS <- rwrfhydro::GetNcdfFile("~/wrf-hydro-training/output/lesson4/cold_start/201108260000.LDASOUT_DOMAIN1",
                                      variables = "SOIL_M", quiet = TRUE)$SOIL_M
 coldStartS_df <- data.frame(soilM = c(coldStartS), 
@@ -81,7 +80,6 @@ coldStartS_df <- data.frame(soilM = c(coldStartS),
 coldStartS_df$run <- "Cold Start"
 
 # Read the soil moisture content at the start of the warm start run, and convert it to a data.frame
-
 warmStartS <- rwrfhydro::GetNcdfFile("~/wrf-hydro-training/output/lesson4/run_gridded_baseline/201108260000.LDASOUT_DOMAIN1", 
                                      variables = "SOIL_M", quiet = TRUE)$SOIL_M
 warmStartS_df <- data.frame(soilM = c(warmStartS), 
