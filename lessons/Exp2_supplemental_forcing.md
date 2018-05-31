@@ -91,7 +91,35 @@ merged <- rbind(stageIV, NLDAS, obs[, names(NLDAS)])
 library(ggplot2)
 ggplot(data = merged) + geom_line(aes(time, streamflow, color = run)) + facet_wrap(~feature_id)
 ```
-Here, you can see the huge impact of precipitation choice.
+Here, you can see the huge impact of precipitation choice. Let s plot the precipitation fields to see how the two are different. 
 
+```R
+filesLDASIN <- list.files("~/wrf-hydro-training/output/lesson4/supplemental_forcing/FORCING",
+                          pattern = glob2rx("*LDASIN*"), full.names = TRUE)
 
+filesPRECIP <- list.files("~/wrf-hydro-training/output/lesson4/supplemental_forcing/FORCING",
+                          pattern = glob2rx("*PRECIP*"), full.names = TRUE)
 
+df <- foreach(i=60:65, .combine = rbind.data.frame) %do% {
+  
+  nldas <- rwrfhydro::ncdump(filesLDASIN[i], "RAINRATE", quiet = TRUE)
+  st4   <- rwrfhydro::ncdump(filesPRECIP[i], "precip_rate", quiet = TRUE)
+  
+  df <- rbind(data.frame(p = c(nldas),
+                         j = rep(1:nrow(nldas),ncol(nldas)),
+                         i = rep(1:ncol(nldas),each = nrow(nldas)),
+                         run = "NLDAS",
+                         time=substr(basename(filesLDASIN[i]), 1, 10)),
+              data.frame(p = c(st4),
+                         j = rep(1:nrow(st4),ncol(st4)),
+                         i = rep(1:ncol(st4),each = nrow(st4)),
+                         run = "ST4",
+                         time=substr(basename(filesPRECIP[i]), 1, 10)))
+  return(df)
+}
+
+ggplot(df)+geom_raster(aes(x=i, y=j, fill = p*3600))+facet_grid(time~run)+
+  scale_fill_continuous(low = "white", high= "blue")
+
+```
+As seen above the spatial pattern of the two forcing are very different. Stage IV peaks on the south part of the basin and does not contribute to the streamflow generation. 
