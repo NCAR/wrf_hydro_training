@@ -51,9 +51,47 @@ mpirun -np 4 ./wrf_hydro.exe >> run.log 2>&1
 ```
 ## Comparng NLDAS versus StageIV precipitation forced simulation
 
+Here we plot the simulated streamflow from the two runs forced by NLDAS and Stage IV precipitation data. 
+```R
+# Plot the streamflow simulation with NLDAS versus StageIV forcing
+library(foreach)
 
+# read the obs files
+obs <- read.csv("~/wrf-hydro-training/example_case/USGS_obs.csv")
+metadata <- read.csv("~/wrf-hydro-training/example_case/Gridded/croton_frxst_pts.csv")
+obs <- merge(obs,  metadata, by.x = "site_no", by.y = "Site_No")
+names(obs) <- c("site_no", "time", "streamflow", "feature_id", "LON", "LAT", "STATION")
 
+# list the CHANOBS files for the simulation forced by StageIV
+chrtFiles <- list.files("/glade2/scratch2/arezoo/wrf-hydro-training/output/lesson4/supplemental_forcing",
+                        glob2rx("*CHANOBS*"), full.names = TRUE)
+stageIV <- foreach(f = chrtFiles, .combine = rbind.data.frame) %do% {
+  a <- rwrfhydro::GetNcdfFile(f, variables = c("feature_id", "streamflow"), quiet = TRUE)
+  a$time <- as.POSIXct(substr(basename(f), 1, 12), format = "%Y%m%d%H%M", tz = "UTC")
+  return(a)
+}
 
+# list the CHANOBS files for the simulation forced by NLDAS
+chrtFiles <- list.files("/glade2/scratch2/arezoo/wrf-hydro-training/output/lesson4/run_gridded_baseline/",
+                        glob2rx("*CHANOBS*"), full.names = TRUE)
+
+NLDAS <- foreach(f = chrtFiles, .combine = rbind.data.frame) %do% {
+  a <- rwrfhydro::GetNcdfFile(f, variables = c("feature_id", "streamflow"), quiet = TRUE)
+  a$time <- as.POSIXct(substr(basename(f), 1, 12), format = "%Y%m%d%H%M", tz = "UTC")
+  return(a)
+}
+
+# concatenate the two run and plot it
+stageIV$run <- "StageIV forced"
+NLDAS$run <- "NLDAS foced"
+obs$run <- "Observation"
+
+merged <- rbind(stageIV, NLDAS, obs[, names(NLDAS)])
+
+library(ggplot2)
+ggplot(data = merged) + geom_line(aes(time, streamflow, color = run)) + facet_wrap(~feature_id)
+```
+Here, you can see the huge impact of precipitation choice.
 
 
 
