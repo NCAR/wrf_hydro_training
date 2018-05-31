@@ -42,6 +42,15 @@ ls ~/wrf-hydro-training/output/lesson4/supplemental_forcing/FORCING/
 
 Now you see two files per each hour, the *PRECIP_FORCING* will be used for the preciptation data and *LDASIN_DOMAIN* would be used for all other forcings. 
 
+## Run the simulation
+Now that we have constructed our simulation directory, we can run our simulation.
+
+```bash
+cd ~/wrf-hydro-training/output/lesson4/supplemental_forcing
+mpirun -np 4 ./wrf_hydro.exe >> run.log 2>&1
+```
+## Comparng NLDAS versus StageIV precipitation forced simulation
+
 
 
 
