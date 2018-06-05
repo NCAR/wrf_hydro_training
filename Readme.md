@@ -1,5 +1,5 @@
 ## Overview
-This repository contains all the lessons for hte basic WRF-Hydro training.
+This repository contains lessons in understanding the basic functionality of WRF-Hydro.
 
 ### Requirements
 The easiest and recommended way to run these lessons is via the [wrfhydro/training](https://hub.docker.com/r/wrfhydro/training/) Docker container, which has all software dependencies and data pre-installed.
@@ -10,7 +10,9 @@ The easiest and recommended way to run these lessons is via the [wrfhydro/traini
 ### Where to get help and/or post issues
 If you have general questions about Docker, there are ample online resourves including the excellent Docker documentation at https://docs.docker.com/.
 
-The best place ask questions or post issues with these lessons is via the Issues page of the GitHub repository at https://github.com/NCAR/wrf_hydro_training/issues.
+If you have questions about WRF-Hydro or these lessons please use the contact form on our website: https://ral.ucar.edu/projects/wrf_hydro/contact. 
+
+If you have found a bug in these lessons please log an issue on the Issues page of the GitHub repository at https://github.com/NCAR/wrf_hydro_training/issues.
 
 
 ## How to run
@@ -19,7 +21,7 @@ Make sure you have Docker installed and that it can access your localhost ports.
 **Step 1: Open a terminal or PowerShell session**
 
 **Step 2: Pull the wrfhydro/training Docker container for the desired code version**
-Each training container is specific to a release version of the WRF-Hydro source code, which can be found at https://github.com/NCAR/wrf_hydro_nwm_public/releases. **Note: Training IS NOT SUPPORTED for bleeding-edge, unreleased code**
+Each training container is specific to a release version of the WRF-Hydro source code, which can be found at https://github.com/NCAR/wrf_hydro_nwm_public/releases.
 
 Issue the following command in your terminal to pull a specific version of the training corresponding to your code release version. In this example, we will pull the training container for v5.0.0.
 
@@ -30,9 +32,9 @@ Issue the following commnand in your terminal session to start the training Dock
 
 `docker run --name wrf-hydro-training -p 8888:8888 -it wrfhydro/training`
 
-The container will start and perform a number of actions before startign the training. 
+The container will start and perform a number of actions before starting the training. 
 
-* First, the container will pull the model code corresponding to the specified major version, in this case v5.
+* First, the container will pull the model code corresponding to the specified major version, in this case v5.0.0
 * Second, the container will pull an example test case compatible with the model code release.
 * Third, the container will launch a Jupyter Notebook server and echo the address to your terminal.
 
