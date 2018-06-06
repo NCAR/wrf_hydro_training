@@ -1,0 +1,761 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata><idinfo><citation><citeinfo><origin>U.S. Geological Survey (USGS)</origin><origin>U.S. Department of Agriculture - Natural Resource Conservation Service (NRCS)</origin><origin>U.S. Environmental Protection Agency (EPA)</origin><origin>Other Federal, State, and local partners (see dataset specific metadata for details)</origin><pubdate>See dataset specific metadata</pubdate><title>WBDHU12</title><geoform>Vector Digital Data Set (Polygon)</geoform><onlink>http://nhd.usgs.gov/wbd.html</onlink></citeinfo></citation><descript><abstract>The Watershed Boundary Dataset (WBD) is a comprehensive aggregated collection of hydrologic unit data consistent with the national criteria for delineation and resolution. It defines the areal extent of surface water drainage to a point except in coastal or lake front areas where there could be multiple outlets as stated by the Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD), herein after referred to as the “Standard” (http://pubs.usgs.gov/tm/11/a3). Watershed boundaries are determined solely upon science-based hydrologic principles, not favoring any administrative boundaries or special projects, nor particular program or agency. This dataset represents the hydrologic unit boundaries to the 12-digit (6th level) for the entire United States.  Some areas may also include additional subdivisions representing the 14- and 16-digit hydrologic unit (HU). At a minimum, the HU’s are delineated at 1:24,000-scale in the conterminous United States, 1:25,000-scale in Hawaii and the Caribbean, and 1:63,360-scale in Alaska, meeting the National Map Accuracy Standards (NMAS) Higher resolution boundaries are being developed where partners and data exist and will be incorporated back into the WBD. WBD data are delivered as a dataset of polygons and corresponding lines that define the boundary of the polygon.   WBD polygons attributes include hydrologic unit codes (HUC), size (in the form of acres and square kilometers), name, downstream hydrologic unit code, type of watershed, non-contributing areas, and flow modifications. The HUC describes where the unit is in the country and the level of the unit. WBD line attributes contain the highest level of hydrologic unit for each boundary, line source information and flow modifications.
+WBDHU12 represents the 12-digit hydrologic unit boundaries (previously referred to as Subwatersheds). Within the United States, approximately 98,363 12-digit hydrologic units are in the WBD,</abstract><purpose>The intent of defining Hydrologic Units (HU) within the Watershed Boundary Dataset is to establish a base-line drainage boundary framework, accounting for all land and surface areas. Hydrologic units are intended to be used as a tool for water-resource management and planning activities particularly for site-specific and localized studies requiring a level of detail provided by large-scale map information. The WBD complements the National Hydrography Dataset (NHD) and supports numerous programmatic missions and activities including: watershed management, rehabilitation, and enhancement, aquatic species conservation strategies, flood plain management and flood prevention, water-quality initiatives and programs, dam safety programs, fire assessment and management, resource inventory and assessment, water data analysis and water census.</purpose></descript><timeperd><timeinfo><rngdates><begdate>1980</begdate><enddate>2015</enddate></rngdates></timeinfo><current>publication date</current></timeperd><status><progress>Complete</progress><update>As needed</update></status><spdom><bounding><westbc>-179.229655487</westbc><eastbc>179.856674735</eastbc><northbc>71.4395725902</northbc><southbc>-14.4246950943</southbc></bounding></spdom><keywords><theme><themekt>None</themekt><themekey>HUC</themekey><themekey>Hydrologic Units</themekey><themekey>Hydrologic Unit Code</themekey><themekey>Region</themekey><themekey>Sub-region</themekey><themekey>Basin</themekey><themekey>Sub-basin</themekey><themekey>Watershed</themekey><themekey>Subwatershed</themekey><themekey>WBD</themekey><themekey>Watershed Boundary Dataset</themekey><themekey>2-digit</themekey><themekey>4-digit</themekey><themekey>6-digit</themekey><themekey>8-digit</themekey><themekey>10-digit</themekey><themekey>12-digit</themekey><themekey>14-digit</themekey><themekey>16-digit</themekey></theme><place><placekt>U.S. Department of Commerce, 1977, Countries, dependencies, areas of special sovereignty, and their principal administrative divisions (Federal Information Processing Standards 10-3): Washington, D.C., National Institute of Standards and Technology.</placekt><placekey>US</placekey><placekey>United States</placekey></place></keywords><accconst>None</accconst><useconst>The distributor shall not be held liable for improper or incorrect use of this data, based on the description of appropriate/inappropriate uses described in this metadata document. It is strongly recommended that this data is directly acquired from the distributor and not indirectly through other sources which may have changed the data in some way. These data should not be used at scales greater than 1:24,000 for the purpose of identifying hydrographic watershed boundary feature locations in the United States. The Watershed Boundary Dataset is public information and may be interpreted by all organizations, agencies, units of government, or others based on needs; however, they are responsible for the appropriate application of the data. Photographic or digital enlargement of these maps to scales greater than that at which they were originally delineated can result in misrepresentation of the data.  If enlarged, the maps will not include the fine detail that would be appropriate for mapping at the small scale.  Digital data files are periodically updated and users are responsible for obtaining the latest version of the data from the source distributor. Acknowledgment of the origination agencies would be appreciated in products derived from these data.</useconst><ptcontac><cntinfo><cntorgp><cntorg>U.S. Geological Survey</cntorg></cntorgp><cntaddr><addrtype>Mailing</addrtype><address>U.S. Geological Survey, National Geospatial Technical Operations Center, P.O. Box 25046</address><city>Denver</city><state>CO</state><postal>80225</postal></cntaddr><cntvoice>1-877-275-8747</cntvoice><cntemail>bpgeo@usgs.gov</cntemail></cntinfo></ptcontac><datacred>Funding for the Watershed Boundary Dataset (WBD) was provided by the USDA-NRCS, USGS and EPA along with other federal, state and local agenies. Representatives from many agencies contributed a substantial amount of time and salary towards quality review and updating of the dataset in order to meet the WBD Standards. See dataset specific metadata for further information</datacred><native>Environment as of Metadata Creation: Microsoft Windows 7 Version 6.1 (Build 7601) Service Pack 1; Esri ArcGIS 10.2.2 (Build 3552) Service Pack N/A (Build N/A)</native></idinfo><dataqual><attracc><attraccr>100% of the initially required attributes were visually verified using 24K digital raster graphics (DRG's) as the base. Additional datasets, like the Geographic Names Information System (GNIS) and NHD, may also have been used to verify attribution. The accuracy of this data is dependent on the level of detail of the source material and the interpretation procedures for capturing that source. Other sources and methods may have been used to create or update WBD data.  In some cases, additional information may be found in the WBD Metadata table.</attraccr></attracc><logic>Lines, polygons (area) and nodes conform to topological rules.  Lines intersect only at nodes, and all nodes anchor the ends of lines.  Lines do not overshoot or undershoot other lines where they are supposed to meet.  There are no duplicate lines.  Lines bound polygons.  Gaps and overlaps among polygons do not exist.  All polygons close.</logic><complete>The WBD contains completed polygons at every level for the United States. All required field within the polygon and line datasets are populated. Some of these fields may be populated with a 0 value. The lines coincident with the international boundary area assigned a HULevel value of 0. These cannot be attributed until the adjacent international units are added at which point the highest level of hydrologic unit can be determined. Detailed description of delineation methods and full attribute definitions can be found in the WBD Standards.</complete><posacc><horizpa><horizpar>The WBD was produced using Digital Raster Graphics (DRG's) as the source map. Data completeness for DRG files reflects content of the source graphic and may therefore be reflected in the completeness and accuracy of the WBD. The map was digitized from USGS 1:24,000-scale digital raster graphic base maps, with an inherited error of +/- 40 feet according to the USGS National Map Accuracy Standards.
+It is estimated that any errors detected were less than 10%. It should also be noted that while general rules of hydrology were used (i.e. natural water flow is downhill), the locations of boundaries is still somewhat subjective as the 1:24,000-scale DRG's do not always provide enough information for identifying the location of the boundaries. Other sources and methods may have been used to create or update WBD data.  In some cases, additional information may be found in the WBD Metadata table.</horizpar></horizpa><vertacc><vertaccr>A formal accuracy assessment of the vertical positional information in the data set has either not been conducted, or is not applicable.</vertaccr></vertacc></posacc><lineage><srcinfo><srccite><citeinfo><origin>U.S. Geological Survey</origin><pubdate>Unknown</pubdate><title>7.5 Minute Topographic Quadrangle Sheets</title><geoform>Paper Map</geoform><pubinfo><pubplace>Reston, Virginia</pubplace><publish>U.S. Geological Survey</publish></pubinfo></citeinfo></srccite><srcscale>24000</srcscale><typesrc>Digital and/or Hardcopy Resources</typesrc><srctime><timeinfo><rngdates><begdate>1884</begdate><enddate>2006</enddate></rngdates></timeinfo><srccurr>map delineation</srccurr></srctime><srccitea>USGSTopo</srccitea><srccontr>base information for hydrologic unit map delineation and digitize map</srccontr></srcinfo><srcinfo><srccite><citeinfo><origin>U.S. Geological Survey</origin><pubdate>1999</pubdate><title>U.S. Geological Survey</title><geoform>Raster Digital Data Set</geoform><pubinfo><pubplace>Unknown</pubplace><publish>U.S. Geological Survey</publish></pubinfo><onlink>http://datagateway.nrcs.usda.gov</onlink></citeinfo></srccite><srcscale>24000</srcscale><typesrc>Digital and/or Hardcopy Resources</typesrc><srctime><timeinfo><rngdates><begdate>Unknown</begdate><enddate>1999</enddate></rngdates></timeinfo><srccurr>map delilneation</srccurr></srctime><srccitea>USGSDRG</srccitea><srccontr>base information for hydrologic unit map delineation and digitize map</srccontr></srcinfo><srcinfo><srccite><citeinfo><origin>U.S. Geological Survey</origin><pubdate>Unknown</pubdate><title>Digital Orthophoto Quads</title><geoform>Raster Digital Data (Aerial Imagery)</geoform><pubinfo><pubplace>Unknown</pubplace><publish>U.S. Geological Survey</publish></pubinfo><onlink>http://datagateway.nrcs.usda.gov</onlink></citeinfo></srccite><srcscale>24000</srcscale><typesrc>Digital and/or Hardcopy Resources</typesrc><srctime><timeinfo><sngdate><caldate>Unknown</caldate></sngdate></timeinfo><srccurr>20100325</srccurr></srctime><srccitea>USGSDOQ</srccitea><srccontr>GIS raster coverage used for reference in watershed boundary delineation</srccontr></srcinfo><srcinfo><srccite><citeinfo><origin>U.S. Geological Survey</origin><pubdate>1994</pubdate><title>250K Hydrologic Unit Boundaries</title><geoform>Vector Digital Data Set</geoform><pubinfo><pubplace>Reston, Virginia</pubplace><publish>U.S. Geological Survey</publish></pubinfo><onlink>http://water.usgs.gov/lookup/getspatial?huc250k</onlink></citeinfo></srccite><srcscale>250000</srcscale><typesrc>Digital and/or Hardcopy Resources</typesrc><srctime><timeinfo><rngdates><begdate>Unknown</begdate><enddate>1994</enddate></rngdates></timeinfo><srccurr>publication date</srccurr></srctime><srccitea>HUC250K</srccitea><srccontr>Reference dataset for the 2-, 4-, 6- and 8-digit hydrologic unit</srccontr></srcinfo><srcinfo><srccite><citeinfo><origin>U.S. Geological Survey</origin><pubdate>ongoing</pubdate><title>National Hydrography Dataset</title><geoform>Vector Digital Data Set</geoform><pubinfo><pubplace>Denver, CO</pubplace><publish>U.S. Geological Survey</publish></pubinfo><onlink>http://nhd.usgs.gov/data.html</onlink></citeinfo></srccite><srcscale>24000</srcscale><typesrc>Digital and/or Hardcopy Resources</typesrc><srctime><timeinfo><sngdate><caldate>unkown</caldate></sngdate></timeinfo><srccurr>publication date</srccurr></srctime><srccitea>NHD</srccitea><srccontr>GIS coverage used for reference in watershed boundary delineation process</srccontr></srcinfo><procstep><procdesc>The original hydrologic unit boundaries were hand-digitized on a tablet from the USGS 7.5 minute quadrangles. This process occurred over a span of approximately 20 years.</procdesc><procdate>1980-2000</procdate></procstep><procstep><procdesc>The original dataset was reviewed by USGS personnel using on-screen techniques with DRG's as the base map. All hydrologic units within the dataset that were less than 3,000 acres were dissolved out.</procdesc><procdate>2003</procdate></procstep><procstep><procdesc>The new WBD dataset was reviewed on-screen by USGS, EPA, or NRCS personnel using DRG's and DOQ’s as base maps. Hydrologic Units that were less than 10,000 acres (for the 12-digit units) and 40,000 acres (for the 10-digit units) were reviewed and if possible were dissolved out. Along the coastal areas classic watersheds that fell within the federal guidelines size criteria (12-digit: 10,000-40,000 acres, 10-digit: 40,000-250,000 acres) were broken out. If possible the remaining frontals were left as their own units. Frontals that did not meet the size criteria were grouped together with other frontals within the overall 8-digit or 10-digit unit.
+Hydrologic units what were greater than 40,000 acres (12-digit units) and 250,000 acres (10-digit units) were reviewed. If possible these unit where then broken down into smaller units that met the size criteria. In some cases additional breaks within the unit would not have made sense or have been very useful (example: When the majority of the unit was made up by a major waterbody feature such as a lake or reservoir and the surrounding tributaries were too small to break out as their own unit). In these instances the unit was left big.</procdesc><procdate>2005-2011</procdate></procstep><procstep><procdesc>Hydrologic units from surrounding states were used to edgematch watershed boundaries.</procdesc><procdate>2005-2011</procdate></procstep><procstep><procdesc>Original dataset attribution was reviewed and revised to reflect the updates and changes made to the dataset. These revisions to the attribution were also made to ensure that the dataset met the Federal Standards for Delineation of Hydrologic Unit Boundaries. The NHD was used during this process to help with the naming and downstream coding of each unit. In some instances there were name hydrologic unit name discrepancies between the NHD and what was printed on the DRG's. In these instances the DRG's were used instead of the NHD.</procdesc><procdate>2005-2011</procdate></procstep><procstep><procdesc>First draft of metadata created by Laura Davenport using METADATA Editor in ArcCatalog ver. 9.1 sp.1 hu12_geo83</procdesc><procdate>20070124</procdate></procstep><procstep><procdesc>META_ID: NE02: Updated polygons in Nebraska per Walt Rassmussen's shapefile (subbasin 10230001) sent to the National Cartography and Geospatial Center in May, 2007(Blackbird-Soldier4thby6thpoly23May2007_IA-NE.shp). Renumbered huc12 codes for Watershed 1017010115 to correct data with SD WBD submittal.</procdesc><procdate>20040523</procdate></procstep><procstep><procdesc>META_ID:
+AL05: Edit polygons that have duplicate huc12 polygons elsewhere in the WBD.
+MD02: Edits to the Maryland WBD
+MI02: Edits to the Michigan WBD to better match the WBD Standards.
+MT02: Edits to the Montana WBD to better match the WBD Standards.
+WY02: Edits to the WY WBD to edgematch with surrounding states.</procdesc><procdate>2004-2007</procdate></procstep><procstep><procdesc>META_ID: NM02: Edits provided by NRCS to alleviate duplicate HUC12 coding.</procdesc><procdate>200707</procdate></procstep><procstep><procdesc>META_ID: KS02: EPA made attribute edits to HUC 8- 10300101 and 10240011 in order to edgematch with Missouri.
+META_ID: KY02: Edits made so polygons will edgematch with Ohio and Missouri linework and polygons.</procdesc><procdate>200710</procdate></procstep><procstep><procdesc>META_ID: OK02: edits requested by Larry Ferguson in Stillwater, OK. to linework or HUC10 name changes.</procdesc><procdate>200801</procdate></procstep><procstep><procdesc>META_ID: KY03: Edits made by USGS, Water Science Center in Salt Lake City, UT, so that polygon numbering will better follow guidelines of lower to higher number sequence flow.
+META_ID: IN02: edits by Indiana NRCS State office to edgematch Ohio's Watershed Boundary Dataset.
+META_ID: MI03: edits made or errors caught by EPA Region 5 to edgematch Ohio's Watershed Boundary Dataset.
+META_ID: WI02: errors caught by EPA Region</procdesc><procdate>200802</procdate></procstep><procstep><procdesc>META_ID: SD02: HU_12_Type or NCONTRB_A updates by NRCS SD.</procdesc><procdate>20080430</procdate></procstep><procstep><procdesc>META_ID: IL02
+META_ID: OH02 
+Process_Description: Name or Code updates by EPA Region 5.</procdesc><procdate>20080421-20080507</procdate></procstep><procstep><procdesc>META_ID: IL03: Name, Code, or Arc updates by EPA Region 5.</procdesc><procdate>20080507</procdate></procstep><procstep><procdesc>META_ID: AR02: EPA made attribute edits to HUC 8- 11010001 in order to edgematch with Missouri.</procdesc><procdate>200805</procdate></procstep><procstep><procdesc>META_ID: IL04: Name updates by EPA Region 5.
+META_ID: OH03: Name and DS code updates by EPA Region 5.</procdesc><procdate>20080716</procdate></procstep><procstep><procdesc>META_ID: AR03: NRCS made attribute edits to HUC 8- 08020100 and 08030100 in order to edgematch with Mississippi.</procdesc><procdate>200807</procdate></procstep><procstep><procdesc>META_ID:  GA02:
+SC02:
+TN02:
+AL06: 
+USGS Edits to Georgia, South Carolina, Tennessee, and Alabama to eliminate duplicate HUC12 codes.</procdesc><procdate>20081130</procdate></procstep><procstep><procdesc>META_ID: CO02: USGS Edits to Colorado Downstream coding.
+META_ID: CA02: USGS Edits to California to edge match across the US/Mexico border.
+META_ID: OR02: USGS Edits to Oregon to edge match at CA border.</procdesc><procdate>200901</procdate></procstep><procstep><procdesc>META_ID: IL05: Name updates by NRCS Illinois.</procdesc><procdate>20090211</procdate></procstep><procstep><procdesc>META_ID: AL07: USGS Edits to Alabama linework.</procdesc><procdate>20090222</procdate></procstep><procstep><procdesc>META_ID: NM03: Edits provided by USGS Water Science Center, Salt Lake City, to edgematch with Mexico.</procdesc><procdate>200902</procdate></procstep><procstep><procdesc>META_ID: NH02: Corrections to data; USGS Water Science Center, Salt Lake City.   
+META_ID: VT02: Corrections to data; USGS Water Science Center, Salt Lake City.</procdesc><procdate>200903</procdate></procstep><procstep><procdesc>META_ID: MS02: USGS; Mississippi State Steward, Van Wilson: Edits to polygons.</procdesc><procdate>200905</procdate></procstep><procstep><procdesc>META_ID: TN03: USGS Edits to Tennessee to correct edge match problems with Virginia.  Some name corrections also.</procdesc><procdate>200906</procdate></procstep><procstep><procdesc>META_ID: OH04: USGS Water Science Center, Salt Lake City; Edits to Ohio downstream coding.
+META_ID: NM04: Edits provided by USGS Water Science Center, Salt Lake City, to correct Downstream coding.
+META_ID: CO03: USGS, Water Science Center, Salt Lake City; Edits to Downstream coding.
+META_ID: NE03: USGS, Water Science Center, Salt Lake City; Edits to Downstream coding.
+META_ID: MT03: USGS, Water Science Center, Salt Lake City; Edits to Downstream coding.
+META_ID: WY03: USGS, Water Science Center, Salt Lake City; Edits to Downstream coding.
+META_ID: MO02: USGS, Water Science Center, Salt Lake City; Edits to Downstream coding.
+META_ID: WI03: USGS, Water Science Center, Salt Lake City; Edits to Downstream coding.
+META_ID: MI04: USGS, Water Science Center, Salt Lake City; Edits to Downstream coding.
+META_ID: PA02: USGS, Water Science Center, Salt Lake City; Edits to Downstream coding.
+META_ID: AZ02: USGS, Water Science Center, Salt Lake City; Edits to Downstream coding.
+META_ID: HI02: USGS, Water Science Center, Salt Lake City; Edits to Downstream coding.</procdesc><procdate>200908</procdate></procstep><procstep><procdesc>META_ID: OH05: HUC12 Name corrections made by in-state data steward.</procdesc><procdate>200908</procdate></procstep><procstep><procdesc>Meta_ID: MN02: USGS, Water Science Center, Salt Lake City; Edits to Downstream coding and switch huc12 codes for 090201030302 &amp; 090201030303.</procdesc><procdate>20090916</procdate></procstep><procstep><procdesc>Meta_ID: CO04: USGS, Water Science Center, Salt Lake City; Edits to linework and recoding.</procdesc><procdate>20090917</procdate></procstep><procstep><procdesc>META_ID: OH06: HUC12 Name correction made by in-state data steward.</procdesc><procdate>20090924</procdate></procstep><procstep><procdesc>META_ID: VA04: HUC12 edits made by in-state data steward.
+Meta_ID: HI03: State data steward changed order of coding for 84 HUC12 polygons. Some downstream coding, MODs and TYPEs were also changed.</procdesc><procdate>200909</procdate></procstep><procstep><procdesc>META_ID: AR04: HUC12 edits made by USGS Water Science Center, Salt Lake City, UT.
+META_ID: LA02: HUC12 edits made by USGS Water Science Center, Salt Lake City, UT.
+META_ID: MD03: Linework edit.</procdesc><procdate>200910</procdate></procstep><procstep><procdesc>META_ID: MS03 and MS04: USGS; Mississippi State Steward, Van Wilson: Edits to polygons and linework; MS03 was used where a number, name, or line was changed; MS04 was used where only the acres were revised.</procdesc><procdate>200910</procdate></procstep><procstep><procdesc>Meta_ID: CO05: Linework and name edit per state steward, Andy Bock (e-mail on October 29, 2009).</procdesc><procdate>20091029</procdate></procstep><procstep><procdesc>META_ID: SD03: Edits made by in-state data steward; all of sub-basin 10160010 (now retired) was recoded to 10160011 (Lower James); In addition to the recoding of this 4th level unit in the James Basin, this group of edits primarily consisted of minor corrections to linework and 6th-level downstream codes, populating ncontrb_A fields of selected 6th-level units, and tweaking selected 5th- and 6th-level unit names to facilitate merging with GNIS.</procdesc><procdate>20091112</procdate></procstep><procstep><procdesc>Meta_ID: MN03: NCGC corrected original HUC12 polygon 090201030103 that had a couple of slivers.  MN DNR office said to look up and correct per their website: http://deli.dnr.state.mn.us/</procdesc><procdate>20091118</procdate></procstep><procstep><procdesc>META_ID: AL08: USGS Edits to Alabama linework and some attributes as well as polygon attributes.</procdesc><procdate>20091130</procdate></procstep><procstep><procdesc>META_ID: LA03: USGS Water Science Center, Salt Lake City, UT. Recoded all HUC12 codes and DS codes for 08080100 Atchafalaya to 08080101 Atchafalaya.
+META_ID: CA03: USGS Edits to California to attributes and linework to update and correct subbasin coding.
+META_ID: AL09: Alabama State Steward recommended HUC12 name attribute updates.
+META_ID: AR05: HUC10 name updates made by in-state data steward.
+META_ID: OK03: HUC10 name updates made by in-state data steward.</procdesc><procdate>200912</procdate></procstep><procstep><procdesc>Meta_ID: CO06: Some HUC12 recoding and HUC12 downstream updates per state steward, Andy Bock (e-mail on December 22, 2009).</procdesc><procdate>20091222</procdate></procstep><procstep><procdesc>Meta_ID: AZ03: Edits to HUC10 names submitted by in-state data steward.</procdesc><procdate>20091229</procdate></procstep><procstep><procdesc>META_ID: GA03 (Sub-Region 0315) - Updates to polygons and linework from USGS Water Science Center, Salt Lake City, Utah. Details:  Watershed boundary lines adjusted to USGS DRG24.  Attributes HU_12_NAME field populated, HU_10_NAME field updated to conform to National WBD and GNIS naming structure.  HU_10_DS, HU_12_DS, HUC_10, and HUC_12 numeric fields updated to conform to WBD downstream numbering order (i.e. huc must flow into higher numbered huc).
+META_ID: GA04 (Interior) - Updates to polygons and linework from USGS Water Science Center, Salt Lake City, Utah.
+Details:  Watershed boundary lines adjusted to USGS DRG24.  Attributes HU_12_NAME field populated, HU_10_NAME field updated to conform to National WBD and GNIS naming structure.  HU_10_DS, HU_12_DS, HUC_10, and HUC_12 numeric fields updated to conform to WBD downstream numbering order (i.e. huc must flow into higher numbered huc).
+META_ID: GA05 (Coastal) - Updates to polygons and linework from USGS Water Science Center, Salt Lake City, Utah. Coastal Delineation Processes (Huc10 units along coastline):  Input watershed boundary lines in accordance with the Coastal Georgia Watershed Review Team (GACoastalHUC12) (Estuaries, 1994).  Refined boundary lines to 24k DRGs and NOAA Bathymetry (USGS DRG24) (NOAA_RNC).  Shoreline to 100 meter buffer (LINESOURCE "Buffer100") from NOAA_RNC MLLW and corrected to the International Maritime Organization's COLREG Demarcation Lines across inlets as delineated on NOAA_RNC, input NOAA three nautical mile offshore boundary as agreed upon by Coastal Georgia Watershed Review Team.</procdesc><procdate>201001</procdate></procstep><procstep><procdesc>Meta_ID: MO03: In-state data steward update to HUC10 name.
+META_ID: NM05: Edit sent to AZ state office by Arizona Water Science Center, USGS, to correct HUC12 Downstream code; confirmed by New Mexico state office.</procdesc><procdate>20100111</procdate></procstep><procstep><procdesc>META_ID: ND02: Edits supplied by Ann Fritz (state data steward) of the North Dakota Department of Health.</procdesc><procdate>201003</procdate></procstep><procstep><procdesc>META_ID: AK02: HUC12 polygons and line rework by USGS Water Science Center, Salt Lake City, UT.
+META_ID: TX02: Harmonization with Mexico; HUC12 polygons and line rework by USGS Water Science Center, Salt Lake City, UT.</procdesc><procdate>201004</procdate></procstep><procstep><procdesc>META_ID: SD04: Edits made by In-state steward.
+Meta_ID: HI04: State data steward changed some coding, corrected some downstream codes, and corrected a couple of names.</procdesc><procdate>201005</procdate></procstep><procstep><procdesc>META_ID: VT03: USGS Salt Lake City: update to data in Lake Champlain area on the US side.   
+META_ID: VT04: USGS Salt Lake City: update to data in Lake Champlain area on the Canadian side.  All lines within Canada are draft delineations only. These boundaries were based on Canada's 1:50,000 National Hydrography Network Work Units or were delineated using either 1:50,000 scale topos or CDED elevation data. These boundaries have not been fully reviewed or approved by either the Canadian federal or provincial agencies and are subject to change.  Border polygons are based off of these internal boundaries within Canada and so are also subject to change within Canada. 
+Process_Date: 201005
+Process_Step: 
+META_ID: NY02
+Process_Description: Edits made by USGS Salt Lake City, Water Science Center: to the Lake Champlain and surrounding subbasins to remove all shoreline representations from the WBD. The codes, DS codes and names where updated where necessary.    
+META_ID: NY03: USGS Salt Lake City: update to data in Lake Champlain area on the Canadian side.  All lines within Canada are draft delineations only. These boundaries were based on Canada's 1:50,000 National Hydrography Network Work Units or were delineated using either 1:50,000 scale topos or CDED elevation data. These boundaries have not been fully reviewed or approved by either the Canadian federal or provincial agencies and are subject to change.  Border polygons are based off of these internal boundaries within Canada and so are also subject to change within Canada.</procdesc><procdate>201005</procdate></procstep><procstep><procdesc>META_ID: ND03: Edits to HUC12 Names supplied by USGS Water Science Center in Salt Lake City, Utah. 
+META_ID: NV02: edits to attributes by USGS, Water Science Center, Salt Lake City, UT.
+META_ID: UT02: edits made by USGS, Water Science Center, Salt Lake City, UT. when NV was completed.
+META_ID: UT03: edits to some boundaries as well as coding and names by USGS, Water Science Center, Salt Lake City, UT.
+META_ID: UT04: edits to attributes by USGS, Water Science Center, Salt Lake City, UT.
+META_ID: VT05: USGS Water Science Center, Salt Lake City: update to boundary.</procdesc><procdate>201006</procdate></procstep><procstep><procdesc>META_ID: IN04
+META_ID: MI05
+META_ID: MN04
+META_ID: NY04
+META_ID: OH08
+META_ID: PA03
+META_ID: WI04
+For the listed META_ID’s the following Name review and updates were completed by the USGS Water Science Center, Salt Lake City.
+Populate blank fields. 
+Correct spelling, ex. Srping to Spring, St. to Saint or vice versa depending on how GNIS has it, Cemetary to Cemetery. 
+Standardize use of “Frontal”.
+Standardize use of “Headwaters, Outlet”. 
+Standardize use of “Upper, Middle, Lower”. 
+Cursory check that name is contained within the hydrologic unit. 
+Remove extraneous non-domain or non-GNIS names at, near, below, above, from, to, directional-northernmost, southern, easterly, etc. 
+Incorrect spacing, ex. Oakcreek should be Oak Creek</procdesc><procdate>20100708</procdate></procstep><procstep><procdesc>Meta_ID: OR03:  The Oregon WBD dataset was updated to incorporate changes submitted by Pacific Northwest Hydrography Framework (PNWHF) partner organizations.  The changes included small boundary adjustments that result in a better match with NHD, an updated 12 digit HU boundary derived from LiDAR source data, and WBD HU name changes.  Each of these proposed changes were reviewed by affected stewards for validity. 
+The WBD boundary was changed in areas where the NHD was crossing the WBD boundary. In these instances, the NHD source was the PNWHF dataset and not the DRG. Subwatershed 171002030602 was completely replaced using Oregon Department of Forestry’s (ODF) boundaries that were derived from LiDAR source data (see ftp://ftp.ftw.nrcs.usda.gov/pub/wbd/hu/metadata/or_hu12_support_documentation.docx). This LiDAR based DEM highlighted several areas where the WBD did not accurately reflect the condition on the ground. In several locations the old WBD boundary crossed stream channels indicated on the DEM. ODF used a 5 foot contour layer, derived from the LiDAR DEM, to delineate the boundary changes. Updates to the WBD boundaries for this subwatershed were performed using the ESRI Reshape Featuretool. This update affected six adjoining 12 digit HUs all within the same 10 digit HU. Name changes were submitted at the 10 and 12 digit HU level. The attributes HU_10_NAME and HU_12_NAME were updated depending on the change request.</procdesc><procdate>20100713</procdate></procstep><procstep><procdesc>META_ID: TX03: In-State Data Steward made edits to boundaries.
+META_ID: ND04: Edits made by USGS Water Science Center, Salt Lake City
+META_ID: MN06: Edits made by USGS Water Science Center, Salt Lake City
+META_ID: SD05: Edits made by USGS Water Science Center, Salt Lake City</procdesc><procdate>201008</procdate></procstep><procstep><procdesc>META_ID: SD06: Edits made by in-state data steward to correct a HUC12 polygon that was in the wrong basin. HUC12 coding and downstream coding updated for the entire watershed 1015000404.
+Meta_ID: IA02: USGS, Water Science Center, SLC; Edits to polygons and linework. Line Mods, HU_Level, Linesource, DS codes and states were also checked.
+Meta_ID: KS03: USGS, Water Science Center, SLC; Edits to polygons and linework. Line Mods, HU_Level, Linesource, DS codes and states were also checked.
+Meta_ID: MO05: USGS, Water Science Center, SLC; Edits to polygons and linework. Line Mods, HU_Level, Linesource, DS codes and states were also checked.
+Meta_ID: NE04: USGS, Water Science Center, SLC; Edits to polygons and linework. Line Mods, HU_Level, Linesource, DS codes and states were also checked.
+META_ID: LA04: In-state Stewards and USGS Water Science Center, Salt Lake City, UT.; Edits to LA Coastal HUCs.</procdesc><procdate>201010</procdate></procstep><procstep><procdesc>For the following list of Meta_ID's the following was completed: Updates by USGS Water Science Center, Salt Lake City, Utah. Edits to any of the following: Polygon attributes, Line Mods, HU_Level, Linesource, DS codes and states.
+META_ID: CO09
+META_ID: IA03
+META_ID: IA04
+META_ID: IL07
+META_ID: IL08
+META_ID: IN05 
+META_ID: KY04
+META_ID: MN07
+META_ID: MO05
+META_ID: MT04
+META_ID: MT05
+META_ID: NC02
+META_ID: ND07
+META_ID: ND08
+META_ID: NE04
+META_ID: OH09
+META_ID: PA04
+META_ID: SD07
+META_ID: SD08
+META_ID: TN05
+META_ID: VA05
+META_ID: WI05
+META_ID: WV02
+META_ID: WY05</procdesc><procdate>201010</procdate></procstep><procstep><procdesc>Meta_ID: WY04: Edits to Wyoming HUC10 and HUC12 naming, STATES values, HU_MOD, some coding and linework delineation corrections.</procdesc><procdate>20101014</procdate></procstep><procstep><procdesc>Meta_ID: GA06 : Edits submitted to correct HUC10 coding in Georgia.</procdesc><procdate>201011</procdate></procstep><procstep><procdesc>The following was completed for the META_ID's listed.
+USGS, Water Science Center, Salt Lake City. Edits to Lake Champlain Basin moving it from Region 02 to Region 04. Also updated 01110000 from Region 01 to Region 04. Craig Johnston pointed out that this unit contains the St. Francois River which flows up into Canadaand then dumps into the St Lawrence River. Region 01 is Maine Coastal drainage's 
+while region 04 is St. Lawrence drainage's, so this unit really belongs in region 04. 
+Meta_ID: NH03
+Meta_ID: NY05
+Meta_ID: VT06</procdesc><procdate>201011</procdate></procstep><procstep><procdesc>The following tasks applies to all the META_ID's listed. Updates by USGS Water Science Center, Salt Lake City, Utah. Edits to any of the following: Polygon attributes, Line Mods, HU_Level, Linesource, DS codes and states.
+META_ID: AL10
+Meta_ID: AR06
+Meta_ID: CO10
+Meta_ID: GA05
+Meta_ID: KS03
+Meta_ID: KY05
+Meta_ID: KY06
+Meta_ID: LA04
+Meta_ID: LA05
+Meta_ID: MS05
+Meta_ID: MS06
+Meta_ID: NM06
+Meta_ID: OK04
+Meta_ID: TN05
+Meta_ID: TN06
+Meta_ID: TX04
+Meta_ID: VA05</procdesc><procdate>201011</procdate></procstep><procstep><procdesc>META_ID: ND09: Updates sent to NRCS by in-state steward to correct a duplicate HUC12 code, name, and downstream code.</procdesc><procdate>201012</procdate></procstep><procstep><procdesc>META_ID: CA04: USGS Water Science Center in Salt Lake City, Utah:  
+Coastal updates; HUC Level changes; Line Mods (SL for shoreline, PL for Playa); 
+State updates (CAN for Canada instead of Province codes); DS codes (OCEAN, CLOSED BASIN, CLOSED BAS, CANADA).
+META_ID: ID03 - NHDPlus updates
+META_ID: ID04 - Canadian border updates: USGS Water Science Center in Salt Lake City, Utah:  HUC Level changes; Line Mods (SL for shoreline, PL for Playa); State updates (CAN for Canada instead of Province codes); DS codes (OCEAN, CLOSED BASIN, CLOSED BAS, CANADA).
+META_ID: MT06 - NHDPlus updates. 
+META_ID: MT07 - Canadian border updates: USGS Water Science Center in Salt Lake City, Utah:  HUC Level changes; Line Mods (SL for shoreline, PL for Playa); State updates (CAN for Canada instead of Province codes); DS codes (OCEAN, CLOSED BASIN, CLOSED BAS, CANADA).
+META_ID: OR04 - NHDPlus updates
+META_ID: OR05: USGS Water Science Center in Salt Lake City, Utah:  HUC Level changes; Line Mods (SL for shoreline, PL for Playa); State updates: DS codes (OCEAN, CLOSED BASIN, CLOSED BAS, CANADA).
+META_ID: WA02 - NHDPlus updates.
+META_ID: WA03 - Canadian border updates and coastal updates: USGS Water Science Center in Salt Lake City, Utah: HUC Level changes; Line Mods (SL for shoreline, PL for Playa); State updates (CAN for Canada instead of Province codes); DS codes (OCEAN, CLOSED BASIN, CLOSED BAS, CANADA).
+META_ID: WY06 - NHDPlus updates (HUC Level codes updated along HUC8 boundary): USGS Water Science Center in Salt Lake City, Utah: HUC Level changes; Line Mods (SL for shoreline, PL for Playa); State updates; DS codes (OCEAN, CLOSED BASIN, CLOSED BAS, CANADA)
+META_ID: TX06: USGS Water Science Center in Salt Lake City, Utah: The Line Mods, HU_Level, Linesource, DS codes and states were checked.
+META_ID: NM07: USGS Water Science Center in Salt Lake City, Utah: The Line Mods, HU_Level, Linesource, DS codes and states were checked.
+META_ID: AK04 : HUC12 polygons and arcs reworked, attributes updated and a new HUC8 created, by USGS Water Science Center, Salt Lake City, UT.</procdesc><procdate>201101</procdate></procstep><procstep><procdesc>META_ID: MT08: Updates by in-state WBD Steward. Edits to names and some boundary rework.</procdesc><procdate>201102</procdate></procstep><procstep><procdesc>META_ID: AK05: HUC10 and HUC12 polygons and arcs were not delineated due to lack of base data at 1:63360 scale. Place holders were put into the attribute table to keep data from being dissolved/dropped out during future updates. DRG250 HUC8 lines and polygons, for the Western Aleutian Islands, Pribilof Islands, and Saint Lawrence Island, were snapped to the NOAA Three Nautical Mile Line and the DRG250 coastline was removed. Editing was done by USGS Water Science Center, Salt Lake City, UT.</procdesc><procdate>201103</procdate></procstep><procstep><procdesc>META_ID: CA05: Edits by USGS Water Science Center in Salt Lake City, Utah: The Line Mods, HU_Level, Linesource, DS codes and states were checked.
+META_ID: NV05: Edits by USGS Water Science Center in Salt Lake City, Utah: The Line Mods, HU_Level, Linesource, DS codes and states were checked.
+META_ID: OR06: Edits by USGS Water Science Center in Salt Lake City, Utah: The Line Mods, HU_Level, Linesource, DS codes and states were checked.</procdesc><procdate>20110322</procdate></procstep><procstep><procdesc>META_ID: OH10: HUC12 name changes submitted by in-state steward, Jim Stafford. Also some boundary edits.</procdesc><procdate>20110414</procdate></procstep><procstep><procdesc>Edits by USGS Water Science Center in Salt Lake City, Utah: The Line Mods, HU_Level, Linesource, DS codes and states were checked for the following META_ID's.
+META_ID: CO11
+META_ID: NM07
+META_ID: TX08
+Edits by USGS Water Science Center in Salt Lake City, Utah: The Line Mods, HU_Level, Linesource, DS codes and states were checked for the following META_ID's.</procdesc><procdate>20110503</procdate></procstep><procstep><procdesc>META_ID: IL09: Updates to HUC12 Names</procdesc><procdate>20110504</procdate></procstep><procstep><procdesc>Edits by USGS Water Science Center in Salt Lake City, Utah: The Line Mods, HU_Level, Linesource, DS codes and states were checked and updated as needed for each of the following META-ID's.
+META_ID: AZ04
+META_ID: CA06
+META_ID: NM08
+META_ID: NV06
+META_ID: UT06
+META_ID: WY07</procdesc><procdate>201105</procdate></procstep><procstep><procdesc>Edits by USGS Water Science Center in Salt Lake City, Utah: The Line Mods, HU_Level, Linesource, DS codes and states were checked and updated as needed for each of the META_ID: CA09
+META_ID: ID05
+META_ID: NV07
+META_ID: UT07
+META_ID: WY08</procdesc><procdate>20110519</procdate></procstep><procstep><procdesc>META_ID: CA07 and CA08: Edits by USGS Water Science Center in Salt Lake City, Utah: CA07 for interior updates including a couple of line changes, name updates and ds code updates.CA08 was used for the coastal updates and the Mexico updates. The Mexico HU-8 boundaries where put in and the international boundary was left in as HU_Level 0 for the HUC10 and HUC12 units.</procdesc><procdate>20110531</procdate></procstep><procstep><procdesc>Edits submitted by Sue Buto and USGS Water Science Center, Salt Lake City, Utah. HU10 and HU 12 codes and downstream codes updated for the following Meta_ID's.
+META_ID: ID06
+META_ID: NM09
+META_ID: OR07
+META_ID: UT08
+META_ID: WY09.
+META_ID: AK06: HUC12 polygons and arcs reworked, new subbasins created, old subbasins retired, attributes updated by USGS Water Science Center, Salt Lake City, UT. 
+META_ID:  ME02: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah.</procdesc><procdate>201106</procdate></procstep><procstep><procdesc>META_ID: MN08: Updates by MN DNR - In-state WBD Stewards. Edits to polygon attributes and Linework.
+META_ID: MT09: Name updates as well as a few DS code updates. Also fixed were coding errors in the couple areas where it looks like the labels just got flipped (code and names were okay they were just in the wrong polygons).</procdesc><procdate>201107</procdate></procstep><procstep><procdesc>Meta_ID: MO06: HUC12 code correction.</procdesc><procdate>20110909</procdate></procstep><procstep><procdesc>META_ID:  AL11: The Line Mods, HU_Level, Linesource, DS codes and states were checked, the following meta ids were used for any updates.
+META_ID:  FL03: The Line Mods, HU_Level, Linesource, DS codes and states were checked, the following meta ids were used for any updates.
+META_ID:  GA07: The Line Mods, HU_Level, Linesource, DS codes and states were checked, the following meta ids were used for any updates.
+META_ID:  LA06: The Line Mods, HU_Level, Linesource, DS codes and states were checked, the following meta ids were used for any updates. 
+META_ID:  MS07: The Line Mods, HU_Level, Linesource, DS codes and states were checked, the following meta ids were used for any updates. 
+META_ID:  NC02: The Line Mods, HU_Level, Linesource, DS codes and states were checked, the following meta ids were used for any updates. 
+META_ID:  SC03: The Line Mods, HU_Level, Linesource, DS codes and states were checked, the following meta ids were used for any updates. 
+META_ID:  VA06: The Line Mods, HU_Level, Linesource, DS codes and states were checked, the following meta ids were used for any updates. 
+META_ID:  MO07: Edits to HU names by USGS Water Science Center in Salt Lake City, Utah.
+META_ID:  CT02: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah. 
+META_ID:  MA02: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah. 
+META_ID:  ME03: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah. 
+META_ID:  NH04: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah. 
+META_ID:  NY06: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah. 
+META_ID:  RI02: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah.</procdesc><procdate>201109</procdate></procstep><procstep><procdesc>META_ID: SD09: USGS caught DS coding error corrections.
+META_ID:  DE02: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah. 
+META_ID:  MD03: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah. 
+META_ID:  NJ02: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah. 
+META_ID:  NY06: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah. 
+META_ID:  PA05: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah. 
+META_ID:  RI02: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah. 
+META_ID:  VA06: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah.
+META_ID:  WV03: The Line Mods, HU_Level, Linesource, DS codes and states were edited by USGS Water Science Center in Salt Lake City, Utah.
+META_ID:  AK07: Coding updates by USGS Water Science Center, Salt</procdesc><procdate>201110</procdate></procstep><procstep><procdesc>Edits by USGS Water Science Center in Salt Lake City, Utah; made changes to the linework and the polys. The linework and the corresponding polygons were updated, as well as the linesource codes, and downstream codes where applicable for the following META_ID's;
+META_ID: AZ06
+META_ID: CO12
+META_ID: NM10
+META_ID: UT09</procdesc><procdate>20111109</procdate></procstep><procstep><procdesc>HUC8 boundaries have been updated to include the Canadian side of the unit by USGS Water Science Center, Salt Lake City, UT. Meta_ID's included are AK08, MI06, NY07</procdesc><procdate>201112</procdate></procstep><procstep><procdesc>META_ID: GA08: Edits to names.
+META_ID: MT10: Edits to names. 
+META_ID: CO13: Edits to downstream codes by in-state steward.
+META_ID: PA06: Edits to linework by in-state steward.
+META_ID: OR08: Edits to linework and attributes by in-state steward.
+META_ID: WA04: Edits to linework and attributes by in-state steward.
+META_ID: AK09: OTH - Lines edits were based on local knowledge from the USGS Alaska Water Science Center. Which includes; personal knowledge, photos and High Resolution imagery (Google Earth http://www.google.com/earth/index.html).</procdesc><procdate>201112</procdate></procstep><procstep><procdesc>META_ID: AZ07: USGS Water Science Center in Salt Lake City, Utah:Changes to the linework and the polys; updated the linework and the corresponding polygons, as well as the linesource codes, and downstream codes where applicable.  
+META_ID: CA10: USGS Water Science Center in Salt Lake City, Utah:Changes to the linework and the polys; updated the linework and the corresponding polygons, as well as the linesource codes, and downstream codes where applicable.  
+META_ID: NV08: USGS Water Science Center in Salt Lake City, Utah:Changes to the linework and the polys; updated the linework and the corresponding polygons, as well as the linesource codes, and downstream codes where applicable.  
+META_ID: UT10: USGS Water Science Center in Salt Lake City, Utah:Changes to the linework and the polys; updated the linework and the corresponding polygons, as well as the linesource codes, and downstream codes where applicable.  
+META_ID: ME04: USGS Water Science Center in Salt Lake City, Utah:
+Changes to the linework and the polys; updated the linework and the corresponding polygons, as well as the linesource codes, and downstream codes where applicable. Updated coding where applicable for new subbasins.
+META_ID: NH05: USGS Water Science Center in Salt Lake City, Utah:
+Changes to the linework and the polys; updated the linework and the corresponding polygons, as well as the linesource codes, and downstream codes where applicable. Updated coding where applicable for new subbasins.
+META_ID: NY08: USGS Water Science Center in Salt Lake City, Utah:
+Changes to the linework and the polys; updated the linework and the corresponding polygons, as well as the linesource codes, and downstream codes where applicable. Updated coding where applicable for new subbasins.
+META_ID: VT07: USGS Water Science Center in Salt Lake City, Utah:
+Changes to the linework and the polys; updated the linework and the corresponding polygons, as well as the linesource codes, and downstream codes where applicable. Updated coding where applicable for new subbasins.</procdesc><procdate>201201</procdate></procstep><procstep><procdesc>The following edits were completed for a number of states and noted in the included list of Meta_ID's.
+Edits by USGS Water Science Center in Salt Lake City, Utah.
+1. Added in the 8-digit (Subbasin) boundaries for the US/Mex harmonized units within Mexico 
+2. Added in the new boundaries for Lake Ontario this includes the new 8-digit boundaries around the lake in the US and Canada as well as updated codes where necessary 
+3. Added in the harmonized 10- and 12- digit units for the Columbia River basin and the WA/BC coastal areas 
+4. Updated Cook inlet within AK and removed true/parametric curves from the AK dataset. 
+5. Updated DS codes where agreed upon by state stewards 
+6. Updated Linesource code (misspellings, removed extra spaces etc.) where needed to match Federal Standards (There are still a few instances where additional input from state is needed) 
+7. Updated the HU_Mod fields (misspellings, removed extra spaces, added commas instead of periods, etc.) where needed to match Federal Standards. 
+8. Updated State field for Canada (CN) and Mexico (MX) based on the new version of the Standards 
+9. Updated names where agreed upon by state stewards 
+10. Checked and updated HU_Level field where HU_Level = 99 or = null 
+META_ID: AK10 - Cook inlet updates, true curve updates
+META_ID: AZ08 - MEX/US border updates 
+META_ID: AZ09 - Mod updates 
+META_ID: FL04 - DS code updates, name updates, mod updates 
+META_ID: GA09 - HU_Level updates, HUC10 code updates where the HUC10 code did not match the HUC12 code, DS code updates, Name Updates, Mod Updates 
+META_ID: ID07 - US/CAN border updates, DS code updates, HU_Mod updates 
+META_ID: IL10 - HU Mod updates 
+META_ID: LA07 - Name and Mod Updates 
+META_ID: MI07 - HU_Mod updates and DS code updates 
+META_ID: MS08 - linesource updates and MOD updates 
+META_ID: MT11 - US/CAN border updates, HU_Level update 
+META_ID: NH06 - MOD updates 
+META_ID: NM11 - MEX/US border updates 
+META_ID: NM12 - DS code updates and MOD updates 
+META_ID: NY09 - Lake Ontario new boundaries and codes, HU_Mod updates 
+META_ID: OK05 - Mod Updates 
+META_ID: SC04 - Mod Updates 
+META_ID: TX07 - HUC12 code updates, DS code updates, Mod Updates 
+META_ID: UT11 - DS code updates 
+META_ID: WV04 - HU_Level updates</procdesc><procdate>201205</procdate></procstep><procstep><procdesc>Below is a list of updates as a result of the harmonization work that is going on with Canada.
+Alaska:
+Legacy 19010101 Southeast Mainland name and code were retired and the area subdivided into four units. New codes and names are as follows and accepted by the National Technical Team and approved with Canadian and Alaska partners (USFS):
+19010104 Bradfield Canal
+19010105 Burroughs Bay
+19010106 Headwaters Portland Canal
+19010107 Outlet Portland Canal
+Legacy 19010201 Mainland had a portion broken out. 19010201 will be preserved and the small piece broekn out in order to harmonize with Canada. The smaller piece will have the new code 19010205 and the name will be Lower Iskut.
+Revised again 5/31/11: 19010201 Mainland was broken into three new units
+19010206 Holkham Bay
+19010207 Stikine River
+19010208 Thomas Bay
+Legacy 19010301 Lynn Canal now has the Taku River broken out to accommodate Canada. Taku River will be code 19010304. The technical team accepts this. Revised again 5/31/11:(AK group consulted along with Pete Steeves, Kim Jones, Stephen Daw, Karen Hanson): 
+19070101 Atlin Lake was broken out of the legacy Lynn Canal 19010301 and is part of the newly accepted Subregion 1907
+Legacy 19010302 Glacier Bay was subdivided along the ridge separating out the ocean flow. The unit broken out is:
+19010406 Palma Bay (this unit also includes a portion of the original 19010401)
+Note: Legacy 19010302 Glacier Bay will be retained although the area is now smaller. Other options didn’t make as much sense.
+Legacy 19010303 Chilkat-Skagway Rivers was subdivided into:
+19070102 Bennett Lake
+19070103 Tagish Lake
+19070104 Takhini River
+Note: 19010303 Chilkat-Sakgway Rivers is retained
+Legacy 19010401 Yakutat Bay name and code retired and the area subdivided into 4 new units. New codes and names are as follows
+19010403 Tatshenshini River
+19010404 Alsek River
+19010405 Yakutat Bay-Gulf of Alaska
+19010406 Palma Bay (This new unit also includes a portion of the original 19010302)
+Montana:
+0904 - Saskatchewan River
+090400- Upper South Saskatchewan River (This matches the Canadian FDA at the WSCSDA level (sub drainage area)).
+10010001 name and code have been retired, and this area is now 09040002 Belly
+10010002 name and code have been retired, and this area is now 09040001 St. Marys
+North Dakota:
+Legacy 09020313 Pembina has now been split. The legacy name and code should be retired. The new codes and names should be:
+09020315 Upper Pembina River
+09020316 Lower Pembina River
+09030004 Upper Rainy has been retired
+Legacy 09020311 Lower Red name is being changed to Middle Red in order to harmonize with Canada. Lower Red is the Basin name for this entire area but the impact to change at that level isn’t known so won’t change.</procdesc><procdate>2011-2014</procdate></procstep><procstep><procdesc>These updates where proposed by Forest Service partners within the Tongass National Forest.When major changes are made to the HUC8 container (i.e. the container is split into multiple units) the national protocol has been to retire the old HUC8 code and name and assign new codes and names to the updates units
+MetaID used – AK07
+Arcs
+HU_Level checked and updated as needed
+Linesource checked and updated as needed
+Polygons
+Codes (HUC8, HUC10 and HUC12) checked and updated as needed
+DS codes checked and updated as needed
+Names (HUC10 and HUC12) checked and updated as needed
+Type checked and updated as needed
+19010202 (Kuiu-Kupreanof-Mitkof-Etolin-Zarembo-Wrangell) is being retired and 2 new HUC8 units were formed.
+Kuiu Island, Mitkof Island and Kupreanof Island were split out into their own 8-digit unit
+HUC8 – 19010210
+HU8_Name – Kuiu-Kupreanof-Mitkof Islands
+Zarembo Island, Wrangell Island and Etolin Island were split out into their own 8 digit unit
+HUC8 – 19010209
+HU8_Name – Etolin-Zarembo-Wrangell Islands
+19010203 (Baranof-Chichagof Islands)19010203 is being retired. 19010203 was split into 3 new units; 2 island units and 1 channel unit.
+Chichagof Island was split out into its own 8-digit unit
+HUC8 – 19010211
+HU8_Name – Chichagof Island
+Baranof and Kruzof Islands were split out into their own 8-digit unit
+HUC8 – 19010212
+HU8_Name – Baranof Island
+Created a new water hydrologic unit for the channel in-between Chichagof Island and Baranof/Kruzof Islands. This new water unit would become a HUC10 unit within the Water subbasin  19010500.
+HUC10 – 1901050011
+HUC10_Name - Peril Strait
+Because of the varying width of the channel the boundary was graduated from a 1,000 meter buffer to 100 meter buffer from the Low Tide Shoreline. The Low Tide Shoreline was provided by the Forest Service. 
+A 1,000 meter buffer was used in the open channel to match the buffer distance used within the rest of SE AK WBD. There is a narrow portion of the channel where the boundary was gradually reduced from the 1,000 meter buffer to a 100 meter buffer.</procdesc><procdate>20110930</procdate></procstep><procstep><procdesc>The following updates were made to the WBD along the US/CAN border for NY,VT,NH,ME during 8-digit harmonization effort with Canada
+Metadata ID’s used; ME04, NH05, NY08, VT07
+All HUC8 boundaries were updated with the Harmonized US/CAN border into Canada.
+Coding was updated as needed.
+01010001
+01010001 was split into 6 new units.
+01010001 code retired
+01010001 HUC8 name retired (Upper St. John)
+New codes and HUC8 names
+01010006 – Headwaters Saint John River
+01010007 – Big Black River-Saint John River
+01010008 – St. Francis River-Saint John River
+01010009 – Little River-Saint John River
+01010010 – Becaguimec Stream-Saint John River (This unit now contains a portion of the original 01010005)
+01010011 – Keswick River-Saint John River
+01010004
+Boundary within Canada was updated with harmonized boundary.
+01010005
+Boundary was updated with US/CAN harmonized boundary. A small portion of 01010005 was moved into the new 01010010 so that 01010005 is a classic/standard HUC 8 unit for the Meduxnekeag River.
+The image below was provided during the harmonization process and shows the updates made.
+01020001
+Original WBD boundary between the US and Canada used the international boundary. However when this boundary was compared to the 1:24,000 scale DRG’s in the US and 1:20,000 hypsography in Canada the international boundary and ridgelines were not coincident. The Boundary was updated to the ridgeline.  
+Coding not updated.
+01030001
+Original WBD boundary between the US and Canada used the international boundary. However when this boundary was compared to the 1:24,000 scale DRG’s in the US and 1:20,000 hypsography in Canada the international boundary and ridgelines were not coincident. The Boundary was updated to the ridgeline. 
+Coding not updated.
+01030002
+Original WBD boundary between the US and Canada used the international boundary. However when this boundary was compared to the 1:24,000 scale DRG’s in the US and 1:20,000 hypsography in Canada the international boundary and ridgelines were not coincident. The Boundary was updated to the ridgeline. 
+Coding not updated.
+01040001
+Original WBD boundary between the US and Canada used the international boundary. However when this boundary was compared to the 1:24,000 scale DRG’s in the US and 1:20,000 hypsography in Canada the international boundary and ridgelines were not coincident. The Boundary was updated to the ridgeline. 
+Coding not updated.
+01050001
+Boundary was updated with US/CAN harmonized boundary.  This boundary was developed during the initial St. Croix pilot and includes updates within the US as well as Canada.
+Coding left as is
+01050002
+The harmonized boundary for 01050004 required updates to 01050002. 
+A portion of 01050002 was moved to 01050004 to accommodate the new harmonized boundary.
+This required re-coding of the entire 01050002.
+01050004
+Boundary was updated with US/CAN harmonized boundary. A portion of 01050002 was moved into this unit. 
+Codes were updated to reflect this boundary change
+04150301
+Split into 2 new units
+04150301 code retired 
+04150301 HUC8 name retired (Upper St. Lawrence)
+New Codes and HUC8 names
+04150309 – Headwaters St. Lawrence River
+04150310 – Raisin River-St. Lawrence River
+04150306
+Boundary was updated with US/CAN harmonized boundary.
+Coding left as is
+04150307
+Boundary was updated with US/CAN harmonized boundary.
+Coding left as is
+04150308
+Boundary was updated with US/CAN harmonized boundary.
+Coding left as is
+04150407
+Boundary was updated with US/CAN harmonized boundary.
+Coding left as is
+04150408
+Boundary was updated with US/CAN harmonized boundary.
+Coding left as is
+04150409
+Boundary was updated with US/CAN harmonized boundary.
+Coding left as is
+04150500
+Boundary was updated with US/CAN harmonized boundary.
+Coding left as is
+04150600 – Chaudiere River
+This is a new unit that was created when the WBD boundary was moved from the international boundary on to the ridgelines
+Original WBD boundary between the US and Canada used the international boundary. However when this boundary was compared to the 1:24,000 scale DRG’s in the US and 1:20,000 hypsography in Canada the international boundary and ridgelines were not coincident. The Boundary was updated to the ridgeline.</procdesc><procdate>201201</procdate></procstep><procstep><procdesc>National responsibility for stewardship and maintenance of the WBD transferred from NRCS to the USGS. As a result the WBD data model was updated and the data was incorporated into the NHD database.
+WBD model updated based on input from NRCS, USGS, NHD program and user community.
+WBD polygon dataset split into individual polygon datasets for each level of hydrologic units.  
+Two additional datasets added for the next 2 levels of subdivisions (14- and 16-digit) but are not required for each state to populate these.
+Attribute tables for polygons and lines were updated with some fields being added, renamed or removed. See below for a list of changes.
+WBD Line attribute table changes: 
+Old Model:
+HU_LEVEL 
+LINESOURCE
+META_ID – removed – Feature level metadata functionality is added to track updates in the new model
+LEFT_HUC_8 – removed
+RIGHT_HUC_8 – removed
+New Model:
+Permanent_Identifier – New field for feature level metadata
+Source_FeatureID – New field for feature level metadata 
+Meta_SourceID – New field for feature level metadata
+Source_DataDesc – New field for feature level metadata
+Source_Originator – New field for feature level metadata
+HU_Level
+HU_Class – New field populated with the number of digits of the hydrologic unit
+LoadDate – New field for feature level metadata
+LineSource
+WBD Polygon attribute table changes:
+Codes and names moved from single polygon dataset to the appropriate hydrologic unit dataset for each level
+Old Model:
+HUC_8 – moved to 8-digit polygon dataset
+HUC_10 – moved to 10-digit polygon dataset
+HUC_12 – moved to 12-digit polygon dataset
+ACRES – re-named to AREA_ACRES
+NCONTRB_A
+HU_10_GNIS – Replaced with Gaz_ID
+HU_12_GNIS – Replaced with Gaz_ID
+HU_10_DS – Removed from new model
+HU_10_NAME – moved to 10-digit polygon dataset
+HU_10_MOD – moved to 10-digit polygon dataset
+HU_10_TYPE – moved to 10-digit polygon dataset
+HU_12_DS – moved to 12-digit polygon dataset
+HU_12_NAME – moved to 12-digit polygon dataset
+HU_12_MOD – moved to 12-digit polygon dataset
+HU_12_TYPE – moved to 12-digit polygon dataset
+META_ID - removed – Feature level metadata functionality is added to track updates in the new model
+STATES
+New Model:
+Fields included in all levels of hydrologic unit polygon datasets.
+Gaz_ID – Old model was the GNIS field
+Area_Acres - Renamed
+Area_SqKm – New field
+States
+LoadDate- New field
+HUC_&lt;number of digits for that level&gt;  For Example: HUC12
+HU_&lt;number of digits for that level&gt;_Name
+Fields included with the 10-, 12-, 14- and 16- digit polygon datasets.
+HU_&lt;number of digits for that level&gt;_Type
+HU_&lt;number of digits for that level&gt;_Mod
+Fields included with the 12-, 14- and 16- digit polygon datasets.
+NContrb_Acres
+NContrb_SqKm – New field</procdesc><procdate>201207</procdate></procstep><procstep><procdesc>Changes to the WBD data model include the elimination of the underscore _ in field and table names, switching to camel casing instead.  Camel casing is where the first letter of each word is capitalized with regular letters for the rest of the word (Example: LoadDate).  Other changes to the WBD data model include the elimination of the WBDPoint table, the WBDPointEvent table, and the WBDAtributes table.  Fields have been added to the WBDHU12 polygon feature dataset that allow metadata record linking and also include the downstream attribute.  NWIS drainage area line and polygon feature classes have been added also.
+WBD line dataset
+New Model:
+TNMID – Use to be PermanentID
+HU_Level
+HU_Class – New field populated with the number of digits of the hydrologic unit
+LoadDate – New field for feature level metadata
+LineSource
+(Source_FeatureID, Meta_SourceID, Source_DataDesc, Source_Originator fields removed from WBDLine dataset)
+WBD polygon dataset
+Fields included in all levels of hydrologic unit polygon datasets.
+TNMID – New field for feature level metadata 
+MetaSourceID – New field for feature level metadata
+SourceDataDesc – New field for feature level metadata
+SourceOriginator – New field for feature level metadata
+SourceFeatureID – New field for feature level metadata
+LoadDate – New field for feature level metadata
+GNIS_ID = replaces Gaz_ID 
+AreaAcres 
+AreaSqKm 
+States
+LoadDate
+HUC&lt;number of digits for that level&gt; for example: HUC12 
+Name
+Fields included with the 10-, 12-, 14- and 16- digit polygon datasets.
+HUType
+HUMod
+Fields included with the 12-, 14- and 16- digit polygon datasets.
+NContrbAcres
+NContrbSqKm 
+Field included with the 12-digit polygon dataset. 
+ToHUC – This attribute was included in the original WBD data model as HU_12_DS and represents the code of the next unit downstream. The values for this field were populated for the last version of the dataset in the old model by linking the 2 tables by the 12-digit code and calculating the value over.
+NWISDrainageArea polygon dataset added as a place holder for when these datasets are generated.
+Attribute Fields:
+TNMID
+MetaSourceID
+SourceDataDesc
+SourceOriginator
+SourceFeatureID
+LoadDate
+ReferenceTNMID
+SiteID
+AgencyCode
+SiteNumber
+StationName
+TotalDrainageArea
+ContributingDrainageArea
+NWISBoundary line dataset added as a place holder for when these datasets are generated.
+Attribute Fields:
+TNMID
+MetaSourceID
+SourceDataDesc
+SourceOriginator
+SourceFeatureID
+LoadDate
+ReferenceTNMID
+NonContributingDrainageArea polygon dataset added as a place holder for when these datasets are generated.
+Attribute Fields:
+TNMID
+MetaSourceID
+SourceDataDesc
+SourceOriginator
+SourceFeatureID
+LoadDate</procdesc><procdate>20121022</procdate></procstep><procstep><procdesc>Changes to the WBD data model include updates to the field for the NonContributingDrainageArea polygon dataset, NWISBoundary line dataset and the NWISDrainageArea polygon dataset. This includes the addition of new features and the re-naming of some of the existing fields.
+NWISDrainageArea polygon dataset: 
+Attribute Fields:
+TNMID
+MetaSourceID
+SourceDataDesc
+SourceOriginator
+SourceFeatureID
+LoadDate
+ReferenceTNMIDNHDPointEvent – Renamed from ReferenceTNMID
+AgencyCode
+SiteNumber
+StationName
+ContributingDrainageAreaAcres – Originally called ContributingDrainageArea
+TotalDrainageAreaAcres – Originally called TotalDrainageArea
+ContributingDrainageAreaSqKm – New field
+TotalDrainageAreaSqKm – New field
+SiteID - Removed
+NWISBoundary line dataset: 
+Attribute Fields:
+TNMID
+MetaSourceID
+SourceDataDesc
+SourceOriginator
+SourceFeatureID
+LoadDate
+ReferenceTNMIDPointEvent – Originally called ReferenceTNMID
+SiteNumber – New field
+NonContributingDrainageArea polygon dataset 
+Attribute Fields:
+TNMID
+MetaSourceID
+SourceDataDesc
+SourceOriginator
+SourceFeatureID
+LoadDate
+NonContributingSqKm – New field
+NonContributingAcres – New field
+ReferenceTNMID12digitHU – New field</procdesc><procdate>201301</procdate></procstep><procstep><procdesc>The Columbia River Basin and Puget Sound Coastal area was updated to include the harmonized 8-, 10, and 12-digit hydrologic units within Canada. This harmonized data was created over the last year with contributions from US and Canadian Federal, State, Provincial and local partners. The British Columbia 20K Fresh Water Atlas watershed data and DEM data were used to create the units within Canada. Border units were updated through a review/agreement process with local and state/provincial partners using the best available data (DEM, DRG, Imagery, Field Verification).
+During the harmonization effort there were some 8-digit updates that were agreed to.
+Legacy 17010101 Upper Kootenai name will change to Middle Kootenai to coordinate with Canada since there is an Upper Kootenay solely in Canada. 
+Legacy 17010101 Upper Kootenai boundary changed slightly. The WBD Technical Team recommends retaining the legacy name and code.
+A new subbasin was created as a result of the international border harmonization which slightly goes into the U.S. (the portion of 17010101 referenced above). The WBD Technical Team recommends coding this unit with the next down sequential code which would be 17010106 and using the name that Canada refers to this hydrologic unit as “Elk”.
+17110001 legacy name “Fraser” is being changed to “Sumas River” to match with Canada, and because the Fraser River doesn’t flow through this unit.</procdesc><procdate>201305</procdate></procstep><procstep><procdesc>The boundaries for Lake Ontario (0415200), Lake Erie (04120200), Lake Huron (04080300) and Lake Superior (04020300) were updated using the new inland lakes coastal method. The area within Wisconsin was excluded per the state partner’s request. All surrounding 8-digits (units touching the lakes) were reviewed and updated as well.</procdesc><procdate>2012-2013</procdate></procstep><procstep><procdesc>Updated Alaska’s region 1904 based on a request from NHD program and approved by state partners. 1904 was split into 3 new 4-digit hydrologic units. (sub-region).
+The new units are
+1907 – Upper Yukon River
+190701 – Headwaters Yukon River
+1908 – Middle Yukon River
+1909 – Lower Yukon River</procdesc><procdate>20140213</procdate></procstep><procstep><procdesc>WBD boundaries for New Hampshire were reviewed and updated based on a state hydrologic unit dataset. At the same time the attributes were reviewed and updated. This include migrating the HU Modification field from the old model to the new model</procdesc><procdate>201403</procdate></procstep><procstep><procdesc>Rainy River Basin was updated to include the harmonized 8-, 10- and 12-digit hydrologic units with Canada. This harmonized data was created over the past 6 months with cooperation from Federal, State, Provincial and Local Partners. 
+Some of the boundaries within MN were updated using the MN LiDAR data. The MN LiDAR was also used in the creation of boundaries within Canada when the LiDAR data overlapped into Canada. The other boundaries within Canada were generated using the province of Ontario’s 20K DEM and Hydrography data.
+There were some 8-digit updates as a result of the harmonization effort.
+09030004 is now a part of 09030008 the Lower Rainy
+2 new 8-digit units were broken out in Canada
+09030010 – Big Turtle River-Rainy Lake
+09030011 – Shoal Lake</procdesc><procdate>20140306</procdate></procstep><procstep><procdesc>Souris River Basin was updated to include the harmonized 8-, 10- and 12-digit hydrologic units with Canada. This harmonized data was created over the past 6 months with cooperation from Federal, State, Provincial and Local Partners.
+There were some 8-digit updates as a result of the harmonization effort.
+Legacy 09010001 Upper Souris has now been subdivided. That code and name have been retired and the new units are:
+09010006 Long Creek
+09010007 Headwaters Souris River
+09010008 Moose Mountain Creek-Souris River</procdesc><procdate>20140414</procdate></procstep><procstep><procdesc>Harmonized 8-, 10 and 12-digit units for all border 8-digit units with Mexico were incorporated into the WBD. These datasets were developed through a coordinated effort between the USGS and INEGI along with input from State and local partners. Due to the harmonization effort some 8-digit boundaries may have been adjusted. In addition to this the 10- and 12-digit boundaries along the border might have also been adjusted based on the availability of better base information within Mexico provided by INEGI.</procdesc><procdate>201405</procdate></procstep><procstep><procdesc>Changes to the WBD data model include updates or additions to the fields for the NonContributingDrainageArea polygon dataset, NWISBoundary line dataset and the NWISDrainageArea polygon dataset. The majority of these are due to the length of the original name for the field. A new line dataset was created for Non Contributing Area called NonContributingDrainageLine NWISBoundary was re-named NWISDrainageLine
+NWISDrainageArea polygon dataset: 
+Attribute Fields:
+TNMID
+MetaSourceID
+SourceDataDesc
+SourceOriginator
+SourceFeatureID
+LoadDate
+AreaSqKm – New Field
+AgencyCode
+SiteNumber
+StationName
+TotalAreaSqMi – New Field
+NWISTotalAreaSqMi – New Field
+ContributingAreaSqMi – New Field
+NWISContributingAreaSqMi – New Field
+ReferenceTNMIDNHDPointEvent 
+Remarks – New Field
+ContributingDrainageAreaAcres – Removed
+TotalDrainageAreaAcres – Removed
+ContributingDrainageAreaSqKm – Removed
+TotalDrainageAreaSqKm – Removed
+NWISDrainageLine line dataset 
+Attribute Fields:
+TNMID
+MetaSourceID
+SourceDataDesc
+SourceOriginator
+SourceFeatureID
+LoadDate
+LengthKm – New Field
+LineSource – New Field
+Agency Code – New Field
+SiteNumber 
+ReferenceTNMIDPointEvent – Removed
+NonContributingDrainageArea polygon dataset 
+Attribute Fields:
+TNMID
+MetaSourceID
+SourceDataDesc
+SourceOriginator
+SourceFeatureID
+LoadDate
+AreaSqKm – New Field
+NonContributingAreaSqKm – Re-named from NonContributingSqKm
+Remarks – New Field
+NonContributingAcres - Removed
+ReferenceTNMID12digitHU - Removed
+NonContributingDrainageLine line dataset – New dataset
+Attribute Fields:
+TNMID
+MetaSourceID
+SourceDataDesc
+SourceOriginator
+SourceFeatureID
+LoadDate
+LengthKm
+LineSource</procdesc><procdate>201506</procdate></procstep><procstep><procdesc>During this time period the WBD national technical team reviewed all the ToHUC codes within the 12-digit polygon and made updates as necessary. All updates were coordinated and approved by WBD State-Stewards.</procdesc><procdate>2014-2015</procdate></procstep><procstep><procdesc>The following are 8-digit updates that were approved by the WBD National Technical Coordinators as required by the WBD Standards. These may include name/code updates or boundary updates that were implemented in the WBD at some point during the creation or maintenance of the data. 
+Alaska:
+Legacy 19020401 Anchorage boundary has changed by about 20% of its area.
+19020203 (Prince William Sound)
+Added a new subbasin unit for Prince William Sound.
+Adjusted huc8 boundaries between 19020104, 19020201 and 19020202 to better reflect surface water flow and to assist with breaking out the Prince William Sound as a new unit.
+Legacy 19020302 Upper Kenai Peninsula has changed by about 20% of its area.
+Legacy 19030304 Wood River had a portion broken out, which has created a reduced area for the 19030304 Wood River and put Igushik River into it’s own hydrologic unit with a new code of 19030306. 
+Legacy 19030402 Farewell Lake was broken into 19030406 Middle Flork Kuskokwim River and 19030407 South Fork Kuskokwim River. 
+Legacy 19040204 Black River has had a portion split out. 19040204 will remain the Black River, and a new unit 19040206 Grass River is broken out. 
+19040502
+The outlet for subbasin 19040502 was moved downstream from the current break across Tanana River at a confluence with a minor tributary to the more prominent confluence with Robertson River. This edit resulted in the addition of 2 subwatersheds to 19040502 and the removal of 2 watersheds from 19040503.
+Legacy 19040504 Delta River linework changed significantly. It makes hydrologic unit sense. 
+The legacy 19040504 had 3 separate outlet; Delta River, Delta Creek and Little Delta River.
+The boundary was adjusted so that 19040504 contained just the Delta River as a classic unit.
+The Delta Creek and Little Delta River where moved into 19040507.
+Legacy 19040507 Tanana Flats Linework changed significantly. It makes hydrologic unit sense. 
+19040606
+Legacy boundary for 19040606 had the outlet at a location across the Huslia River downstream from the outlet of the South Fork Huslia River. The boundary was adjusted downstream to the major confluence where the Huslia River drains into the Koyukuk River, thus creating a standard/ classic HUC8 for the Huslia River.
+1905
+19050202, 19050203, 19050301, 19050304, 19050403
+19050202’s boundary was adjusted so that this unit contained all frontal drainage areas flowing into the southern portion of Kotzebue Sound.
+19050203’s boundary was adjusted to that the unit included Eschscholtz Bay and all of the drainage areas flowing into it.
+19050301’s boundary was adjusted so that this unit has one outlet and includes Selawik Lake. The frontal drainages flowing into Hotham Inlet were moved into unit 19050304.
+19050304’s boundary was adjusted so that the unit included Hotham Inlet and the frontal drainages flowing into it.
+19050403’s boundary was adjusted to a buffer distance of 1000 meters off shore.
+19050500 (Kotzebue Sound)
+Added a new HUC8 subbasin unit to AK WBD for Kotzebue Sound. Inner coastal units that ended at the shore line were extended offshore to a 1000 meter buffer distance.
+Legacy 19060204 Ikpikpuk River absorbed Inaru River from Legacy 19060202
+Legacy unit 19060202 contained 2 different stream systems flowing into 2 different bodies of water.
+The Inaru River flows into Admirality Bay while the Kugrua River and the other small frontal drainages flows into the Chukchi Sea.
+The boundary was adjusted so that flow into Admirality Bay/Dease Inlet was separate from flow into Chukchi Sea. The Inaru River, Admirality Bay/Dease Inlet and all associated frontal drainages were added to subbasin 19060204.
+New Subbasin 19060206 is being named Admiralty Bay-Dease Inlet. This area use to be part of Subbasin 19060204
+19020800 Cook Inlet is a new hydrologic unit as recommended by the Alaska in state stakeholders.
+Arizona:
+Legacy 15010009 Fort Pierce Wash name changed to Fort Pearce Wash to account for misspell.
+Legacy 15010007 Hualapai Wash name should change as the wash is now in the adjacent Subbasin. Changed to Red Lake 
+California:
+Legacy 18010109 Gualala-Salmon had an area the size of several 12-digit HU’s that has been aggregated into the adjacent legacy 18050005 Tomales-Drake Bays as a result of coastal implementation. This is approved by the in-state WBD Steward and T3.Legacy 18030012 and 
+new 18030012 Tulare-Buena Vista Lakes changed to Tulare Lake Bed as the boundary has changed so significantly that Buena Vista Lakes are no longer in the adjusted hydrologic unit.
+Legacy 18040001 and new 18040007 name changed from Upper Chowchilla-Upper Fresno to Fresno River as the Chowchilla is no longer in the adjusted hydrologic unit.
+Legacy 18040002 and new 18040002 name changed from Middle San Joaquin-Lower Merced-Lower Stanislaus to Lower San Joaquin River as Merced and Stanislaus Rivers are no longer in the adjusted hydrologic unit.
+Legacy 18050006 San Francisco-Coastal South will absorb 4 coastal 12-digit HU’s from legacy 18060001 San Lorenzo-Soquel as a result of coastal implementation. This is approved by the in-state WBD Steward and the national WBD Technical Team
+Legacy 18060006 Central Coastal will absorb an area the size of 6 12-digit HU’s from legacy 18060012 Carmel which all drains directly to the Pacific Ocean. This is approved by the in-state WBD Steward and the national WBD Technical Team
+Portions of legacy 18060011, 18060012, and part of 19060001 will become a new subbasin accounting for all of these frontal pieces. It will be coded 18060015  and named Monterey Bay. This is approved by the in-state WBD Steward and the national WBD Technical Team
+Legacy 18060013 Santa Barbara Coastal had an area the size of one 12-digit HU which will be aggregated with legacy 18070101 Ventura as a result of coastal implementation. This is approved by the in-state WBD Steward and the national WBD Technical Team
+Legacy 18070104 Santa Monica Bay had an area the size of several 12-digit HU’s which will be aggregated with legacy 18070106 San Gabriel as a result of coastal implementation. This is approved by the in-state WBD Steward and national WBD Technical Team
+Legacy 18100200 has now been subdivide into 18100201, 18100202, 18100203, and 18100204. 
+The legacy name for 180100200 has been retained as the Salton Sea for new  code 18100204. New names for the other subdivisions have been reviewed and accepted as follows:
+18100201 Whitewater River
+18100202 Carrizo Creek
+18100203 San Felipe Creek
+Legacy 18040002 and new 18040051 name Middle San Joaquin-Lower Merced-Lower Stanislaus was change to Rock Creek-French Camp Slough.
+Legacy 18020124 Honcut Headwaters name and code have been retired.  It was absorbed in to legacy 18020106 Lower Feather to form the new 18020159. Technical Team recommends the name retain the combined legacy names of Honcut Headwaters-Lower Feather.
+Legacy 18020120 Upper Butte and legacy 18020105 Lower Butte have been retired.
+The two hydrologic units were combined in to the new accepted code and name of 18020158 Butte Creek.
+Legacy 18020119 Mill-Big Chico, 18020103 Sacramento-Lower Thomes, and 18020114 Upper Elder Thomes have been retired.  The accepted names and codes for the newly delineated hydrologic units to replace those areas are 18020157 Big Chico Creek-Sacramento River, 18020156 Thomes Creek-Sacramento River, and 18020155 Paynes Creek-Sacramento River.
+The following legacy names and codes have been retired: 18020113 Cottonwood Headwaters, 18020102 Lower Cottonwood, 18020101 Sacramento-Lower Cow-Lower Clear, 18020118 Upper Cow-Battle, and 18020112 Sacramento-Upper Clear.  The accepted codes for the newly delineated hydrologic units that replace those areas will be 18020151-18020154, but will require rework of the sequence if the proposed delineation correction above is accepted.  The approved names should be:
+18020151 Cow Creek
+18020152 Cottonwood Creek
+18020153 Battle Creek
+18020154 Clear Creek-Sacramento River 
+18010111 code and name have been retired and the area has been split. A portion is in 18010109 Gualala-Salmon, and the other portion in 18050005 Tomales-Drake Bays
+18020107 code and name have been retired and the area is now included with 18020125 Upper Yuba
+18020108 code and name have been retired and the area is now included with 18020126 Upper Bear
+18020110 code and name have been retired and the area is now included with 18020116 Upper Cache
+18030008 code and name have been retired and the area is now included with 18030012 Tulare Lake Bed
+18030011 code and name have been retired and the area has been split. A portion is in 18030012 Tulare Lake Bed, and the other portion in 18030009 Upper Dry 
+18040004 code and name have been retired and the area is now part of 18040011 Upper Calaveras California
+18040005 code and name have been retired and the area is now part of 18040003 San Joaquin Delta, 18040012, 18040012 Upper Mokelumne, and  18040003 Upper Cosumnes
+18020109 code and name have been retired and the area is now part of 18020163 Lower Sacramento
+18020117 code and name have been retired and the area is now part of 18020162 Upper Putah
+18060001 code and name have been retired, and the areas are now split between 18050006 San Francisco Coastal South and 18060015 Monterey Bay
+18060011 code and name have been retired and now is split between 18060015 Monterey Bay and 18060005 Salinas
+18060012 code and name have been retired and the area is now part of 18060006 Central Coast and 18060015 Monterey Bay
+Colorado:
+Legacy 14010006 Parachute-Roan name and code have been retired. This area has been combined with 14010005 Colorado Headwaters-Plateau.
+Connecticut:
+01100007 code and name have been retired and the area is now part of 0110004 Quinnipiac
+Delaware:
+02060007 code and name have been retired and this area now included with 02080110 Tangier
+02060008 code and name have been retired and this area now included with 02080109 Nanticoke
+02060009 code and name have been retired and this area is now part of 02080111 Pokomoke-Western Lower Delmarva and 02080110 Tangier
+02060010 code and name have been retired and this area is now part of 02040303 Chincoteague
+Florida:
+Legacy 03090202 Everglades has been modified as follows:
+The largest part of 03090202 Everglades carries the legacy code and name.
+Split out new Subbasin 03090206 Florida Southeast Coast
+Combined additional smaller portions of 03090202 with adjacent Subbasins.
+Massachusetts:
+01070002 is retained for the headwaters of this original code, but ¾ of the original area is now coded 01070006. The area now coded 01070006 retained the original name for the area of legacy 01070002 and is called Merrimack, whereas 01070002 is not called Winnipesaukee River (other state documentation supporting this decision)
+New Hampshire:
+Legacy 01070002 Merrimack was subdivided in to 01070002 Merrimack to the North and 01070006 Merrimack River to the South.  The technical team requests that the portion to the South retain the legacy code and name of 01070002, Merrimack, and that the northern hydrologic unit receive the code and name 01070006 Winnipesaukee River.  There is no Merrimack River in the northern portion and the southern portion most closely resembles the legacy delineation.
+New York:
+Legacy 04150307 English-Salmon was subdivided into 04150307 Salmon and 04150308 Chateaugay-English. The Technical Team accepts this change.
+02010004 name and code have been retired, and this area is split,  part is in 04150404 Ausable River and part in 041504008 Lake Champlain
+North Carolina:
+Legacy subbasin 03030001 and legacy subbasin 03020106 have been combined and recommended for acceptance as a new 6-digit Basin 030203 Onslow Bay.  
+Legacy Subbasin 03030001 New has been recoded and renamed to 03020302 New River. The technical team accepts the new code and name.
+Legacy Subbasin 03020106 Bogue-Core Sounds has been recoded and renamed to 03020301 White Oak River. The technical team accepts the new code and name.
+03040207 code and name are still in use, but the portion that stretches along the coast has been broken out to a new 03040208 Coastal Carolina
+Oregon: 
+Legacy 17100304 Coos was subdivided into 17100304 Coos to the north and 17100306 Sixes to the south. The Technical team accepts this change.
+South Carolina:
+Legacy 03040207 Carolina Coastal-Sampit was subdivided into a southern portion called 03040207 Carolina Coastal-Sampit and a northern portion newly coded and named 03040208 Coastal Carolina. The technical team recognizes this as an acceptable solution, however, future coastal delineations may require additional modification.
+Legacy 03050202 South Carolina Coastal has now been split into subbasins    03050202 South Carolina Coastal and 03050209 Bulls Bay with an additional portion of 03050202 being aggregated in with legacy 03050201 
+Legacy 03050208 Broad-St. Helena has had the following modifications which the technical team concurs with:
+03050208 Broad-St. Helena code and name retained into a much smaller unit capturing only the Broad-St. Helena Rivers
+Split into new 03060110 Calibogue Sound-Wright River, and now part of the adjacent Subregion to the south.
+Split into new 03050210 St. Helena Island portion combined with 03050207 Salkehatchie.
+Legacy 03050205 name is changed to Four Hole Swamp (from Edisto...this name was flipped with the hydrologic unit the water feature resides in). The WBD National Technical Team recommended that this name not be reused as it has been historically assigned to 03050206, but all in state interagency folks felt strongly that it should be resued as that is by far the predominant feature for the HU. Reports since 2005 reflect this.
+Legacy 03050206 name is changed to Edisto River to reflect the major hydrologic feature.
+North Dakota:
+Legacy 10160007 East Missouri Coteau, changed to North Fork Snake as that is a better hydrologic representation of the hydrologic unit.
+Legacy 10170103 South Big Sioux Coteau name changed to Lake Thompson
+Legacy 10170201 Middle Big Sioux Coteau name changed to Upper Big Sioux
+Legacy 10170202 Upper Big Sioux name changed to Middle Big Sioux
+Because legacy 10170203 Lower Big Sioux should stay the same, it doesn’t make sense not to have a middle and an upper. Although the boundaries have significantly relocated, it seem like most viable option is to retain the Upper, Middle, Lower naming convention.
+Texas:
+Legacy13070008 Lower Pecos was subdivided into a northern and southern portion. The northern portion retains the 13070008 code but name should be Pecos. The new subdivided 13070012 hydrologic unit should carry the legacy name Lower Pecos.
+Legacy 13090002 Lower Rio Grande is missing from the current WBD.
+Wisconsin:
+Legacy 07090001Upper Rock keeps the same code and name but the original hydrologic unit delineation changed significantly.
+Legacy 07090002 Crawfish keeps the same code and is renamed to Middle Rock. The original hydrologic unit delineation changed significantly.</procdesc><procdate>2010-2013</procdate></procstep><procstep><procdesc>AK - 14-digit hydrologic units were developed for the National Forest (Tongass and Chugach National Forests) by the AK WBD State Steward. Funding provided by U.S. Forest Service. 6854 new 14-digit units were developed. The delineations affected 35 8-digit units where all or part of the unit was sub-divided into these smaller units. It also affected changes at the 10- and 12-digit levels as well. The size criteria used for this project are between 1,000 and 10,000 acres. Howere, because of the nature of the topography in some areas a few of the units are smaller than this.</procdesc><procdate>2014</procdate></procstep><procstep><procdesc>The processes used to create and maintain the WBD after June of 2012 can be found in the table called METAPROCESSDETAIL. The process descriptions are linked using the TNMID to the FEATURETOMETADATA table. In addition the METASOURCEDETAIL table can also be linked to determine the sources used to create or update the WBD data.</procdesc><procdate>Unknown</procdate></procstep></lineage></dataqual><spdoinfo><direct>Vector</direct><ptvctinf><esriterm Name="WBDHU12"><efeatyp Sync="TRUE">Simple</efeatyp><efeageom code="4" Sync="TRUE"></efeageom><esritopo Sync="TRUE">FALSE</esritopo><efeacnt Sync="TRUE">100487</efeacnt><spindex Sync="TRUE">TRUE</spindex><linrefer Sync="TRUE">FALSE</linrefer></esriterm></ptvctinf></spdoinfo><spref><horizsys><geograph><latres>0.0197940324</latres><longres>0.0223945998</longres><geogunit>Decimal seconds</geogunit></geograph><geodetic><horizdn>D_North_American_1983</horizdn><ellips>GRS_1980</ellips><semiaxis>6378137.0</semiaxis><denflat>298.257222101</denflat></geodetic></horizsys></spref><eainfo><detailed Name="WBDHU12"><enttyp><enttypl>Attribute Table</enttypl><enttypd>Table containing attribute information associated with the data set.</enttypd><enttypds>Producer defined</enttypds><enttypt Sync="TRUE">Feature Class</enttypt><enttypc Sync="TRUE">100487</enttypc></enttyp><attr><attrlabl Sync="TRUE">OBJECTID</attrlabl><attalias Sync="TRUE">OBJECTID</attalias><attrtype Sync="TRUE">OID</attrtype><attwidth Sync="TRUE">4</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale><attrdef Sync="TRUE">Internal feature number.</attrdef><attrdefs Sync="TRUE">Esri</attrdefs><attrdomv><udom Sync="TRUE">Sequential unique whole numbers that are automatically generated.</udom></attrdomv></attr><attr><attrlabl Sync="TRUE">SHAPE</attrlabl><attalias Sync="TRUE">Shape</attalias><attrtype Sync="TRUE">Geometry</attrtype><attwidth Sync="TRUE">0</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale><attrdef Sync="TRUE">Feature geometry.</attrdef><attrdefs Sync="TRUE">Esri</attrdefs><attrdomv><udom Sync="TRUE">Coordinates defining the features.</udom></attrdomv></attr><attr><attrlabl>TNMID</attrlabl><attrdef>TNMID (short for The National Map Identification) is a unique 40-character field that identifies each element in the database exclusively.</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><udom>TNMID is an automatically assigned code that stays with each element. When an element is updated or changed, TNMID links the element to the metadata record and documents the change. TNMID is also used to maintain relationship classes in the normalized data model. When an element is deleted or split, TNMID stays with the original element and is not used again. When an element is split, new permanent identifiers are assigned to the resultant parts.
+Example
+{5DD21DC6-3692-4197-889B-49E652AA43D0}</udom></attrdomv><attalias Sync="TRUE">TNMID</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">40</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>METASOURCEID</attrlabl><attrdef>MetaSourceID is an unique identifier that links the element to the metadata tables.</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><udom>MetaSourceID is an unique identifier that links the element to the metadata tables. This ID is generated and assigned automatically by the database and remains with the object permanently.
+For Example: 5DD21DC6-3692-4197-889B-49E652AA43D0</udom></attrdomv><attalias Sync="TRUE">METASOURCEID</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">40</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>SOURCEDATADESC</attrlabl><attrdef>SourceDataDesc is a space provided for a brief description of the type of base data used to update or change the current WBD.</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><udom>The WBD In-State Steward completes this field as part of the metadata form.
+For Example: Montgomery County 1-meter LiDAR</udom></attrdomv><attalias Sync="TRUE">SOURCEDATADESC</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">100</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>SOURCEORIGINATOR</attrlabl><attrdef>SourceOriginator is the description of the agency that created the base data used to improve the WBD.</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><udom>The WBD In-State Steward completes this field as part of the metadata form
+For Example: USDA–FS LiDAR</udom></attrdomv><attalias Sync="TRUE">SOURCEORIGINATOR</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">130</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>SOURCEFEATUREID</attrlabl><attrdef>SourceFeatureID is a long, unique code.</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><udom>This code identifies the parent of the feature if the feature is the result of a split or merge, and it is automatically generated and assigned.
+For Example: 5DD21DC6-3692-4197-889B-49E652AA43D0</udom></attrdomv><attalias Sync="TRUE">SOURCEFEATUREID</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">40</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>LOADDATE</attrlabl><attrdef>LoadDate represents the date when the data were loaded into the official USGS WBD ArcSDE database. The field is the effective date for all feature edits, and it is automatically generated.</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><rdom><rdommin>12:00:00 AM</rdommin><rdommax>5/22/2015 9:18:54 AM</rdommax></rdom></attrdomv><attalias Sync="TRUE">LOADDATE</attalias><attrtype Sync="TRUE">Date</attrtype><attwidth Sync="TRUE">8</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>GNIS_ID</attrlabl><attrdef>GNIS_ID is a preassigned numeric field that uses a unique number to relate the name of the hydrologic unit to the GNIS names database.</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><codesetd><codesetn>Geographic Names Information System (GNIS)</codesetn><codesets>GNIS (http://gnis.usgs.gov/)</codesets></codesetd></attrdomv><attalias Sync="TRUE">GNIS_ID</attalias><attrtype Sync="TRUE">Integer</attrtype><attwidth Sync="TRUE">4</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>AREAACRES</attrlabl><attrdef>The area of each hydrologic unit including non-contributing areas stored in acres
+AreaAcres is common to all polygon feature classes and is calculated at the 12-digit hydrologic unit from the intrinsic area value maintained by the GIS software; therefore, acreage values may vary from user calculations, depending on the projection of the data. North American Albers Equal Area Conic, North American Datum 1983 is the required projection to use for calculation. If the units of the area field are stored in square meters, then use the conversion factor 0.0002471. For example, 40,469,446 square meters multiplied by 0.0002471 =10,000 acres</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><rdom><rdommin>0</rdommin><rdommax>50000000</rdommax><attrunit>acres</attrunit></rdom></attrdomv><attalias Sync="TRUE">AREAACRES</attalias><attrtype Sync="TRUE">Double</attrtype><attwidth Sync="TRUE">8</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>AREASQKM</attrlabl><attrdef>The area of each hydrologic unit including non-contributing areas stored in square kilometers.
+AreaSqKm is calculated at the 12-digit hydrologic unit from the intrinsic area value maintained by the GIS software; therefore, the square kilometer values may vary from user calculations, depending on the projection of the data. North American Albers Equal Area Conic, North American Datum 1983 is the default projection.</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><rdom><rdommin>0</rdommin><rdommax>100000</rdommax><attrunit>square kilometers</attrunit></rdom></attrdomv><attalias Sync="TRUE">AREASQKM</attalias><attrtype Sync="TRUE">Double</attrtype><attwidth Sync="TRUE">8</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>STATES</attrlabl><attrdef>The States or outlying area attribute identifies the State(s) or outlying areas that the hydrologic unit falls within or touches. Will be populated with the 2 character state abbreviation or outlying area attibute for each area that the unit falls within in alphabetical order. For Example: CO,UT,WY</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><codesetd><codesetn>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</codesetn><codesets>Section 6: Geospatial Data Structure and Attributes http://pubs.usgs.gov/tm/11/a3/)</codesets></codesetd></attrdomv><attalias Sync="TRUE">STATES</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">50</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>HUC12</attrlabl><attrdef>The HUC12 field is a unique 12-digit hydrologic unit code.
+HUC12 represents the 12-digit hydrologic unit boundaries (previously referred to as Subwatersheds).
+For Example: 10190020904</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><codesetd><codesetn>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</codesetn><codesets>Section 6: Geospatial Data Structure and Attributes (http://pubs.usgs.gov/tm/11/a3/)</codesets></codesetd></attrdomv><attalias Sync="TRUE">HUC12</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">12</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>NAME</attrlabl><attrdef>Name refers to the GNIS name for the geographic area in which the hydrologic unit is located.
+Populated using GNIS names and guidelines as outlined in the WBD Standards. 
+For Example: Upper Blue River</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><codesetd><codesetn>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</codesetn><codesets>Section 6: Geospatial Data Structure and Attributes (http://pubs.usgs.gov/tm/11/a3/)</codesets></codesetd></attrdomv><attalias Sync="TRUE">NAME</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">120</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>HUTYPE</attrlabl><attrdef>The 12-digit hydrologic unit type attribute is the single-letter abbreviation for Watershed type from the list of official names provided in the WBD Standards. Use the single type that most closely describes the 12-digit hydrologic unit.
+For Example: S = "Standard" hydrologic unit - An area with drainage flowing to a single outlet point, excluding noncontributing areas.</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><codesetd><codesetn>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</codesetn><codesets>Section 6: Geospatial Data Structure and Attributes (http://pubs.usgs.gov/tm/11/a3/)</codesets></codesetd></attrdomv><attalias Sync="TRUE">HUType</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">255</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>HUMOD</attrlabl><attrdef>The 12-digit hydrologic unit modification attribute is a two-character, uppercase abbreviation(s) for either (1) the type of modification to natural overland flow that alters the natural delineation of a 12-digit hydrologic unit or (2) the special conditions GF-groundwater flow, GL-glacier, IF-ice field, KA-karst, and NC-noncontributing area. The value of the HUMod field helps to indicate where the modification to the 12-digit hydrologic unit is located. If more than one abbreviation is used, then separate them by commas without spaces and list them from most to least predominant.
+For Example: NC = "NonContributing Area"</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><codesetd><codesetn>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</codesetn><codesets>Section 6: Geospatial Data Structure and Attributes (http://pubs.usgs.gov/tm/11/a3/)</codesets></codesetd></attrdomv><attalias Sync="TRUE">HUMOD</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">30</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>TOHUC</attrlabl><attrdef>The 12-digit hydrologic unit ToHUC code attribute is the code for the 12-digit hydrologic unit that is downstream from and naturally receives the majority of the flow from another 12-digit hydrologic unit.
+For special cases when a downstream code cannot be assigned, identify which of these exceptions applies:
+If a hydrologic unit flows into an ocean or the Gulf of Mexico, then populate this field with the value “OCEAN.”
+If a hydrologic unit drains into either Canada or Mexico, then use the appropriate value “CANADA” or “MEXICO.”
+If a hydrologic unit is a closed basin, then populate this field with the value “CLOSED BASIN.”
+For Example: 171002050402</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><codesetd><codesetn>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</codesetn><codesets>Section 6: Geospatial Data Structure and Attributes (http://pubs.usgs.gov/tm/11/a3/)</codesets></codesetd></attrdomv><attalias Sync="TRUE">TOHUC</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">16</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>NONCONTRIBUTINGACRES</attrlabl><attrdef>The noncontributing area attribute represents the area, in acres, of hydrologic units that do not contribute to downstream accumulation of streamflow under normal flow conditions.
+The value is the total acreage of the noncontributing areas within a hydrologic unit.
+Example: 26739 acres</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><rdom><rdommin>0</rdommin><rdommax>50000000</rdommax></rdom></attrdomv><attalias Sync="TRUE">NONCONTRIBUTINGACRES</attalias><attrtype Sync="TRUE">Double</attrtype><attwidth Sync="TRUE">8</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>NONCONTRIBUTINGSQKM</attrlabl><attrdef>The noncontributing area attribute represents the area, in square kilometers, of hydrologic units that do not contribute to downstream accumulation of streamflow under normal flow conditions.
+The value is the total square kilometers of the noncontributing areas within a hydrologic unit.
+For Example: 26739.01</attrdef><attrdefs>Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD)</attrdefs><attrdomv><rdom><rdommin>0</rdommin><rdommax>100000</rdommax></rdom></attrdomv><attalias Sync="TRUE">NONCONTRIBUTINGSQKM</attalias><attrtype Sync="TRUE">Double</attrtype><attwidth Sync="TRUE">8</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>SHAPE_Length</attrlabl><attrdef>Length of feature in internal units.</attrdef><attrdefs>Esri</attrdefs><attrdomv><rdom><rdommin>0.00969668135620442</rdommin><rdommax>156.106394893564</rdommax></rdom><udom Sync="TRUE">Positive real numbers that are automatically generated.</udom></attrdomv><attalias Sync="TRUE">SHAPE_Length</attalias><attrtype Sync="TRUE">Double</attrtype><attwidth Sync="TRUE">8</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl>SHAPE_Area</attrlabl><attrdef>Area of feature in internal units squared.</attrdef><attrdefs>Esri</attrdefs><attrdomv><rdom><rdommin>1.4877635179339E-06</rdommin><rdommax>9.79299310229808</rdommax></rdom><udom Sync="TRUE">Positive real numbers that are automatically generated.</udom></attrdomv><attalias Sync="TRUE">SHAPE_Area</attalias><attrtype Sync="TRUE">Double</attrtype><attwidth Sync="TRUE">8</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr></detailed><overview><eaover>The Watershed Boundary Dataset is a comprehensive set of digital spatial data that represents the surface drainages areas of the united states. The information included with the features includes a feature date, a unique common identifier, name, the feature length or area, and other characteristics. Names and their identifiers are assigned from the Geographic Names Information System. The data also contains relations that encode metadata. The names and definitions of all these feature attributes are in the Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD). The document is available online at http://pubs.usgs.gov/tm/11/a3/.</eaover><eadetcit>The names and definitions of all fields within the WBD attribution are in the U.S. Geological Survey, Federal Standards and Procedures for the National Watershed Boundary Dataset (WBD). The document is available online at http://pubs.usgs.gov/tm/11/a3/. Information about the attribute tables and fields are in Section 6: Geospatial Data Structure and Attributes</eadetcit></overview></eainfo><distinfo><distrib><cntinfo><cntorgp><cntorg>U.S. Geological Survey</cntorg></cntorgp><cntaddr><addrtype>Mailing</addrtype><address>U.S. Geological Survey, National Geospatial Technical Operations Center, P.O. Box 25046</address><city>Denver</city><state>CO</state><postal>80225</postal></cntaddr><cntvoice>1-877-275-8747</cntvoice><cntemail>bpgeo@usgs.gov</cntemail></cntinfo></distrib><distliab>The distributor shall not be held liable for improper or incorrect use of this data, based on the description of appropriate/inappropriate uses described in this metadata document. It is strongly recommended that this data is directly acquired from the distributor and not indirectly through other sources which may have changed the data in some way. The Watershed Boundary Dataset is public information and may be interpreted by all organizations, agencies, units of government, or others based on needs; however, they are responsible for the appropriate application of the data. Federal, State, or local regulatory bodies are not to reassign to the U.S. Department of Agriculture-Natural Resources Conservation Service or the U.S. Geological Survey any authority for the decisions they make.  Photographic or digital enlargement of these maps to scales greater than that at which they were originally delineated can result in misrepresentation of the data.  If enlarged, the maps will not include the fine detail that would be appropriate for mapping at the small scale.  Digital data files are periodically updated. Files are dated, and users are responsible for obtaining the latest version of the data from the source distributor.</distliab><stdorder><digform><digtinfo><formname>Vector Digital Data Set (Polygon)</formname></digtinfo><digtopt><onlinopt><computer><networka><networkr>http://nhd.usgs.gov/wbd.html</networkr></networka></computer></onlinopt></digtopt></digform><fees>None. No fees are applicable for obtaining the data set.</fees></stdorder></distinfo><metainfo><metd>20150917</metd><metc><cntinfo><cntperp><cntper>Kimberly Jones</cntper><cntorg>U.S. Geological Survey</cntorg></cntperp><cntaddr><addrtype>Mailing</addrtype><address>U.S. Geological Survey, National Geospatial Technical Operations Center, P.O. Box 25046</address><city>Denver</city><state>CO</state><postal>80225</postal></cntaddr><cntvoice>1-877-275-8747</cntvoice><cntemail>bpgeo@usgs.gov</cntemail></cntinfo></metc><metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn><metstdv>FGDC-STD-001-1998</metstdv></metainfo><Esri><CreaDate>20180606</CreaDate><CreaTime>08574800</CreaTime><ArcGISstyle>FGDC CSDGM Metadata</ArcGISstyle><SyncOnce>FALSE</SyncOnce><DataProperties><itemProps><itemLocation><linkage Sync="TRUE">file://\\ARCTXFTW4000101\C$\Gateway\WBD_FY2016_Official\For_ftp\wbdhu12_a_us_september2015.gdb</linkage><protocol Sync="TRUE">Local Area Network</protocol></itemLocation><itemName Sync="TRUE">WBDHU12</itemName><imsContentType Sync="TRUE">002</imsContentType><nativeExtBox><westBL Sync="TRUE">-179.229655</westBL><eastBL Sync="TRUE">179.856675</eastBL><southBL Sync="TRUE">-14.424695</southBL><northBL Sync="TRUE">71.439573</northBL><exTypeCode Sync="TRUE">1</exTypeCode></nativeExtBox></itemProps><copyHistory><copy source="D:\WBD\Metadata\WBDHU12_FGDC" dest="\\IGSKNJWWWS070\D\WBD\NationalVersion_Check\17Sept2015\ForNRCS\WBDHU12_FGDC" date="20150921" time="02145700"></copy></copyHistory><coordRef><type Sync="TRUE">Geographic</type><geogcsn Sync="TRUE">GCS_North_American_1983</geogcsn><csUnits Sync="TRUE">Angular Unit: Degree (0.017453)</csUnits><peXml Sync="TRUE">&lt;GeographicCoordinateSystem xsi:type='typens:GeographicCoordinateSystem' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:typens='http://www.esri.com/schemas/ArcGIS/10.1'&gt;&lt;WKT&gt;GEOGCS[&amp;quot;GCS_North_American_1983&amp;quot;,DATUM[&amp;quot;D_North_American_1983&amp;quot;,SPHEROID[&amp;quot;GRS_1980&amp;quot;,6378137.0,298.257222101]],PRIMEM[&amp;quot;Greenwich&amp;quot;,0.0],UNIT[&amp;quot;Degree&amp;quot;,0.0174532925199433],AUTHORITY[&amp;quot;EPSG&amp;quot;,4269]]&lt;/WKT&gt;&lt;XOrigin&gt;-399.99999995622699&lt;/XOrigin&gt;&lt;YOrigin&gt;-399.99999997911999&lt;/YOrigin&gt;&lt;XYScale&gt;960000001.49011207&lt;/XYScale&gt;&lt;ZOrigin&gt;0&lt;/ZOrigin&gt;&lt;ZScale&gt;1&lt;/ZScale&gt;&lt;MOrigin&gt;-100000&lt;/MOrigin&gt;&lt;MScale&gt;10000&lt;/MScale&gt;&lt;XYTolerance&gt;1.3333333312637301e-007&lt;/XYTolerance&gt;&lt;ZTolerance&gt;2&lt;/ZTolerance&gt;&lt;MTolerance&gt;0.002&lt;/MTolerance&gt;&lt;HighPrecision&gt;true&lt;/HighPrecision&gt;&lt;LeftLongitude&gt;-180&lt;/LeftLongitude&gt;&lt;WKID&gt;4269&lt;/WKID&gt;&lt;LatestWKID&gt;4269&lt;/LatestWKID&gt;&lt;/GeographicCoordinateSystem&gt;</peXml></coordRef></DataProperties><SyncDate>20150930</SyncDate><SyncTime>16091700</SyncTime><ModDate>20150930</ModDate><ModTime>16091700</ModTime><ArcGISFormat>1.0</ArcGISFormat></Esri><dataIdInfo><envirDesc Sync="TRUE">Microsoft Windows 7 Version 6.1 (Build 7601) Service Pack 1; Esri ArcGIS 10.2.0.3389</envirDesc><dataLang><languageCode value="eng" Sync="TRUE"></languageCode><countryCode value="USA" Sync="TRUE"></countryCode></dataLang><idCitation><resTitle Sync="TRUE">WBDHU12</resTitle><presForm><PresFormCd value="005" Sync="TRUE"></PresFormCd></presForm></idCitation><spatRpType><SpatRepTypCd value="001" Sync="TRUE"></SpatRepTypCd></spatRpType><dataExt><geoEle><GeoBndBox esriExtentType="search"><exTypeCode Sync="TRUE">1</exTypeCode><westBL Sync="TRUE">-179.229655</westBL><eastBL Sync="TRUE">179.856675</eastBL><northBL Sync="TRUE">71.439573</northBL><southBL Sync="TRUE">-14.424695</southBL></GeoBndBox></geoEle></dataExt></dataIdInfo><mdLang><languageCode value="eng" Sync="TRUE"></languageCode><countryCode value="USA" Sync="TRUE"></countryCode></mdLang><distInfo><distFormat><formatName Sync="TRUE">File Geodatabase Feature Class</formatName></distFormat></distInfo><mdHrLv><ScopeCd value="005" Sync="TRUE"></ScopeCd></mdHrLv><mdHrLvName Sync="TRUE">dataset</mdHrLvName><refSysInfo><RefSystem><refSysID><identCode code="4269" Sync="TRUE"></identCode><idCodeSpace Sync="TRUE">EPSG</idCodeSpace><idVersion Sync="TRUE">8.1.1</idVersion></refSysID></RefSystem></refSysInfo><spatRepInfo><VectSpatRep><geometObjs Name="WBDHU12"><geoObjTyp><GeoObjTypCd value="002" Sync="TRUE"></GeoObjTypCd></geoObjTyp><geoObjCnt Sync="TRUE">100487</geoObjCnt></geometObjs><topLvl><TopoLevCd value="001" Sync="TRUE"></TopoLevCd></topLvl></VectSpatRep></spatRepInfo><mdDateSt Sync="TRUE">20150930</mdDateSt></metadata>
