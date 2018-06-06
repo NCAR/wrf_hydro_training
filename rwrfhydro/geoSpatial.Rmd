@@ -62,7 +62,7 @@ If you need to create a georeferenced TIFF file from any variable in a netcdf fi
 Let's export one variable from the geogrid file. You can get a list of all available variables in the `geoFile` using `ncdump` function in rwrfhydro.
 
 ```{r, eval = FALSE}
-head(ncdump(geoFile))
+ncdump(geoFile)
 ```
 
 
@@ -86,7 +86,7 @@ r
 ```
 
 
-Many of the input and output files such as LDASOUT output file does not contain lat/lon coordinates but matches the spatial coordinate system of the geogrid input file. In that case, you could feed the geogrid file `geoFile` from which the lat/lon information will be taken.
+Many of the input and output files such as LDASOUT output file does not contain lat/lon coordinates but matches the spatial coordinate system of the geogrid input file. In that case, you could feed the geogrid file (`geoFile`) from which the lat/lon information will be taken.
 
 ```{r plot2, fig.width = 8, fig.height = 8, out.width='600', out.height='600'}
 file = "~/wrf-hydro-training/example_case/FORCING/2011082800.LDASIN_DOMAIN1"
@@ -204,7 +204,7 @@ sg
 
 ## PolyToRaster
 
-If one wants to create a mask in the model domain (geogrid file), then needs to use `PolyToRaster`. It first picks up the required geographic information (like `proj4`) from the geogrid file (`geoFile`) and then use `raster::rasterize` function to grab the mask or attribute values from the `SpatialPolygonDataFrame`. This function is basically wrapping the `raster::rasterize` function to serve our purpose. Below is a few different way one could use this function.
+If one wants to create a mask in the model domain (geogrid file), then needs to use `PolyToRaster`. It first picks up the required geographic information (like `proj4`) from the geogrid file (`geoFile`) and then use `raster::rasterize` function to grab the mask or attribute values from the `SpatialPolygonDataFrame`. This function is basically wrapping the `raster::rasterize` function to serve our purpose. Below is a few different ways one could use this function.
 
 Example 1 :
   Let's get the RFC's ID for each pixel within the Fourmile Creek domain. This is equivalent to rasterizing the `rfc` `SpatialPolygonDataFrame` based on the `BASIN_ID`.
@@ -224,7 +224,7 @@ As the result shows the rectangle domain is in CBRFC and MBRFC.
 
 
 Example 2 :
-Rasterize the HUC12 `SpatialPolygonDataFrame` based on the `HUC12` field. The clipped HUC12 shapefile is provided with the test case which is slightly bigger than the model domain. You could read the shapefile and plot it as below.
+Rasterize the HUC12 `SpatialPolygonDataFrame` based on the `HUC12` field. The Clipped HUC12 shapefile is provided with the test case which is slightly bigger than the model domain. You could read the shapefile and plot it as below.
   
 ```{r results="hide", plot4, fig.width = 8, fig.height = 8, out.width='600', out.height='600'}
 polyg <- rgdal::readOGR("~/wrf-hydro-training/example_case/supplemental/polygons", "Clipped_huc12")
