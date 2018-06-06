@@ -1,6 +1,6 @@
 ---
 title: "Plot and evaluate simulated WRF-Hydro streamflow using USGS observations"
-author: "Aubrey Dugger, James McCreight, Alyssa Hendricks, Joe Mills, Arezoo Rafieei Nasab, and Katelyn FitzGerald"
+author: "Aubrey Dugger, James McCreight, Joe Mills, Arezoo Rafieei Nasab, and Katelyn FitzGerald"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -10,12 +10,12 @@ vignette: >
 ---
 #Background
 USGS streamflow observations are a primary source of hydrologic information and often used for validation and calibration of hydrlogic models. Web services have been developed at NWIS and the dataRetrieval R package has emerged to make it easy to get USGS data using R.
-
+  
 This vignette demonstrates how to download USGS streamflow observations using the dataRetrieval package, import modeled streamflow from WRF-Hydro output files using functionality from rwrfhydro, and plot both the observed and modeled time series. Note that there are different ways to read the simulated streamflow depending on which option we have turned on in the hdyro.namelist. 
-
+  
 # Load packages and scripts
 Load required packages and scripts.
-
+  
 ```{r}
 library(dataRetrieval)
 library(rwrfhydro)
@@ -61,10 +61,9 @@ One can read the simulated streamflow values different ways depending on what ou
 # specify the path to the frxst_pts_out.txt file
 modelOutputPath <- "~/wrf-hydro-training/output/lesson4/run_gridded_baseline/frxst_pts_out.txt"
 
-
-
-simQ <- read.csv(modelOutputPath, col.names =  c("TimeFromStart", "Time", "station", "longitude", "latitude", "q_cms", "q_cfs", "stage"),
-                          colClasses = c("integer", "character", "character", rep("numeric", 5)), header = FALSE)
+simQ <- read.csv(modelOutputPath, 
+                 col.names =  c("TimeFromStart", "Time", "station", "longitude", "latitude", "q_cms", "q_cfs", "stage"),
+                 colClasses = c("integer", "character", "character", rep("numeric", 5)), header = FALSE)
 head(simQ)
 ```
 

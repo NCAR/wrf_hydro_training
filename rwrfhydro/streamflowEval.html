@@ -10,7 +10,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="author" content="Aubrey Dugger, James McCreight, Alyssa Hendricks, Joe Mills, Arezoo Rafieei Nasab, and Katelyn FitzGerald" />
+<meta name="author" content="Aubrey Dugger, James McCreight, Joe Mills, Arezoo Rafieei Nasab, and Katelyn FitzGerald" />
 
 <meta name="date" content="2018-06-06" />
 
@@ -69,7 +69,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Plot and evaluate simulated WRF-Hydro streamflow using USGS observations</h1>
-<h4 class="author"><em>Aubrey Dugger, James McCreight, Alyssa Hendricks, Joe Mills, Arezoo Rafieei Nasab, and Katelyn FitzGerald</em></h4>
+<h4 class="author"><em>Aubrey Dugger, James McCreight, Joe Mills, Arezoo Rafieei Nasab, and Katelyn FitzGerald</em></h4>
 <h4 class="date"><em>2018-06-06</em></h4>
 
 
@@ -119,10 +119,9 @@ obsDF<span class="op">$</span>feature_id &lt;-<span class="st"> </span>obsDF<spa
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># specify the path to the frxst_pts_out.txt file</span>
 modelOutputPath &lt;-<span class="st"> &quot;~/wrf-hydro-training/output/lesson4/run_gridded_baseline/frxst_pts_out.txt&quot;</span>
 
-
-
-simQ &lt;-<span class="st"> </span><span class="kw">read.csv</span>(modelOutputPath, <span class="dt">col.names =</span>  <span class="kw">c</span>(<span class="st">&quot;TimeFromStart&quot;</span>, <span class="st">&quot;Time&quot;</span>, <span class="st">&quot;station&quot;</span>, <span class="st">&quot;longitude&quot;</span>, <span class="st">&quot;latitude&quot;</span>, <span class="st">&quot;q_cms&quot;</span>, <span class="st">&quot;q_cfs&quot;</span>, <span class="st">&quot;stage&quot;</span>),
-                          <span class="dt">colClasses =</span> <span class="kw">c</span>(<span class="st">&quot;integer&quot;</span>, <span class="st">&quot;character&quot;</span>, <span class="st">&quot;character&quot;</span>, <span class="kw">rep</span>(<span class="st">&quot;numeric&quot;</span>, <span class="dv">5</span>)), <span class="dt">header =</span> <span class="ot">FALSE</span>)
+simQ &lt;-<span class="st"> </span><span class="kw">read.csv</span>(modelOutputPath, 
+                 <span class="dt">col.names =</span>  <span class="kw">c</span>(<span class="st">&quot;TimeFromStart&quot;</span>, <span class="st">&quot;Time&quot;</span>, <span class="st">&quot;station&quot;</span>, <span class="st">&quot;longitude&quot;</span>, <span class="st">&quot;latitude&quot;</span>, <span class="st">&quot;q_cms&quot;</span>, <span class="st">&quot;q_cfs&quot;</span>, <span class="st">&quot;stage&quot;</span>),
+                 <span class="dt">colClasses =</span> <span class="kw">c</span>(<span class="st">&quot;integer&quot;</span>, <span class="st">&quot;character&quot;</span>, <span class="st">&quot;character&quot;</span>, <span class="kw">rep</span>(<span class="st">&quot;numeric&quot;</span>, <span class="dv">5</span>)), <span class="dt">header =</span> <span class="ot">FALSE</span>)
 <span class="kw">head</span>(simQ)</code></pre></div>
 <pre><code>##   TimeFromStart                Time      station longitude latitude q_cms
 ## 1          3600 2011-08-26 01:00:00            3 -73.69508 41.41042 2.278
