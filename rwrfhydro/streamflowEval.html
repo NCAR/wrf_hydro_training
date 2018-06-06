@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Aubrey Dugger, James McCreight, Joe Mills, Arezoo Rafieei Nasab, and Katelyn FitzGerald" />
+
+<meta name="date" content="2018-06-06" />
+
+<title>Plot and evaluate simulated WRF-Hydro streamflow using USGS observations</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Plot and evaluate simulated WRF-Hydro streamflow using USGS observations</h1>
+<h4 class="author"><em>Aubrey Dugger, James McCreight, Joe Mills, Arezoo Rafieei Nasab, and Katelyn FitzGerald</em></h4>
+<h4 class="date"><em>2018-06-06</em></h4>
+
+
+
+<div id="background" class="section level1">
+<h1>Background</h1>
+<p>USGS streamflow observations are a primary source of hydrologic information and often used for validation and calibration of hydrlogic models. Web services have been developed at NWIS and the dataRetrieval R package has emerged to make it easy to get USGS data using R.</p>
+<p>This vignette demonstrates how to download USGS streamflow observations using the dataRetrieval package, import modeled streamflow from WRF-Hydro output files using functionality from rwrfhydro, and plot both the observed and modeled time series. Note that there are different ways to read the simulated streamflow depending on which option we have turned on in the hdyro.namelist.</p>
+</div>
+<div id="load-packages-and-scripts" class="section level1">
+<h1>Load packages and scripts</h1>
+<p>Load required packages and scripts.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dataRetrieval)
+<span class="kw">library</span>(rwrfhydro)</code></pre></div>
+<pre><code>## To check rwrfhydro updates run: CheckForUpdates()</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(data.table)
+<span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(foreach)</code></pre></div>
+</div>
+<div id="download-usgs-streamflow-observations" class="section level1">
+<h1>Download USGS streamflow observations</h1>
+<p>Download daily USGS streamflow observations using a function from the dataRetrieval package. And the <code>feature_id</code> to it.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gageID &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;01374559&quot;</span>, <span class="st">&quot;01374581&quot;</span>, <span class="st">&quot;0137462010&quot;</span>)
+obsDF &lt;-<span class="st"> </span><span class="kw">readNWISuv</span>(<span class="dt">siteNumbers=</span>gageID,
+                    <span class="dt">parameterCd=</span><span class="st">&quot;00060&quot;</span>,
+                    <span class="dt">startDate=</span><span class="st">&quot;2011-08-25&quot;</span>,
+                    <span class="dt">endDate=</span><span class="st">&quot;2011-09-03&quot;</span>)</code></pre></div>
+<p>Rename columns and create a column for streamflow with units of cubic meters per second.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(obsDF) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;agency&quot;</span>,<span class="st">&quot;site_no&quot;</span>,<span class="st">&quot;dateTime&quot;</span>,<span class="st">&quot;q_cfs&quot;</span>,<span class="st">&quot;qc&quot;</span>, <span class="st">&quot;tz_cd&quot;</span>)
+
+obsDF<span class="op">$</span>dateTime &lt;-<span class="st"> </span><span class="kw">as.POSIXct</span>(obsDF<span class="op">$</span>dateTime) 
+obsDF<span class="op">$</span>streamflow &lt;-<span class="st"> </span>obsDF<span class="op">$</span>q_cfs<span class="op">/</span><span class="fl">35.31</span></code></pre></div>
+<p>Read in the reference file, and add the feature_id to the observations</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">referenceFile &lt;-<span class="st"> &quot;~/wrf-hydro-training/example_case/Gridded/croton_frxst_pts.csv&quot;</span>
+refDF &lt;-<span class="st"> </span><span class="kw">read.csv</span>(referenceFile, <span class="dt">colClasses =</span> <span class="kw">c</span>(<span class="st">&quot;integer&quot;</span>, <span class="st">&quot;numeric&quot;</span>, <span class="st">&quot;numeric&quot;</span>, <span class="st">&quot;character&quot;</span>, <span class="st">&quot;character&quot;</span>))
+<span class="kw">print</span>(refDF)</code></pre></div>
+<pre><code>##   FID       LON      LAT STATION    Site_No
+## 1   1 -73.75900 41.46811       A   01374559
+## 2   2 -73.73707 41.44807       B   01374581
+## 3   3 -73.69425 41.41023       C 0137462010</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obsDF &lt;-<span class="st"> </span><span class="kw">merge</span>(obsDF,  refDF[, <span class="kw">c</span>(<span class="st">&quot;FID&quot;</span>, <span class="st">&quot;Site_No&quot;</span>)], <span class="dt">by.x =</span> <span class="st">&quot;site_no&quot;</span>, <span class="dt">by.y =</span> <span class="st">&quot;Site_No&quot;</span>)
+obsDF<span class="op">$</span>feature_id &lt;-<span class="st"> </span>obsDF<span class="op">$</span>FID</code></pre></div>
+</div>
+<div id="import-wrf-hydro-simulated-streamflow-at-the-gage-location" class="section level1">
+<h1>Import WRF-Hydro simulated streamflow at the gage location</h1>
+<p>One can read the simulated streamflow values different ways depending on what output files are turned on in the hydro.namelist. The easiest option is to read it from <code>frxst_pts_out.txt</code> file.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># specify the path to the frxst_pts_out.txt file</span>
+modelOutputPath &lt;-<span class="st"> &quot;~/wrf-hydro-training/output/lesson4/run_gridded_baseline/frxst_pts_out.txt&quot;</span>
+
+simQ &lt;-<span class="st"> </span><span class="kw">read.csv</span>(modelOutputPath, 
+                 <span class="dt">col.names =</span>  <span class="kw">c</span>(<span class="st">&quot;TimeFromStart&quot;</span>, <span class="st">&quot;Time&quot;</span>, <span class="st">&quot;station&quot;</span>, <span class="st">&quot;longitude&quot;</span>, <span class="st">&quot;latitude&quot;</span>, <span class="st">&quot;q_cms&quot;</span>, <span class="st">&quot;q_cfs&quot;</span>, <span class="st">&quot;stage&quot;</span>),
+                 <span class="dt">colClasses =</span> <span class="kw">c</span>(<span class="st">&quot;integer&quot;</span>, <span class="st">&quot;character&quot;</span>, <span class="st">&quot;character&quot;</span>, <span class="kw">rep</span>(<span class="st">&quot;numeric&quot;</span>, <span class="dv">5</span>)), <span class="dt">header =</span> <span class="ot">FALSE</span>)
+<span class="kw">head</span>(simQ)</code></pre></div>
+<pre><code>##   TimeFromStart                Time      station longitude latitude q_cms
+## 1          3600 2011-08-26 01:00:00            3 -73.69508 41.41042 2.278
+## 2          3600 2011-08-26 01:00:00            2 -73.73784 41.44910 1.340
+## 3          3600 2011-08-26 01:00:00            1 -73.75716 41.46555 0.699
+## 4          7200 2011-08-26 02:00:00            3 -73.69508 41.41042 2.278
+## 5          7200 2011-08-26 02:00:00            2 -73.73784 41.44910 1.328
+## 6          7200 2011-08-26 02:00:00            1 -73.75716 41.46555 0.693
+##    q_cfs stage
+## 1 80.440 0.400
+## 2 47.333 0.467
+## 3 24.690 0.437
+## 4 80.441 0.400
+## 5 46.882 0.465
+## 6 24.490 0.435</code></pre>
+<p>The other option is to read it from the <em>CHANOBS</em> files like what you did in the training lessons.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">chnObsFiles &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="st">&quot;~/wrf-hydro-training/output/lesson4/run_gridded_baseline/&quot;</span>,
+                          <span class="kw">glob2rx</span>(<span class="st">&quot;2011*CHANOBS*&quot;</span>), <span class="dt">full.names =</span> <span class="ot">TRUE</span>)
+
+simQ &lt;-<span class="st"> </span><span class="kw">foreach</span>(<span class="dt">f =</span> chnObsFiles, <span class="dt">.combine =</span> rbind.data.frame) <span class="op">%do%</span><span class="st"> </span>{
+  a &lt;-<span class="st"> </span>rwrfhydro<span class="op">::</span><span class="kw">GetNcdfFile</span>(f, <span class="dt">variables =</span> <span class="kw">c</span>(<span class="st">&quot;feature_id&quot;</span>, <span class="st">&quot;streamflow&quot;</span>), <span class="dt">quiet =</span> <span class="ot">TRUE</span>)
+  a<span class="op">$</span>dateTime &lt;-<span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">substr</span>(<span class="kw">basename</span>(f), <span class="dv">1</span>, <span class="dv">12</span>), <span class="dt">format =</span> <span class="st">&quot;%Y%m%d%H%M&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>)
+  <span class="kw">return</span>(a)
+}</code></pre></div>
+<p>You could also read this information from the <em>CHRTOUT_DOMAIN</em> files and <em>CHRTOUT_GRID</em>, refer to the manual page of <code>ReadChrtout</code></p>
+</div>
+<div id="plot-hydrographs" class="section level1">
+<h1>Plot hydrographs</h1>
+<p>Plot observed and simulated hydrographs using ggplot2.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obsDF<span class="op">$</span>run &lt;-<span class="st"> &quot;Observation&quot;</span>
+simQ<span class="op">$</span>run &lt;-<span class="st"> &quot;Gridded Baseline&quot;</span>
+
+merged &lt;-<span class="st"> </span><span class="kw">rbind</span>(simQ, obsDF[, <span class="kw">names</span>(simQ)])
+
+<span class="kw">ggplot</span>(<span class="dt">data =</span> merged) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(dateTime, streamflow, <span class="dt">color =</span> run)) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>feature_id, <span class="dt">ncol =</span> <span class="dv">1</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="import-wrf-hydro-simulated-streamflow-at-the-gage-location-for-nwm" class="section level1">
+<h1>Import WRF-Hydro simulated streamflow at the gage location for NWM</h1>
+<p>The simulated streamflow can be found in <code>CHANOBS</code>, <code>CHRTOUT_DOMAN</code> and <code>CHRTOUT_GRID</code> files. Here is an example on how to read it from <code>CHANOBS</code> files.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">chnObsFiles &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="st">&quot;~/wrf-hydro-training/output/lesson5/run_nwm&quot;</span>,
+                          <span class="kw">glob2rx</span>(<span class="st">&quot;2011*CHANOBS*&quot;</span>), <span class="dt">full.names =</span> <span class="ot">TRUE</span>)
+
+simQnwm &lt;-<span class="st"> </span><span class="kw">foreach</span>(<span class="dt">f =</span> chnObsFiles, <span class="dt">.combine =</span> rbind.data.frame) <span class="op">%do%</span><span class="st"> </span>{
+  a &lt;-<span class="st"> </span>rwrfhydro<span class="op">::</span><span class="kw">GetNcdfFile</span>(f, <span class="dt">variables =</span> <span class="kw">c</span>(<span class="st">&quot;feature_id&quot;</span>, <span class="st">&quot;streamflow&quot;</span>), <span class="dt">quiet =</span> <span class="ot">TRUE</span>)
+  a<span class="op">$</span>dateTime &lt;-<span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">substr</span>(<span class="kw">basename</span>(f), <span class="dv">1</span>, <span class="dv">12</span>), <span class="dt">format =</span> <span class="st">&quot;%Y%m%d%H%M&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>)
+  <span class="kw">return</span>(a)
+}</code></pre></div>
+<p>The relationship between the links/feature_id and the gage ID can be found in the routelink file.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">routelinkFile &lt;-<span class="st"> &quot;~/wrf-hydro-training/example_case/NWM/DOMAIN/Route_Link.nc&quot;</span>
+
+rtlink &lt;-<span class="st"> </span>rwrfhydro<span class="op">::</span><span class="kw">GetNcdfFile</span>(routelinkFile, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)
+<span class="kw">head</span>(rtlink)</code></pre></div>
+<pre><code>##   BtmWdth ChSlp Kchan Length MusK MusX NHDWaterbodyComID Qi    So    alt
+## 1       2  0.05     0   2203 3600  0.2             -9999  0 0.070 255.40
+## 2       2  0.05     0   2248 3600  0.2             -9999  0 0.076 271.49
+## 3       2  0.05     0   1943 3600  0.2             -9999  0 0.002  69.14
+## 4       2  0.05     0   2233 3600  0.2             -9999  0 0.089 283.30
+## 5       2  0.05     0   2339 3600  0.2             -9999  0 0.028 159.00
+## 6       2  0.05     0   4445 3600  0.2             -9999  0 0.005 116.03
+##   ascendingIndex from           gages      lat    link       lon    n
+## 1            183    0                 41.55200 6212218 -73.72379 0.06
+## 2            155    0                 41.55030 6212238 -73.73109 0.06
+## 3            184    0                 41.54454 6212242 -73.83585 0.06
+## 4            166    0                 41.51133 6212272 -73.78367 0.06
+## 5            156    0                 41.50933 6212276 -73.79778 0.06
+## 6            168    0                 41.54963 6212528 -73.75257 0.06
+##   order      to
+## 1     1       0
+## 2     1       0
+## 3     1       0
+## 4     1 6212262
+## 5     1 6212262
+## 6     1 6212228</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># let s subset to only those that have a gage on them</span>
+rtlink &lt;-<span class="st"> </span><span class="kw">subset</span>(rtlink, <span class="kw">trimws</span>(gages) <span class="op">!=</span><span class="st"> &quot;&quot;</span>)
+rtlink</code></pre></div>
+<pre><code>##      BtmWdth ChSlp Kchan Length MusK MusX NHDWaterbodyComID Qi    So
+## 200 2.286175  0.05     0    397 3600  0.2             -9999  0 0.001
+## 221 5.500000  0.05     0    505 3600  0.2             -9999  0 0.002
+## 240 5.500000  0.05     0   3166 3600  0.2             -9999  0 0.015
+##        alt ascendingIndex from           gages      lat    link       lon
+## 200 180.48             53    0        01374559 41.47079 6226948 -73.76059
+## 221 164.32             58    0        01374581 41.44981 6227008 -73.73565
+## 240 147.61             77    0      0137462010 41.40192 6227150 -73.68741
+##         n order      to
+## 200 0.055     3 6228462
+## 221 0.055     4 6227012
+## 240 0.055     4 6227160</code></pre>
+<p>Now you can merge the name of the gage to th simulated streamflow.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">simQnwm &lt;-<span class="st"> </span><span class="kw">merge</span>(simQnwm, rtlink[, <span class="kw">c</span>(<span class="st">&quot;link&quot;</span>, <span class="st">&quot;gages&quot;</span>)], <span class="dt">by.x =</span> <span class="st">&quot;feature_id&quot;</span>, <span class="dt">by.y =</span> <span class="st">&quot;link&quot;</span>)</code></pre></div>
+<p>Concatenate the observation and plot it.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(simQnwm)[<span class="kw">which</span>(<span class="kw">names</span>(simQnwm) <span class="op">==</span><span class="st"> &quot;gages&quot;</span>)] &lt;-<span class="st"> &quot;site_no&quot;</span>
+simQnwm<span class="op">$</span>run &lt;-<span class="st"> &quot;NWM&quot;</span>
+
+merged &lt;-<span class="st"> </span><span class="kw">rbind</span>(simQnwm, obsDF[, <span class="kw">names</span>(simQnwm)])
+
+<span class="kw">ggplot</span>(<span class="dt">data =</span> merged) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(dateTime, streamflow, <span class="dt">color =</span> run)) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="kw">trimws</span>(site_no), <span class="dt">ncol =</span> <span class="dv">1</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
