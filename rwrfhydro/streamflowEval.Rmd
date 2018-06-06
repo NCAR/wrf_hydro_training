@@ -1,0 +1,141 @@
+---
+title: "Plot and evaluate simulated WRF-Hydro streamflow using USGS observations"
+author: "Aubrey Dugger, James McCreight, Alyssa Hendricks, Joe Mills, Arezoo Rafieei Nasab, and Katelyn FitzGerald"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+#Background
+USGS streamflow observations are a primary source of hydrologic information and often used for validation and calibration of hydrlogic models. Web services have been developed at NWIS and the dataRetrieval R package has emerged to make it easy to get USGS data using R.
+
+This vignette demonstrates how to download USGS streamflow observations using the dataRetrieval package, import modeled streamflow from WRF-Hydro output files using functionality from rwrfhydro, and plot both the observed and modeled time series. Note that there are different ways to read the simulated streamflow depending on which option we have turned on in the hdyro.namelist. 
+
+# Load packages and scripts
+Load required packages and scripts.
+
+```{r}
+library(dataRetrieval)
+library(rwrfhydro)
+library(data.table)
+library(ggplot2)
+library(foreach)
+```
+
+
+#Download USGS streamflow observations
+Download daily USGS streamflow observations using a function from the dataRetrieval package. And the `feature_id` to it.
+```{r}
+gageID <- c("01374559", "01374581", "0137462010")
+obsDF <- readNWISuv(siteNumbers=gageID,
+                    parameterCd="00060",
+                    startDate="2011-08-25",
+                    endDate="2011-09-03")
+```
+
+Rename columns and create a column for streamflow with units of cubic meters per second.
+
+```{r}
+colnames(obsDF) <- c("agency","site_no","dateTime","q_cfs","qc", "tz_cd")
+
+obsDF$dateTime <- as.POSIXct(obsDF$dateTime) 
+obsDF$streamflow <- obsDF$q_cfs/35.31
+```
+
+Read in the reference file, and add the feature_id to the observations
+```{r}
+referenceFile <- "~/wrf-hydro-training/example_case/Gridded/croton_frxst_pts.csv"
+refDF <- read.csv(referenceFile, colClasses = c("integer", "numeric", "numeric", "character", "character"))
+print(refDF)
+
+obsDF <- merge(obsDF,  refDF[, c("FID", "Site_No")], by.x = "site_no", by.y = "Site_No")
+obsDF$feature_id <- obsDF$FID
+```
+
+# Import WRF-Hydro simulated streamflow at the gage location
+One can read the simulated streamflow values different ways depending on what output files are turned on in the hydro.namelist. The easiest option is to read it from `frxst_pts_out.txt` file. 
+
+```{r}
+# specify the path to the frxst_pts_out.txt file
+modelOutputPath <- "~/wrf-hydro-training/output/lesson4/run_gridded_baseline/frxst_pts_out.txt"
+
+
+
+simQ <- read.csv(modelOutputPath, col.names =  c("TimeFromStart", "Time", "station", "longitude", "latitude", "q_cms", "q_cfs", "stage"),
+                          colClasses = c("integer", "character", "character", rep("numeric", 5)), header = FALSE)
+head(simQ)
+```
+
+The other option is to read it from the *CHANOBS* files like what you did in the training lessons.
+
+```{r}
+chnObsFiles <- list.files("~/wrf-hydro-training/output/lesson4/run_gridded_baseline/",
+                          glob2rx("2011*CHANOBS*"), full.names = TRUE)
+
+simQ <- foreach(f = chnObsFiles, .combine = rbind.data.frame) %do% {
+  a <- rwrfhydro::GetNcdfFile(f, variables = c("feature_id", "streamflow"), quiet = TRUE)
+  a$dateTime <- as.POSIXct(substr(basename(f), 1, 12), format = "%Y%m%d%H%M", tz = "UTC")
+  return(a)
+}
+```
+
+You could also read this information from the *CHRTOUT_DOMAIN* files and *CHRTOUT_GRID*, refer to the manual page of `ReadChrtout`
+
+# Plot hydrographs
+Plot observed and simulated hydrographs using ggplot2.
+
+```{r plot1, fig.width = 8, fig.height = 4}
+obsDF$run <- "Observation"
+simQ$run <- "Gridded Baseline"
+
+merged <- rbind(simQ, obsDF[, names(simQ)])
+
+ggplot(data = merged) + geom_line(aes(dateTime, streamflow, color = run)) + facet_wrap(~feature_id, ncol = 1)
+```
+
+# Import WRF-Hydro simulated streamflow at the gage location for NWM
+
+The simulated streamflow can be found in `CHANOBS`, `CHRTOUT_DOMAN` and `CHRTOUT_GRID` files. Here is an example on how to read it from `CHANOBS` files. 
+
+```{r}
+chnObsFiles <- list.files("~/wrf-hydro-training/output/lesson5/run_nwm",
+                          glob2rx("2011*CHANOBS*"), full.names = TRUE)
+
+simQnwm <- foreach(f = chnObsFiles, .combine = rbind.data.frame) %do% {
+  a <- rwrfhydro::GetNcdfFile(f, variables = c("feature_id", "streamflow"), quiet = TRUE)
+  a$dateTime <- as.POSIXct(substr(basename(f), 1, 12), format = "%Y%m%d%H%M", tz = "UTC")
+  return(a)
+}
+```
+
+The relationship between the links/feature_id and the gage ID can be found in the routelink file.
+```{R}
+routelinkFile <- "~/wrf-hydro-training/example_case/NWM/DOMAIN/Route_Link.nc"
+
+rtlink <- rwrfhydro::GetNcdfFile(routelinkFile, quiet = TRUE)
+head(rtlink)
+
+# let s subset to only those that have a gage on them
+rtlink <- subset(rtlink, trimws(gages) != "")
+rtlink
+```
+
+Now you can merge the name of the gage to th simulated streamflow. 
+
+```{r}
+simQnwm <- merge(simQnwm, rtlink[, c("link", "gages")], by.x = "feature_id", by.y = "link")
+```
+
+Concatenate the observation and plot it.
+
+```{R plot2, fig.width = 8, fig.height = 4}
+names(simQnwm)[which(names(simQnwm) == "gages")] <- "site_no"
+simQnwm$run <- "NWM"
+
+merged <- rbind(simQnwm, obsDF[, names(simQnwm)])
+
+ggplot(data = merged) + geom_line(aes(dateTime, streamflow, color = run)) + facet_wrap(~trimws(site_no), ncol = 1)
+
+```
