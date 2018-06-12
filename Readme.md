@@ -1,3 +1,5 @@
+![](https://ral.ucar.edu/sites/default/files/public/wrf_hydro_symbol_logo_2017_09_150pxby63px.png) WRF-HYDRO
+
 ## Overview
 This repository contains lessons in understanding the basic functionality of WRF-Hydro.
 
@@ -30,7 +32,7 @@ Issue the following command in your terminal to pull a specific version of the t
 **Step 3: Start the training container**
 Issue the following commnand in your terminal session to start the training Docker container.
 
-`docker run --name wrf-hydro-training -p 8888:8888 -it wrfhydro/training`
+`docker run --name wrf-hydro-training -p 8888:8888 -it wrfhydro/training:v5.0.0`
 
 The container will start and perform a number of actions before starting the training. 
 
