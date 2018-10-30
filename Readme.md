@@ -1,4 +1,4 @@
-#  WRF-Hydro <img src=".github/images/wrf_hydro_symbol_logo_2017_09.png" width=100 align="left" />
+#  WRF-Hydro <img src="https://ral.ucar.edu/sites/default/files/public/wrf_hydro_symbol_logo_2017_09_150pxby63px.png" width=100 align="left" />
 
 ## Overview
 This repository contains lessons in understanding the basic functionality of WRF-Hydro.
