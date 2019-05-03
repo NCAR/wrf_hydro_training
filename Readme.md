@@ -42,7 +42,7 @@ The container will start and perform a number of actions before starting the tra
 
 ***Step 4: Connect to Jupyter Notebook server using your browser**
 
-At the end of the container startup process an address and password will be printed to the terminal. The address and password are used to connect to the container Jupyter Notebook server. All training lesson notebooks in this container are in the `/home/docker/lessons` directory and can be opened in your browser using Jupyter.
+At the end of the container startup process an address and password will be printed to the terminal. The address and password are used to connect to the container Jupyter Notebook server. All training lesson notebooks in this container are in the `/home/docker/nwm-training/lessons` directory and can be opened in your browser using Jupyter.
 
 ## What is included
 
