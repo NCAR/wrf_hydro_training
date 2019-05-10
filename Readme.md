@@ -38,7 +38,7 @@ The container will start and perform a number of actions before starting the tra
 
 **Note:** If you have already started the training once you will need to remove the previous container using the command `docker rm nwm-training`
 
-***Step 4: Connect to Jupyter Notebook server using your browser**
+**Step 4: Connect to Jupyter Notebook server using your browser**
 
 At the end of the container startup process an address and password will be printed to the terminal. The address and password are used to connect to the container Jupyter Notebook server. All training lesson notebooks in this container are in the `/home/docker/nwm-training/lessons` directory and can be opened in your browser using Jupyter.
 
