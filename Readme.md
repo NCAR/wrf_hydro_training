@@ -1,7 +1,7 @@
 #  WRF-Hydro <img src="https://ral.ucar.edu/sites/default/files/public/wrf_hydro_symbol_logo_2017_09_150pxby63px.png" width=100 align="left" />
 
 ## Overview
-This repository contains lessons in understanding the basic functionality of WRF-Hydro as used in the National Water Model.
+This repository contains lessons in understanding the basic functionality of WRF-Hydro as used in the National Water Model (NWM).
 
 ### Requirements
 The easiest and recommended way to run these lessons is via the [wrfhydro/nwm-training](https://cloud.docker.com/u/wrfhydro/repository/docker/wrfhydro/nwm-training) Docker container, which has all software dependencies and data pre-installed.
@@ -36,7 +36,7 @@ Issue the following commnand in your terminal session to start the training Dock
 
 The container will start and perform a number of actions before starting the training. 
 
-**Note: If you have already started the training once you will need to remove the previous container using the command `docker rm nwm-training` **
+**Note:** If you have already started the training once you will need to remove the previous container using the command `docker rm nwm-training`
 
 ***Step 4: Connect to Jupyter Notebook server using your browser**
 
@@ -45,8 +45,8 @@ At the end of the container startup process an address and password will be prin
 ## What is included
 
 * The model code corresponding to the specified version, in this case v2.0
-* An example test case compatible with the model code release.
+* An example test case compatible with the included model code
 * WRF-Hydro training lessons as Jupyter Notebooks
-* Jupyter Notebook server.
+* Jupyter Notebook server
 
-**Note: Port forwarding is setup with the `-p 8888:8888` argument, which maps your localhost port to the container port. If you already have something running on port 8888 on your localhost you will need to change this number**
+**Note:** Port forwarding is setup with the `-p 8888:8888` argument, which maps your localhost port to the container port. If you already have something running on port 8888 on your localhost you will need to change this number
