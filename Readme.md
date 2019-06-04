@@ -25,21 +25,20 @@ Make sure you have Docker installed and that it can access your localhost ports.
 **Step 2: Pull the wrfhydro/training Docker container for the desired code version**
 Each training container is specific to a release version of the WRF-Hydro source code, which can be found at https://github.com/NCAR/wrf_hydro_nwm_public/releases.
 
-Issue the following command in your terminal to pull a specific version of the training corresponding to your code release version. In this example, we will pull the training container for v5.0.x.
+Issue the following command in your terminal to pull a specific version of the training corresponding to your code release version. In this example, we will pull the training container for v5.1.x.
 
-`docker pull wrfhydro/training:v5.0.x`
+`docker pull wrfhydro/training:v5.1.x`
 
 **Step 3: Start the training container**
 Issue the following commnand in your terminal session to start the training Docker container.
 
-`docker run --name wrf-hydro-training -p 8888:8888 -it wrfhydro/training:v5.0.x`
+`docker run --name wrf-hydro-training -p 8888:8888 -it wrfhydro/training:v5.1.x`
 **Note: If you have already started the training once you will need to remove the previous container using the command
 `docker rm wrf-hydro-training`**
 
 The container will start and perform a number of actions before starting the training. 
 
-* First, the container will pull the model code corresponding to the specified major version, in
-this case v5.0.x
+* First, the container will pull the model code corresponding to the specified major version, in this case v5.1.x
 * Second, the container will pull an example test case compatible with the model code release.
 * Third, the container will launch a Jupyter Notebook server and echo the address to your terminal.
 
