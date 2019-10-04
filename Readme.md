@@ -43,3 +43,4 @@ The container will start and perform a number of actions before starting the tra
 * Third, the container will launch a Jupyter Notebook server and echo the address to your terminal.
 
 **Note: Port forwarding is setup with the `-p 8888:8888` argument, which maps your localhost port to the container port. If you already have sometihng running on port 8888 on your localhost you will need to change this number**
+© UCAR 2018
