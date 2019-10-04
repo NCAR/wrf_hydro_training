@@ -41,3 +41,4 @@ Issue the following command in your terminal session to start the training Docke
 The container will start and perform a number of actions before starting the training. 
 
 **Note: Port forwarding is setup with the `-p 8888:8888` argument, which maps your localhost port to the container port. If you already have sometihng running on port 8888 on your localhost you will need to change this number**
+© UCAR 2019
