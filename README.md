@@ -31,10 +31,11 @@ Issue the following command in your terminal.
 Issue the following commnand in your terminal to start the training Docker container.
 
 `docker run --name wrf-hydro-training -p 8888:8888 -it wrfhydro/hawaii-training`
+
 **Note: If you are restarting the training you will likely need to remove the previous container before reissuing the run command
 `docker rm wrf-hydro-training`**
 
-The container will start and perform a number of actions before starting the training. 
+The container will start and perform a number of actions before starting the training: 
 
 * First, the container will pull the model code.
 * Second, the container will pull the relevant example test case.
