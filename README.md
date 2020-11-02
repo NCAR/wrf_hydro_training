@@ -33,13 +33,14 @@ Issue the following command in your terminal to pull a specific version of the t
 Issue the following commnand in your terminal session to start the training Docker container.
 
 `docker run --name wrf-hydro-training -p 8888:8888 -it wrfhydro/training:v5.2.x`
+
 **Note: If you have already started the training once you will need to remove the previous container using the command
 `docker rm wrf-hydro-training`**
 
 The container will start and perform a number of actions before starting the training. 
 
-* First, the container will pull the model code
-* Second, the container will pull an example test case
-* Third, the container will launch a Jupyter Lab server and echo the address to your terminal
+1. The container will pull the model code
+2. The container will pull an example test case
+3. The container will launch a Jupyter Lab server and echo the address to your terminal
 
 **Note: Port forwarding is setup with the `-p 8888:8888` argument, which maps your localhost port to the container port. If you already have sometihng running on port 8888 on your localhost you will need to change this number**
