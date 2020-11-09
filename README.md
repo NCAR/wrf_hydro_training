@@ -27,12 +27,12 @@ Each training container is specific to a release version of the WRF-Hydro source
 
 Issue the following command in your terminal to pull a specific version of the training corresponding to your code release version.
 
-`docker pull wrfhydro/training:v5.2.x`
+`docker pull wrfhydro/training:v5.2.0-rc1`
 
 **Step 3: Start the training container**
 Issue the following commnand in your terminal session to start the training Docker container.
 
-`docker run --name wrf-hydro-training -p 8888:8888 -it wrfhydro/training:v5.2.x`
+`docker run --name wrf-hydro-training -p 8888:8888 -it wrfhydro/training:v5.2.0-rc1`
 
 **Note: If you have already started the training once you will need to remove the previous container using the command
 `docker rm wrf-hydro-training`**
