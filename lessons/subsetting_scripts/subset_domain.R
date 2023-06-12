@@ -15,7 +15,7 @@ library(foreach)
 #------------------------------------------ INPUTS : Please change the following parts as instructed ------------------------------------------
 
 # Specify your new domain file directory, all the subsetted domains will be places here
-myPath <- "~/wrf_hydro_training/output/subsetting/"
+myPath <- "~/wrf-hydro-training/output/subsetting/"
 
 # if you want to perform parallel processing, at this point it will not work
 nCors <- 1
