@@ -202,16 +202,16 @@ CutOut <- function(gage) {
   # Specify the NEW (subset extent) domain files:
   
   # Routing domain file
-  subHydFile <- paste0(myPath, "/", folderName, "/Fulldom_hires.nc")
+  subHydFile <- paste0(myPath, "/", folderName, "/Fulldom.nc")
   
   # Geogrid domain file
-  subGeoFile <- paste0(myPath, "/", folderName, "/geo_em.d0x.nc")
+  subGeoFile <- paste0(myPath, "/", folderName, "/geo_em.nc")
   
   # Wrfinput domain file
-  subWrfFile <- paste0(myPath, "/", folderName, "/wrfinput_d0x.nc")
+  subWrfFile <- paste0(myPath, "/", folderName, "/wrfinput.nc")
   
   # Route link file
-  subRtlinkFile <- paste0(myPath, "/", folderName, "/Route_Link.nc")
+  subRtlinkFile <- paste0(myPath, "/", folderName, "/RouteLink.nc")
   
   # Spatial weights file
   subSpwtFile <- paste0(myPath, "/", folderName, "/spatialweights.nc")
@@ -226,7 +226,7 @@ CutOut <- function(gage) {
   subLakeparmFile <- paste0(myPath, "/", folderName,  "/LAKEPARM.nc")
   
   # Hydro 2D file
-  subHydro2dFile <- paste0(myPath, "/", folderName, "/hydro2dtbl.nc")
+  subHydro2dFile <- paste0(myPath, "/", folderName, "/HYDRO_TBL_2D.nc")
   
   # geo Spatial file 
   subGeoSpatialFile <- paste0(myPath, "/", folderName, "/GEOGRID_LDASOUT_Spatial_Metadata.nc")
