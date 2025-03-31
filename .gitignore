@@ -3,5 +3,6 @@
 .Rhistory
 *.Rproj
 *.DS_Store
+.ipynb_checkpoints/
 dockerImages/
 data/
