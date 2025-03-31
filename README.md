@@ -1,4 +1,6 @@
-#  WRF-Hydro <img src="https://ral.ucar.edu/sites/default/files/public/wrf_hydro_symbol_logo_2017_09_150pxby63px.png" width=100 align="left" />
+#  WRF-Hydro® <img src="https://ral.ucar.edu/sites/default/files/public/wrf_hydro_symbol_logo_2017_09_150pxby63px.png" width=100 align="left" />
+
+[![Training Status](https://github.com/NCAR/wrf_hydro_training/actions/workflows/training-ci.yml/badge.svg?branch=main)](https://github.com/NCAR/wrf_hydro_training/actions/workflows/training-ci.yml)
 
 ## Overview
 This repository contains lessons in the form of Jupyter notebooks focused on understanding the basic functionality of [WRF-Hydro](https://github.com/NCAR/wrf_hydro_nwm_public).
@@ -12,7 +14,7 @@ The easiest and recommended way to run these lessons is via the [wrfhydro/traini
 ### Where to get help and/or post issues
 If you have general questions about Docker, there are ample online resourves including the excellent Docker documentation at https://docs.docker.com.
 
-If you have questions about WRF-Hydro or these lessons please use the contact form on our website: https://ral.ucar.edu/projects/wrf_hydro/contact. 
+If you have questions about WRF-Hydro or these lessons please use the contact form on our website: https://ral.ucar.edu/projects/wrf_hydro/contact.
 
 If you have found a bug in these lessons please log an issue on the Issues page of the GitHub repository at https://github.com/NCAR/wrf_hydro_training/issues.
 
@@ -27,17 +29,24 @@ Each training container is specific to a release version of the WRF-Hydro source
 
 Issue the following command in your terminal to pull a specific version of the training corresponding to your code release version.
 
-`docker pull wrfhydro/training:v5.2.0-rc1`
+`$ docker pull wrfhydro/training:v5.2.0-rc1`
 
 **Step 3: Start the training container**
 Issue the following commnand in your terminal session to start the training Docker container.
 
-`docker run --name wrf-hydro-training -p 8888:8888 -it wrfhydro/training:v5.2.0-rc1`
+`$ docker run --name wrf-hydro-training -p 8888:8888 wrfhydro/training`
+
+Start in interative mode with persistent data
+`$ docker run --name wrf-hydro-training -it -v ./path/to/wrf_hydro_training:/home/docker/saved wrfhydro/training`
+
+Run training notebooks CI
+
+`$ docker run --name wrf-hydro-ci --rm -e CI_TESTING=true wrfhydro/training`
 
 **Note: If you have already started the training once you will need to remove the previous container using the command
-`docker rm wrf-hydro-training`**
+`$ docker rm wrf-hydro-training`**
 
-The container will start and perform a number of actions before starting the training. 
+The container will start and perform a number of actions before starting the training.
 
 1. The container will pull the model code
 2. The container will pull an example test case
