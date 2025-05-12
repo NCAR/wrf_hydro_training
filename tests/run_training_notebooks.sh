@@ -40,21 +40,20 @@ done
 # test supplemental notebooks
 for nb in "${supplemental_notebooks[@]}"; do
   notebook_path="${notebook_dir}/${nb}"
-  echo -e "${red}Notebook will fail, not testing right now: $notebook_path${nc}"
-  # --- UNCOMMENT ONCE SUPPLEMENTAL NOTEBOOKS WORK ---
-  # echo "$ jupyter nbconvert --to notebook --execute --inplace $notebook_path"
-  # if jupyter nbconvert --to notebook --execute --inplace "$notebook_path"; then
-  #   echo -e "${green}success: $nb${nc}"
-  # else
-  #   echo -e "${red}failed: $nb${nc}"
-  # fi
+  echo "Testing: $notebook_path"
+  echo "$ jupyter nbconvert --to notebook --execute --inplace $notebook_path"
+  if jupyter nbconvert --to notebook --execute --inplace "$notebook_path"; then
+    echo -e "${green}success: $nb${nc}"
+  else
+    echo -e "${red}failed: $nb${nc}"
+  fi
 done
 
 # Final exit
 if [ "$has_failure" -eq 1 ]; then
-  echo -e "${red}One or more notebooks failed.${nc}"
+  echo -e "${red}One or more notebooks failed${nc}"
   exit 1
 else
-  echo -e "${green}All training notebooks executed successfully. Supplemental still broken${nc}"
+  echo -e "${green}All training notebooks executed successfully${nc}"
   exit 0
 fi
