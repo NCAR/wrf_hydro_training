@@ -28,8 +28,8 @@ has_failure=0
 for nb in "${training_notebooks[@]}"; do
   notebook_path="${notebook_dir}/${nb}"
   echo "Testing: $notebook_path"
-  echo "$ jupyter nbconvert --to notebook --execute --inplace $notebook_path"
-  if jupyter nbconvert --to notebook --execute --inplace "$notebook_path"; then
+  echo "$ jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.record_timing=False $notebook_path"
+  if jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.record_timing=False "$notebook_path"; then
     echo -e "${green}success: $nb${nc}"
   else
     echo -e "${red}failed: $nb${nc}"
@@ -41,8 +41,8 @@ done
 for nb in "${supplemental_notebooks[@]}"; do
   notebook_path="${notebook_dir}/${nb}"
   echo "Testing: $notebook_path"
-  echo "$ jupyter nbconvert --to notebook --execute --inplace $notebook_path"
-  if jupyter nbconvert --to notebook --execute --inplace "$notebook_path"; then
+  echo "$ jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.record_timing=False $notebook_path"
+  if jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.record_timing=False "$notebook_path"; then
     echo -e "${green}success: $nb${nc}"
   else
     echo -e "${red}failed: $nb${nc}"

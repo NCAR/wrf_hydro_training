@@ -25,6 +25,5 @@ jobs:
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/workspace \
-            -w /workspace \
             -e CI_TESTING=true \
             wrfhydro/training
