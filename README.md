@@ -12,7 +12,7 @@ The easiest and recommended way to run these lessons is via the [wrfhydro/traini
 ### Where to get help and/or post issues
 If you have general questions about Docker, there are ample online resourves including the excellent Docker documentation at https://docs.docker.com.
 
-If you have questions about WRF-Hydro or these lessons please use the contact form on our website: https://ral.ucar.edu/projects/wrf_hydro/contact. 
+If you have questions about WRF-Hydro or these lessons please use the contact form on our website: https://ral.ucar.edu/projects/wrf_hydro/contact.
 
 If you have found a bug in these lessons please log an issue on the Issues page of the GitHub repository at https://github.com/NCAR/wrf_hydro_training/issues.
 
@@ -27,17 +27,32 @@ Each training container is specific to a release version of the WRF-Hydro source
 
 Issue the following command in your terminal to pull a specific version of the training corresponding to your code release version.
 
-`docker pull wrfhydro/training:v5.2.0-rc1`
+```bash
+$ docker pull wrfhydro/training:lsu_2026
+
+or if using the lsu_training_2026 branch of the respository github.com/NCAR/wrf_hydro_training
+$ make pull
+```
 
 **Step 3: Start the training container**
 Issue the following commnand in your terminal session to start the training Docker container.
 
-`docker run --name wrf-hydro-training -p 8888:8888 -it wrfhydro/training:v5.2.0-rc1`
+```bash
+$ docker run --name wrf-hydro-training -p 8888:8888 -it wrfhydro/training:lsu_2026
 
-**Note: If you have already started the training once you will need to remove the previous container using the command
-`docker rm wrf-hydro-training`**
+or if using the lsu_training_2026 branch of the respository github.com/NCAR/wrf_hydro_training
+$ make run
+```
 
-The container will start and perform a number of actions before starting the training. 
+**Note: If you have already started the training once you will need to remove the previous container using the command**
+```bash
+$ docker rm wrf-hydro-training
+
+or if using the lsu_training_2026 branch of the respository github.com/NCAR/wrf_hydro_training
+$ make clean
+```
+
+The container will start and perform a number of actions before starting the training.
 
 1. The container will pull the model code
 2. The container will pull an example test case
