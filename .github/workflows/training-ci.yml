@@ -11,12 +11,14 @@ on:
 jobs:
   docker-build:
     name: Test training notebooks
-    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    if: >-
+      github.repository == 'NCAR/wrf_hydro_training' &&
+      (github.ref == 'refs/heads/main' || github.event_name == 'pull_request')
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Pull wrfhydro/training image
         run: docker pull wrfhydro/training
