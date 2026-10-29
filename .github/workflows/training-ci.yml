@@ -23,9 +23,14 @@ jobs:
       - name: Pull wrfhydro/training image
         run: docker pull wrfhydro/training
 
+      # Swap the checked-out lessons/ and tests/ in for the copies the image's
+      # entrypoint clones, so CI tests this commit. -t is required so the
+      # entrypoint runs the given command instead of starting jupyter.
       - name: Run notebook tests inside container
         run: |
-          docker run --rm \
-            -v ${{ github.workspace }}:/workspace \
-            -e CI_TESTING=true \
-            wrfhydro/training
+          docker run -t --rm \
+            -v ${{ github.workspace }}:/workspace:ro \
+            wrfhydro/training \
+            bash -c 'rm -rf /home/docker/wrf_hydro_training/lessons /home/docker/wrf_hydro_training/tests &&
+                     cp -r /workspace/lessons /workspace/tests /home/docker/wrf_hydro_training/ &&
+                     cd /home/docker/wrf_hydro_training/tests && bash run_training_notebooks.sh'
